@@ -1,0 +1,36 @@
+<idea-plugin>
+    <id>inigo.objectmothercreator</id>
+    <name>Object mother creationplugin for Intellij</name>
+    <version>1.0</version>
+    <vendor email="i.delgado@lookiero.com" url="http://www.lookiero.com">Lookiero</vendor>
+
+    <description><![CDATA[
+      Plugin to help creating object mothers from inside IntelliJ
+    ]]></description>
+
+    <change-notes><![CDATA[
+      <ul>
+        <li>1.0 - Initial release</li>
+      </ul>
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="173.0"/>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+
+        <action id="ObjectMotherCreation.Editor"
+                class="inigo.objectMotherCreator.ObjectCreateAction"
+                text="Create object mother for current class"
+                description="BuildObjectMother">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+
+    </actions>
+
+</idea-plugin>
