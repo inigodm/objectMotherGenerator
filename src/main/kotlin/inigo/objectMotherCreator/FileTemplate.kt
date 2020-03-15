@@ -1,41 +1,40 @@
 package inigo.objectMotherCreator
 
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiParameter
-import com.intellij.psi.PsiParameterList
-import com.intellij.psi.PsiTypeElement
-
 class ObjectMotherTemplate() {
     val classesToTreat = mutableListOf<PsiJavaClassInfo>()
 
     fun assignValues(clazz: PsiJavaClassInfo) {
         classesToTreat.add(clazz)
         while (classesToTreat.isNotEmpty()){
-            var aux = buildClass(classesToTreat.removeAt(0))
+            var aux = buildJavaFile(classesToTreat.removeAt(0))
+            println("BEGIN-----------")
             createFile(aux, "FILENAME")
+            println("END-------------")
         }
-
     }
 
     fun createFile(classString: String, fileName: String){
-        println("BEGIN-----$fileName-------")
         println(classString)
-        println("END-------$fileName-------")
     }
 
-    fun buildClass(clazz: PsiJavaClassInfo): String{
+    fun buildJavaFile(clazz: PsiJavaClassInfo): String{
         var res = buildPackage(clazz.packageName)
-        res += buildImports(clazz.constructors.get(0))
-        res += buildClass(clazz.clazz.name.toString() , clazz.constructors)
-        return res
+        res += buildImports(clazz.constructors, clazz.packageName)
+        return res + buildClass(clazz.clazz.name.toString() , clazz.constructors)
     }
 
     fun buildPackage(packageName: String): String{
         return "package $packageName\n\n"
     }
 
-    fun buildImports(methodInfo: PsiMethodInfo): String{
-        return "import com.github.javafaker.Faker;\n\n"
+    fun buildImports(methodsInfo: List<PsiMethodInfo>, packageName: String): String{
+        var res = "import com.github.javafaker.Faker;\n"
+        if (methodsInfo.isNotEmpty()) {
+            res += methodsInfo.get(0).args.filter { it.clazzInfo?.packageName ?: "" != packageName }
+                .map { "import ${it.clazzInfo?.clazz?.qualifiedName}" }
+                .joinToString(separator = ";\n", postfix = ";\n\n")
+        }
+        return res
     }
 
     fun buildClass(className: String, constructors: List<PsiMethodInfo>): String{
