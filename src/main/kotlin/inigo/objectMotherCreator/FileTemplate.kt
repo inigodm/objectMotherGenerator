@@ -4,7 +4,6 @@ import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiParameter
 import com.intellij.psi.PsiParameterList
 import com.intellij.psi.PsiTypeElement
-import com.intellij.psi.util.PsiTypesUtil
 
 class ObjectMotherTemplate() {
     val classesToTreat = mutableListOf<PsiJavaClassInfo>()
@@ -42,7 +41,7 @@ class ObjectMotherTemplate() {
     fun buildClass(className: String, constructors: List<PsiMethodInfo>): String{
         var res = "public class ${className}Mother{\n"
         constructors.forEach{ res += buildMotherConstructor(className, it)};
-        return res
+        return "$res\n}"
     }
 
     private fun buildMotherConstructor(className: String, methodInfo: PsiMethodInfo): Any? {
@@ -53,86 +52,34 @@ class ObjectMotherTemplate() {
     }
 
     private fun buildArgumentsData(params: MutableList<PsiParametersInfo>): String {
-        var res = ""
-        params.map { res += createDefaultValueFor(it) }
-        return res
+        return params.map { createDefaultValueFor(it) }.joinToString { it }
     }
 
-    private fun createDefaultValueFor(param: PsiParametersInfo): Any {
+    private fun createDefaultValueFor(param: PsiParametersInfo): String {
         return when (param.name) {
             "String" -> {
-                "\n\t\t\t\tfaker.ancient().hero(),"
+                "\n\t\t\t\tfaker.ancient().hero()"
             }
             "int" -> {
-                "\n\t\t\t\tfaker.number.randomNumber(),"
+                "\n\t\t\t\tfaker.number.randomNumber()"
             }
             "Integer" -> {
-                "\n\t\t\t\tfaker.number.randomNumber(),"
+                "\n\t\t\t\tfaker.number.randomNumber()"
             }
             "long" -> {
-                "\n\t\t\t\tfaker.number.randomLong(),"
+                "\n\t\t\t\tfaker.number.randomLong()"
             }
             "Long" -> {
-                "\n\t\t\t\tfaker.number.randomLong(),"
+                "\n\t\t\t\tfaker.number.randomLong()"
             }
             else -> {
-                if (param.clazzInfo != null){
-                    classesToTreat.add(param.clazzInfo!!)
-                    "\n\t\t\t\trandom${param.clazzInfo!!.clazz?.name ?: param.name}(),"
+                var clazzInfo = param.clazzInfo
+                if (clazzInfo != null){
+                    classesToTreat.add(clazzInfo)
+                    "\n\t\t\t\trandom${clazzInfo.clazz.name}()"
                 }else{
-                    "new ${param.name}"
+                    "new ${param.name}()"
                 }
-            }
-        }
-    }
-
-
-    fun buildArguments(constructorArguments: PsiParameterList): String{
-        return constructorArguments
-            .parameters
-            .map {
-                buildArgument(it)
-            }.joinToString { it }
-    }
-
-    fun buildArgument(clazz: PsiParameter): String{
-        val name: String = clazz.type.presentableText
-        val typeElementString: String = clazz.toString()
-        return getRandomObjectOfType(clazz.typeElement!!)
-    }
-
-    private fun psiTypeToString(typeElement: PsiTypeElement): String? {
-        val name: String = typeElement.type.presentableText
-        val typeElementString: String = typeElement.toString()
-        val dot = typeElementString.indexOf(".")
-        if (dot != -1) {
-            val outerClasses =
-                typeElementString.substring(typeElementString.indexOf(":") + 1, typeElementString.lastIndexOf("."))
-            return outerClasses.replace("\\.".toRegex(), "\\$") + "$" + name
-        }
-        return name
-    }
-
-    fun getRandomObjectOfType(className: PsiTypeElement): String {
-        return when (className.text.toString()) {
-            "String" -> {
-                "\n\t\t\tfaker.ancient().hero()"
-            }
-            "int" -> {
-                "\n\t\t\tfaker.number.randomNumber()"
-            }
-            "Integer" -> {
-                "\n\t\t\tfaker.number.randomNumber()"
-            }
-            "long" -> {
-                "\n\t\t\tfaker.number.randomLong()"
-            }
-            "Long" -> {
-                "\n\t\t\tfaker.number.randomLong()\n"
-            }
-            else -> {
-                //JavaPsiFacade.getInstance().findClass()
-                "\n\t\t\t$className()"
             }
         }
     }

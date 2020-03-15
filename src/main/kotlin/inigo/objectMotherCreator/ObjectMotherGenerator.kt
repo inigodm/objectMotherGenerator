@@ -51,7 +51,7 @@ class PsiJavaFileInfo(var root: PsiJavaFile, var project: Project){
     }
 
     fun mainClass(psiClasses: Array<out PsiClass>): PsiClass{
-        return psiClasses.filter { it.modifierList!!.text.equals("public") }.first()
+        return psiClasses.filter { it.modifierList!!.textMatches("public") }.first()
     }
 
     }
@@ -104,13 +104,3 @@ class PsiParametersInfo(var param: PsiParameter, var project: Project){
         }
     }
 }
-/*
-println(" ffffffff1"  +param.toString())
-println(" ffffffff11"  +param.type.presentableText)
-println(" ffffffff111"  +param.type.getCanonicalText(true))
-println(" ffffffff1111"  +param.typeElement?.type?.getPresentableText())
-println(" ffffffff222"  +param.typeElement?.type?.getCanonicalText(true))
-println(" ffffffff11"  +param.typeElement?.type?.resolveScope.toString())
-println(" ffffffff1"  +param.typeElement?.type?.deepComponentType.toString())
-println(" ffffffff"  + PsiTypesUtil.getDefaultValueOfType(param.typeElement!!.type))
-*/
