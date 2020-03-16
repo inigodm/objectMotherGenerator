@@ -30,9 +30,13 @@ class ObjectMotherTemplate() {
     fun buildImports(methodsInfo: List<PsiMethodInfo>, packageName: String): String{
         var res = "import com.github.javafaker.Faker;\n\n"
         if (methodsInfo.isNotEmpty()) {
-            res += methodsInfo.get(0).args.filter { it.clazzInfo?.packageName ?: "" != packageName }
+            var aux = methodsInfo.get(0).args.filter { it.clazzInfo?.packageName ?: "" != packageName }
+                .filter { it.clazzInfo?.clazz ?: "" != "" }
                 .map { "import ${it.clazzInfo?.clazz?.qualifiedName}" }
-                .joinToString(separator = ";\n", postfix = ";\n\n")
+                .joinToString(separator = ";\n")
+            if (aux.isNotEmpty()){
+                res += "$aux;\n\n";
+            }
         }
         return res
     }
