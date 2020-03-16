@@ -28,7 +28,7 @@ class ObjectMotherTemplate() {
     }
 
     fun buildImports(methodsInfo: List<PsiMethodInfo>, packageName: String): String{
-        var res = "import com.github.javafaker.Faker;\n"
+        var res = "import com.github.javafaker.Faker;\n\n"
         if (methodsInfo.isNotEmpty()) {
             res += methodsInfo.get(0).args.filter { it.clazzInfo?.packageName ?: "" != packageName }
                 .map { "import ${it.clazzInfo?.clazz?.qualifiedName}" }
@@ -39,7 +39,11 @@ class ObjectMotherTemplate() {
 
     fun buildClass(className: String, constructors: List<PsiMethodInfo>): String{
         var res = "public class ${className}Mother{\n"
-        constructors.forEach{ res += buildMotherConstructor(className, it)};
+        if (constructors.isNotEmpty()) {
+            constructors.forEach { res += buildMotherConstructor(className, it) };
+        }else{
+            res += buildMotherConstructor(className)
+        }
         return "$res\n}"
     }
 
@@ -47,6 +51,12 @@ class ObjectMotherTemplate() {
         return """  public static $className random$className(){
         Faker faker = new Faker();
         return new $className(${buildArgumentsData(methodInfo.args)});
+    }"""
+    }
+
+    private fun buildMotherConstructor(className: String): Any? {
+        return """  public static $className random$className(){
+        return new $className();
     }"""
     }
 
