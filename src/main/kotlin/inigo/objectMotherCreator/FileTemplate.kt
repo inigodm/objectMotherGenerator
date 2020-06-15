@@ -8,13 +8,15 @@ import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.rootManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiFileFactory
-import com.intellij.psi.PsiJavaFile
+import com.intellij.psi.*
 import com.intellij.psi.impl.file.PsiDirectoryFactory
 import com.intellij.util.IncorrectOperationException
-import java.io.File
+import java.lang.CharSequence
+import kotlin.Any
+import kotlin.Exception
+import kotlin.String
+import kotlin.arrayOfNulls
+import kotlin.toString
 
 
 class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
@@ -23,17 +25,14 @@ class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
     fun assignValues(clazz: PsiJavaClassInfo) {
         classesToTreat.add(clazz)
         while (classesToTreat.isNotEmpty()) {
+            println(classesToTreat.toString())
             var clazzInfo = classesToTreat.removeAt(0);
             var aux = buildJavaFile(clazzInfo)
             var directory = findOrCreateDirectoryForPackage(
                 clazz.packageName,
                 PsiDirectoryFactory.getInstance(project).createDirectory(findOrCreateSourceRoot())
             )
-            println("BEGIN-----------")
-            println(aux)
-            println("END-------------")
-            var file = createJavaFile(directory!!, "${clazzInfo.clazz.name}ObjectMother.java", aux)
-
+            createJavaFile(directory!!, "${clazzInfo.clazz.name}ObjectMother.java", aux)
         }
     }
 
@@ -57,7 +56,6 @@ class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
         packageName.split(".").forEach {
             val foundExistingDirectory = psiDirectory!!.findSubdirectory(it)
             if (foundExistingDirectory == null) {
-                println("Creating $psiDirectory")
                 psiDirectory = createSubdirectory(psiDirectory!!, it)
             } else {
                 psiDirectory = foundExistingDirectory
@@ -67,19 +65,35 @@ class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
     }
 
     @Throws(IncorrectOperationException::class)
-    private fun createJavaFile(directory: PsiDirectory, name: String, code: String) : PsiFile? {
+    private fun createJavaFile(directory: PsiDirectory, name: String, code: String) {
         println("Creating file $name in $directory")
-        return ApplicationManager.getApplication()
+        return CommandProcessor.getInstance().executeCommand(
+            project,
+            {
+                ApplicationManager.getApplication()
             .runWriteAction<PsiFile> {
                 try {
-                    return@runWriteAction PsiFileFactory.getInstance(project)
-                            .createFileFromText(name, JavaFileType.INSTANCE, code).
+                    return@runWriteAction makeFile(directory, name, code)
 
                 } catch (e: Exception) {
                     e.printStackTrace();
                     return@runWriteAction null
                 }
             }
+            }, IdeBundle.message("command.create.new.subdirectory"), null
+        )
+
+    }
+
+    private fun makeFile(directory: PsiDirectory, name: String, code: String) : PsiFile? {
+        println("Creating file $name in $directory")
+        var file = directory.findFile(name)
+        if (null == file){
+            file = directory.createFile(name)
+        }
+        val documentManager = PsiDocumentManager.getInstance(project)
+        documentManager.getDocument(file)?.insertString(0, code)
+        return file
     }
 
     @Throws(IncorrectOperationException::class)
@@ -105,11 +119,6 @@ class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
         )
         if (exception[0] != null) throw exception[0]!!
         return psiDirectory[0]
-    }
-
-
-    fun createFile(classString: String) {
-        println(classString)
     }
 
     fun buildJavaFile(clazz: PsiJavaClassInfo): String {
