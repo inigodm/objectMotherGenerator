@@ -1,0 +1,44 @@
+<application>
+  <component name="RecentProjectsManager">
+    <option name="recentPaths">
+      <list>
+        <option value="$USER_HOME$/testprojects/tutorials/core-java-modules/test" />
+        <option value="$USER_HOME$/testprojects/tutorials/core-java-modules/core-java-10" />
+      </list>
+    </option>
+    <option name="openPaths">
+      <list>
+        <option value="$USER_HOME$/testprojects/tutorials/core-java-modules/test" />
+      </list>
+    </option>
+    <option name="lastPath" value="$USER_HOME$/testprojects/tutorials/core-java-modules/test" />
+    <option name="pid" value="" />
+    <option name="additionalInfo">
+      <map>
+        <entry key="$USER_HOME$/testprojects/tutorials/core-java-modules/core-java-10">
+          <value>
+            <RecentProjectMetaInfo>
+              <option name="build" value="IC-182.4323.46" />
+              <option name="productionCode" value="IC" />
+              <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+              <option name="projectOpenTimestamp" value="1592154828691" />
+              <option name="buildTimestamp" value="1535995105522" />
+            </RecentProjectMetaInfo>
+          </value>
+        </entry>
+        <entry key="$USER_HOME$/testprojects/tutorials/core-java-modules/test">
+          <value>
+            <RecentProjectMetaInfo>
+              <option name="build" value="IC-182.4323.46" />
+              <option name="productionCode" value="IC" />
+              <option name="binFolder" value="$APPLICATION_HOME_DIR$/bin" />
+              <option name="projectOpenTimestamp" value="1592175835542" />
+              <option name="buildTimestamp" value="1535995131147" />
+            </RecentProjectMetaInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="lastProjectLocation" value="$USER_HOME$/testprojects/tutorials/core-java-modules" />
+  </component>
+</application>
