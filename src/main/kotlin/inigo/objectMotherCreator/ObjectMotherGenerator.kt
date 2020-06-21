@@ -13,21 +13,13 @@ class ObjectMotherGenerator(var testFileName: String, var root: PsiJavaFile) {
         testFileName = testFileName.substringBefore(root.name) + motherClassName() + ".java"
         packageStr = root.packageStatement?.packageName ?: "";
         childClassName = root.name.substringBefore(".");
-        var weaver = MotherWeaver(project, PsiJavaFileInfo(root, project),
-            ObjectMotherTemplate(root, project))
-        weaver.weave()
+        val template = ObjectMotherBuilder(root, project)
+        val infoExtractor = PsiJavaFileInfo(root, project)
+        template.buildFor(infoExtractor.mainClass)
     }
 
     fun motherClassName(): String{
         return root.name.substringBefore(".") + "Mother"
-    }
-}
-
-class MotherWeaver(var project: Project,
-                   var infoExtractor: PsiJavaFileInfo,
-                   var template: ObjectMotherTemplate) {
-    fun weave(){
-        template.assignValues(infoExtractor.mainClass)
     }
 }
 

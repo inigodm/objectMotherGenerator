@@ -28,7 +28,14 @@
                 class="inigo.objectMotherCreator.ObjectCreateAction"
                 text="Create object mother for current class"
                 description="BuildObjectMother">
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+
+        <action id="ObjectCreateFileSeletedAction.Editor"
+                class="inigo.objectMotherCreator.ObjectCreateFileSeletedAction"
+                text="Create object mother for current class"
+                description="BuildObjectMother">
+            <add-to-group group-id="RunContextGroup" anchor="last"/>
         </action>
 
     </actions>

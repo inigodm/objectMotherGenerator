@@ -1,134 +1,49 @@
 package inigo.objectMotherCreator
 
-import com.intellij.ide.IdeBundle
-import com.intellij.ide.highlighter.JavaFileType
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.command.CommandProcessor
-import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.rootManager
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
-import com.intellij.psi.impl.file.PsiDirectoryFactory
-import com.intellij.util.IncorrectOperationException
-import java.lang.CharSequence
 import kotlin.Any
-import kotlin.Exception
 import kotlin.String
-import kotlin.arrayOfNulls
 import kotlin.toString
 
 
-class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
+class ObjectMotherBuilder(var root: PsiJavaFile, var project: Project) {
     val classesToTreat = mutableListOf<PsiJavaClassInfo>()
+    var fileCreator = FileCreator(project)
+    var template = ObjectMotherTemplate(root, project)
 
-    fun assignValues(clazz: PsiJavaClassInfo) {
+    fun buildFor(clazz: PsiJavaClassInfo) {
         classesToTreat.add(clazz)
+        var clazzInfo : PsiJavaClassInfo
+        var javaCode : String
+        var directory: PsiDirectory?
         while (classesToTreat.isNotEmpty()) {
-            println(classesToTreat.toString())
-            var clazzInfo = classesToTreat.removeAt(0);
-            var aux = buildJavaFile(clazzInfo)
-            var directory = findOrCreateDirectoryForPackage(
-                clazz.packageName,
-                PsiDirectoryFactory.getInstance(project).createDirectory(findOrCreateSourceRoot())
-            )
-            createJavaFile(directory!!, "${clazzInfo.clazz.name}ObjectMother.java", aux)
+            clazzInfo = classesToTreat.removeAt(0);
+            javaCode = template.buildJavaFile(clazzInfo)
+            classesToTreat.addAll(template.neededObjectMotherClasses)
+            directory = fileCreator.findOrCreateDirectoryForPackage(clazz.packageName, root)
+            fileCreator.createJavaFile(directory!!, "${clazzInfo.clazz.name}ObjectMother.java", javaCode)
         }
     }
 
-    fun findOrCreateSourceRoot(): VirtualFile {
-        return ModuleUtilCore.findModuleForFile(root)!!.rootManager!!.sourceRoots
-            .filter { it.path.toLowerCase().endsWith("test") }
-            .getOrElse(0) {
-                return ApplicationManager.getApplication()
-                    .runWriteAction<VirtualFile> {
-                        return@runWriteAction project.baseDir.createChildDirectory(project.baseDir, "test")
-                    }
-            }
+    fun createJavaFile(clazzInfo: PsiJavaClassInfo, javaCode: String) {
+        var directory = fileCreator.findOrCreateDirectoryForPackage(clazzInfo.packageName, root)
+        fileCreator.createJavaFile(directory!!, "${clazzInfo.clazz.name}ObjectMother.java", javaCode)
     }
+}
 
-    @Throws(IncorrectOperationException::class)
-    fun findOrCreateDirectoryForPackage(packageName: String, baseDir: PsiDirectory?): PsiDirectory? {
-        var packageName = packageName
-        var psiDirectory: PsiDirectory?
-        psiDirectory = baseDir
-
-        packageName.split(".").forEach {
-            val foundExistingDirectory = psiDirectory!!.findSubdirectory(it)
-            if (foundExistingDirectory == null) {
-                psiDirectory = createSubdirectory(psiDirectory!!, it)
-            } else {
-                psiDirectory = foundExistingDirectory
-            }
-        }
-        return psiDirectory
-    }
-
-    @Throws(IncorrectOperationException::class)
-    private fun createJavaFile(directory: PsiDirectory, name: String, code: String) {
-        println("Creating file $name in $directory")
-        return CommandProcessor.getInstance().executeCommand(
-            project,
-            {
-                ApplicationManager.getApplication()
-            .runWriteAction<PsiFile> {
-                try {
-                    return@runWriteAction makeFile(directory, name, code)
-
-                } catch (e: Exception) {
-                    e.printStackTrace();
-                    return@runWriteAction null
-                }
-            }
-            }, IdeBundle.message("command.create.new.subdirectory"), null
-        )
-
-    }
-
-    private fun makeFile(directory: PsiDirectory, name: String, code: String) : PsiFile? {
-        println("Creating file $name in $directory")
-        var file = directory.findFile(name)
-        if (null == file){
-            file = directory.createFile(name)
-        }
-        val documentManager = PsiDocumentManager.getInstance(project)
-        documentManager.getDocument(file)?.insertString(0, code)
-        return file
-    }
-
-    @Throws(IncorrectOperationException::class)
-    private fun createSubdirectory(
-        oldDirectory: PsiDirectory,
-        name: String
-    ): PsiDirectory? {
-        val psiDirectory = arrayOfNulls<PsiDirectory>(1)
-        val exception = arrayOfNulls<IncorrectOperationException>(1)
-        CommandProcessor.getInstance().executeCommand(
-            project,
-            {
-                psiDirectory[0] = ApplicationManager.getApplication()
-                    .runWriteAction<PsiDirectory> {
-                        try {
-                            return@runWriteAction oldDirectory.createSubdirectory(name)
-                        } catch (e: IncorrectOperationException) {
-                            exception[0] = e
-                            return@runWriteAction null
-                        }
-                    }
-            }, IdeBundle.message("command.create.new.subdirectory"), null
-        )
-        if (exception[0] != null) throw exception[0]!!
-        return psiDirectory[0]
-    }
+class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
+    val neededObjectMotherClasses = mutableListOf<PsiJavaClassInfo>()
 
     fun buildJavaFile(clazz: PsiJavaClassInfo): String {
+        neededObjectMotherClasses.clear()
         var res = buildPackage(clazz.packageName)
         res += buildImports(clazz.constructors, clazz.packageName)
         return res + buildClass(clazz.clazz.name.toString(), clazz.constructors)
     }
 
     fun buildPackage(packageName: String): String {
-        return "package $packageName\n\n"
+        return "package $packageName;\n\n"
     }
 
     fun buildImports(methodsInfo: List<PsiMethodInfo>, packageName: String): String {
@@ -136,7 +51,7 @@ class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
         if (methodsInfo.isNotEmpty()) {
             var aux = methodsInfo.get(0).args.filter { it.clazzInfo?.packageName ?: "" != packageName }
                 .filter { it.clazzInfo?.clazz ?: "" != "" }
-                .map { "import ${it.clazzInfo?.clazz?.qualifiedName}" }
+                .map { "import static ${it.clazzInfo?.clazz?.qualifiedName}ObjectMother.random${it.clazzInfo?.clazz?.name}" }
                 .joinToString(separator = ";\n")
             if (aux.isNotEmpty()) {
                 res += "$aux;\n\n";
@@ -146,7 +61,7 @@ class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
     }
 
     fun buildClass(className: String, constructors: List<PsiMethodInfo>): String {
-        var res = "public class ${className}Mother{\n"
+        var res = "public class ${className}ObjectMother{\n"
         if (constructors.isNotEmpty()) {
             constructors.forEach { res += buildMotherConstructor(className, it) };
         } else {
@@ -192,7 +107,7 @@ class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
             else -> {
                 var clazzInfo = param.clazzInfo
                 if (clazzInfo != null) {
-                    classesToTreat.add(clazzInfo)
+                    neededObjectMotherClasses.add(clazzInfo)
                     "\n\t\t\t\trandom${clazzInfo.clazz.name}()"
                 } else {
                     "new ${param.name}()"
