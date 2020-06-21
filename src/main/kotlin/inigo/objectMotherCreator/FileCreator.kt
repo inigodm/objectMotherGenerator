@@ -95,8 +95,20 @@ class FileCreator(var project: Project) {
             .getOrElse(0) {
                 return ApplicationManager.getApplication()
                     .runWriteAction<VirtualFile> {
-                        return@runWriteAction project.baseDir.createChildDirectory(project.baseDir, "test")
+                        var directory = project.baseDir
+                        if (ModuleUtilCore.findModuleForFile(root)!!.rootManager!!.sourceRoots.size > 0) {
+                            directory = ModuleUtilCore.findModuleForFile(root)!!.rootManager!!.sourceRoots[0].parent
+                        }
+                        return@runWriteAction createDirectories(directory)
                     }
+            }
+    }
+
+    fun createDirectories(directory: VirtualFile): VirtualFile {
+        return directory.children
+            .filter { it.path.equals(directory.path + "/test") }
+            .getOrElse(0) {
+                return directory.createChildDirectory(directory, "test")
             }
     }
 }
