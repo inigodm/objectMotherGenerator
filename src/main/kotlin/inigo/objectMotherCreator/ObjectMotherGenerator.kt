@@ -4,22 +4,17 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 
-class ObjectMotherGenerator(var testFileName: String, var root: PsiJavaFile) {
+class ObjectMotherGenerator(var root: PsiJavaFile) {
     lateinit var packageStr: String
     lateinit var childClassName: String
 
 
     fun generateObjectMother(project: Project){
-        testFileName = testFileName.substringBefore(root.name) + motherClassName() + ".java"
         packageStr = root.packageStatement?.packageName ?: "";
         childClassName = root.name.substringBefore(".");
         val template = ObjectMotherBuilder(root, project)
         val infoExtractor = PsiJavaFileInfo(root, project)
         template.buildFor(infoExtractor.mainClass)
-    }
-
-    fun motherClassName(): String{
-        return root.name.substringBefore(".") + "Mother"
     }
 }
 

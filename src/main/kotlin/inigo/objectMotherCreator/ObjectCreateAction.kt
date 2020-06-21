@@ -18,8 +18,7 @@ class ObjectCreateAction : AnAction() {
         val caretModel = e.getRequiredData(CommonDataKeys.EDITOR).caretModel
         if (caretModel.currentCaret.hasSelection()
             && e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals("java", ignoreCase = true)) {
-            val testDir = obtainTestDirectory(project, e.getData(CommonDataKeys.VIRTUAL_FILE))
-            val creator = ObjectMotherGenerator(testDir, e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile)
+            val creator = ObjectMotherGenerator(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile)
             creator.generateObjectMother(project);
         }
     }
@@ -28,14 +27,23 @@ class ObjectCreateAction : AnAction() {
         val caretModel = e.getRequiredData(CommonDataKeys.EDITOR).caretModel
         e.presentation.isEnabledAndVisible = caretModel.currentCaret.hasSelection()
     }
+}
 
-    private fun obtainTestDirectory(project: Project, vfile: VirtualFile?): String {
-        val module = ModuleUtil.findModuleForFile(vfile!!, project)
-        val tests = mutableListOf<VirtualFile>(*ModuleRootManager.getInstance(module!!).getSourceRoots(true))
-        val srcs = listOf<VirtualFile>(*ModuleRootManager.getInstance(module).getSourceRoots(false))
-        if (srcs.isEmpty()) throw RuntimeException("Source directory is not specified in project")
-        tests.removeAll(srcs)
-        val test = if (tests.isEmpty()) "test" else tests[0].name
-        return vfile.canonicalPath!!.replace(srcs[0].name, test)
+class ObjectCreateFileSeletedAction : AnAction() {
+    override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
+        val selectedFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
+        if (isAnyJavaFileSelected(selectedFile)) {
+            val creator = ObjectMotherGenerator(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile)
+            creator.generateObjectMother(project);
+        }
     }
+
+    override fun update(e: AnActionEvent) {
+        val selectedFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
+        e.presentation.isEnabledAndVisible = isAnyJavaFileSelected(selectedFile)
+    }
+
+    private fun isAnyJavaFileSelected(selectedFile: VirtualFile?) =
+        selectedFile != null && selectedFile.toString().endsWith(".java")
 }
