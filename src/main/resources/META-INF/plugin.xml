@@ -4,6 +4,8 @@
     <version>1.0</version>
     <vendor email="i.delgado@lookiero.com" url="http://www.lookiero.com">Lookiero</vendor>
 
+    <depends>com.intellij.modules.java</depends>
+
     <description><![CDATA[
       Plugin to help creating object mothers from inside IntelliJ
     ]]></description>

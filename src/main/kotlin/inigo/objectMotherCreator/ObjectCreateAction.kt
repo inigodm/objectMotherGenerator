@@ -3,14 +3,8 @@ package inigo.objectMotherCreator
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.module.ModuleUtil
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiJavaFile
-import com.intellij.psi.PsiPlainTextFile
-import java.util.*
 
 class ObjectCreateAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
@@ -41,7 +35,9 @@ class ObjectCreateFileSeletedAction : AnAction() {
 
     override fun update(e: AnActionEvent) {
         val selectedFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
-        e.presentation.isEnabledAndVisible = isAnyJavaFileSelected(selectedFile)
+        e.presentation.isVisible = isAnyJavaFileSelected(selectedFile)
+        e.presentation.isEnabled = e.presentation.isVisible
+        e.presentation.isEnabledAndVisible = e.presentation.isEnabled
     }
 
     private fun isAnyJavaFileSelected(selectedFile: VirtualFile?) =
