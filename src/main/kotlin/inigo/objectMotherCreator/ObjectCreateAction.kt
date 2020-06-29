@@ -3,6 +3,7 @@ package inigo.objectMotherCreator
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiJavaFile
 
@@ -26,7 +27,7 @@ class ObjectCreateAction : AnAction() {
 class ObjectCreateFileSeletedAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val selectedFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val selectedFile = e.getData(PlatformDataKeys.VIRTUAL_FILE)
         if (isAnyJavaFileSelected(selectedFile)) {
             val creator = ObjectMotherGenerator(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile)
             creator.generateObjectMother(project);
@@ -34,7 +35,7 @@ class ObjectCreateFileSeletedAction : AnAction() {
     }
 
     override fun update(e: AnActionEvent) {
-        val selectedFile = e.getData(CommonDataKeys.VIRTUAL_FILE)
+        val selectedFile = e.getData(PlatformDataKeys.VIRTUAL_FILE)
         e.presentation.isVisible = isAnyJavaFileSelected(selectedFile)
         e.presentation.isEnabled = e.presentation.isVisible
         e.presentation.isEnabledAndVisible = e.presentation.isEnabled
