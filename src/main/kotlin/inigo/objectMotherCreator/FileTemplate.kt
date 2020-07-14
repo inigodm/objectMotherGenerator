@@ -12,7 +12,7 @@ class ObjectMotherBuilder(var root: PsiJavaFile, var project: Project) {
     var fileCreator = FileCreator(project)
     var template = ObjectMotherTemplate(root, project)
 
-    fun buildFor(clazz: PsiJavaClassInfo) {
+    fun buildFor(clazz: PsiJavaClassInfo, dir: PsiDirectory?) {
         classesToTreat.add(clazz)
         var clazzInfo : PsiJavaClassInfo
         var javaCode : String
@@ -20,15 +20,10 @@ class ObjectMotherBuilder(var root: PsiJavaFile, var project: Project) {
         while (classesToTreat.isNotEmpty()) {
             clazzInfo = classesToTreat.removeAt(0);
             javaCode = template.buildJavaFile(clazzInfo)
-            classesToTreat.addAll(template.neededObjectMotherClasses)
-            directory = fileCreator.findOrCreateDirectoryForPackage(clazz.packageName, root)
+            directory = fileCreator.findOrCreateDirectoryForPackage(clazz.packageName, dir)
             fileCreator.createJavaFile(directory!!, "${clazzInfo.clazz.name}ObjectMother.java", javaCode)
+            classesToTreat.addAll(template.neededObjectMotherClasses)
         }
-    }
-
-    fun createJavaFile(clazzInfo: PsiJavaClassInfo, javaCode: String) {
-        var directory = fileCreator.findOrCreateDirectoryForPackage(clazzInfo.packageName, root)
-        fileCreator.createJavaFile(directory!!, "${clazzInfo.clazz.name}ObjectMother.java", javaCode)
     }
 }
 
@@ -90,7 +85,7 @@ class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
     private fun createDefaultValueFor(param: PsiParametersInfo): String {
         return when (param.name) {
             "String" -> {
-                "\n\t\t\t\tfaker.ancient().hero()"
+                "\n\t\t\t\t${fakerRandomString()}"
             }
             "int" -> {
                 "\n\t\t\t\tfaker.number.randomNumber()"
@@ -115,4 +110,40 @@ class ObjectMotherTemplate(var root: PsiJavaFile, var project: Project) {
             }
         }
     }
+}
+
+fun fakerRandomString(): String {
+    return listOf<String>("faker.ancient().god()",
+    "faker.ancient().primordial()",
+    "faker.ancient().titan()",
+    "faker.artist().name()",
+    "faker.backToTheFuture().character()",
+    "faker.backToTheFuture().quote()",
+    "faker.beer().name()",
+    "faker.buffy().characters()",
+    "faker.buffy().quotes()",
+    "faker.chuckNorris().fact()",
+    "faker.dragonBall().character()",
+    "faker.funnyName().name()",
+    "faker.friends().character()",
+    "faker.friends().quote()",
+    "faker.gameOfThrones().character()",
+    "faker.gameOfThrones().quote()",
+    "faker.hipster().word()",
+    "faker.hitchhikersGuideToTheGalaxy().character()",
+    "faker.hitchhikersGuideToTheGalaxy().marvinQuote()",
+    "faker.hitchhikersGuideToTheGalaxy().quote()",
+    "faker.lebowski().quote()",
+    "faker.howIMetYourMother().character()",
+    "faker.howIMetYourMother().catchPhrase()",
+    "faker.howIMetYourMother().highFive()",
+    "faker.howIMetYourMother().quote()",
+    "faker.lordOfTheRings().location()",
+    "faker.princessBride().quote()",
+    "faker.princessBride().character()",
+    "faker.rickAndMorty().quote()",
+    "faker.rickAndMorty().character()",
+    "faker.slackEmoji().activity()",
+    "faker.superhero().name()",
+    "faker.yoda().quote()").random()
 }

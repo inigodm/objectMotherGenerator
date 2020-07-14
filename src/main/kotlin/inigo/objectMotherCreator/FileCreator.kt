@@ -25,8 +25,7 @@ class FileCreator(var project: Project) {
                 ApplicationManager.getApplication()
                     .runWriteAction<PsiFile> {
                         try {
-                            return@runWriteAction makeFile(directory, name, code)
-
+                            return@runWriteAction makeFileIfDoesntExists(directory, name, code)
                         } catch (e: Exception) {
                             e.printStackTrace();
                             return@runWriteAction null
@@ -36,12 +35,17 @@ class FileCreator(var project: Project) {
         )
     }
 
-    private fun makeFile(directory: PsiDirectory, name: String, code: String) : PsiFile? {
+    private fun makeFileIfDoesntExists(directory: PsiDirectory, name: String, code: String) : PsiFile? {
         println("Creating file $name in $directory")
         var file = directory.findFile(name)
         if (null == file){
-            file = directory.createFile(name)
+            file = makeFile(directory, name, code)
         }
+        return file
+    }
+
+    private fun makeFile(directory: PsiDirectory, name: String, code: String): PsiFile? {
+        val file = directory.createFile(name)
         val documentManager = PsiDocumentManager.getInstance(project)
         documentManager.getDocument(file)?.insertString(0, code)
         return file
@@ -49,10 +53,9 @@ class FileCreator(var project: Project) {
 
 
     @Throws(IncorrectOperationException::class)
-    fun findOrCreateDirectoryForPackage(packageName: String, root: PsiJavaFile): PsiDirectory? {
+    fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: PsiDirectory?): PsiDirectory? {
         var psiDirectory: PsiDirectory?
-        var baseDir = PsiDirectoryFactory.getInstance(project).createDirectory(findOrCreateSourceRoot(root))
-        psiDirectory = baseDir
+        psiDirectory = srcDirectory
         packageName.split(".").forEach {
             val foundExistingDirectory = psiDirectory!!.findSubdirectory(it)
             if (foundExistingDirectory == null) {
@@ -87,28 +90,5 @@ class FileCreator(var project: Project) {
         )
         if (exception[0] != null) throw exception[0]!!
         return psiDirectory[0]
-    }
-
-    fun findOrCreateSourceRoot(root: PsiJavaFile): VirtualFile {
-        return ModuleUtilCore.findModuleForFile(root)!!.rootManager!!.sourceRoots
-            .filter { it.path.toLowerCase().endsWith("test") }
-            .getOrElse(0) {
-                return ApplicationManager.getApplication()
-                    .runWriteAction<VirtualFile> {
-                        var directory = project.baseDir
-                        if (ModuleUtilCore.findModuleForFile(root)!!.rootManager!!.sourceRoots.size > 0) {
-                            directory = ModuleUtilCore.findModuleForFile(root)!!.rootManager!!.sourceRoots[0].parent
-                        }
-                        return@runWriteAction createDirectories(directory)
-                    }
-            }
-    }
-
-    fun createDirectories(directory: VirtualFile): VirtualFile {
-        return directory.children
-            .filter { it.path.equals(directory.path + "/test") }
-            .getOrElse(0) {
-                return directory.createChildDirectory(directory, "test")
-            }
     }
 }

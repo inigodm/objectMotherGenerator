@@ -1,15 +1,17 @@
 package inigo.objectMotherCreator
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 
 class ObjectMotherGenerator(var root: PsiJavaFile) {
 
-    fun generateObjectMother(project: Project){
+    fun generateObjectMother(project: Project, dir: VirtualFile){
+        println("directory -> $dir")
         val template = ObjectMotherBuilder(root, project)
         val infoExtractor = PsiJavaFileInfo(root, project)
-        template.buildFor(infoExtractor.mainClass)
+        template.buildFor(infoExtractor.mainClass, PsiManager.getInstance(project).findDirectory(dir))
     }
 }
 
@@ -30,7 +32,10 @@ class PsiJavaFileInfo(var root: PsiJavaFile, var project: Project){
     }
 
     fun mainClass(psiClasses: Array<out PsiClass>): PsiClass{
-        return psiClasses.filter { it.modifierList!!.textMatches("public") }.first()
+        psiClasses.forEach { println(it.text) }
+        return psiClasses.filter {
+            it.modifierList!!.text.contains("public")
+        }.first()
     }
 }
 
