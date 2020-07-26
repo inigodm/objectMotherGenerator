@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
+import com.intellij.openapi.editor.CaretModel
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileTypes.FileType
@@ -21,11 +22,13 @@ class ObjectCreateAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val caretModel = e.getRequiredData(CommonDataKeys.EDITOR).caretModel
-        if (caretModel.currentCaret.hasSelection()
-            && e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals("java", ignoreCase = true)) {
+        if (isCaretInJavaFile(caretModel, e)) {
             createObjectMother(project, e)
         }
     }
+
+    private fun isCaretInJavaFile(caretModel: CaretModel, e: AnActionEvent) =
+        (caretModel.currentCaret.hasSelection() && e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals("java", ignoreCase = true))
 
     override fun update(e: AnActionEvent) {
         val caretModel = e.getRequiredData(CommonDataKeys.EDITOR).caretModel

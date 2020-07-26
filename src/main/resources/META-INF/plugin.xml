@@ -1,24 +1,19 @@
 <idea-plugin>
     <id>inigo.objectmothercreator</id>
-    <name>Object mother creationplugin for Intellij</name>
+    <name>Object mother creator</name>
     <version>1.0</version>
-    <vendor email="i.delgado@lookiero.com" url="http://www.lookiero.com">Lookiero</vendor>
+    <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
 
-    <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.java</depends>
 
     <description><![CDATA[
-      Plugin to help creating object mothers from inside IntelliJ
+      Helps creating java object mothers for unit testing
     ]]></description>
 
-    <change-notes><![CDATA[
-      <ul>
-        <li>1.0 - Initial release</li>
-      </ul>
-    ]]>
-    </change-notes>
+    <change-notes>1.0 - Initial release. Creates ObjectMother for selected java classes</change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="191"/>
+    <idea-version since-build="201" until-build="202.*"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->

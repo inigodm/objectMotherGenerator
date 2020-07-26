@@ -10,12 +10,12 @@ class ObjectMotherGenerator(var root: PsiJavaFile) {
     fun generateObjectMother(project: Project, dir: VirtualFile){
         println("directory -> $dir")
         val template = ObjectMotherBuilder(root, project)
-        val infoExtractor = PsiJavaFileInfo(root, project)
+        val infoExtractor = JavaFileInfo(root, project)
         template.buildFor(infoExtractor.mainClass, PsiManager.getInstance(project).findDirectory(dir))
     }
 }
 
-class PsiJavaFileInfo(var root: PsiJavaFile, var project: Project){
+class JavaFileInfo(var root: PsiJavaFile, var project: Project){
 
     lateinit var packageStr: String
     lateinit var psiClasses: Array<out PsiClass>
