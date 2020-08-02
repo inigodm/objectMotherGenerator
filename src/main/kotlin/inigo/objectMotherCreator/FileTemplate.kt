@@ -1,13 +1,20 @@
 package inigo.objectMotherCreator
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.openapi.vfs.newvfs.impl.VirtualFileImpl
 import com.intellij.psi.*
+import java.io.File
+import java.nio.file.Path
 import kotlin.Any
 import kotlin.String
 import kotlin.toString
 
 
 class ObjectMotherBuilder(var root: PsiJavaFile, var project: Project) {
+    val classesTreated = mutableListOf<String>()
     val classesToTreat = mutableListOf<PsiJavaClassInfo>()
     var fileCreator = FileCreator(project)
     var template = ObjectMotherTemplate(root, project)
@@ -23,6 +30,7 @@ class ObjectMotherBuilder(var root: PsiJavaFile, var project: Project) {
             directory = fileCreator.findOrCreateDirectoryForPackage(clazz.packageName, dir)
             fileCreator.createJavaFile(directory!!, "${clazzInfo.clazz.name}ObjectMother.java", javaCode)
             classesToTreat.addAll(template.neededObjectMotherClasses)
+            classesTreated.add( "${directory.virtualFile.canonicalPath}${File.separator}${clazzInfo.clazz.name}ObjectMother.java")
         }
     }
 }

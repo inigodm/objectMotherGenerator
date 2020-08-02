@@ -7,21 +7,37 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.CaretModel
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiJavaFile
+import java.io.File
 
 abstract class ObjectCreateAction : AnAction() {
+    lateinit var createdFiles : List<String>
+
     fun createObjectMother(project: Project, e: AnActionEvent) {
         val creator = ObjectMotherGenerator(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile)
         var descriptor = FileChooserDescriptor(false, true, false, false, false, false)
-        descriptor.title = "Choose project/module's test sourceDir in which ObjectMother's package will exist"
-        descriptor.description = "The source directory for ObjectMother's package must be set. Package name is automatically calculated"
+        descriptor.title = "Choose project/module's test srcDir root in which ObjectMother's package will be created"
+        descriptor.description = "The source directory for ObjectMother's package must be set. Package would be automatically calculated"
         FileChooser.chooseFile(
             descriptor,
             project,
             e.getData(CommonDataKeys.VIRTUAL_FILE),
-            { creator.generateObjectMother(project, it) })
+            { createdFiles = creator.generateObjectMother(project, it)
+                createdFiles.forEach {
+                    val file = File(it)
+                    if (file.exists()) {
+                        FileEditorManager.getInstance(project).openFile(findVirtualFile(file), true)
+                    }
+                }
+            })
+    }
+
+    private fun findVirtualFile (file: File) : VirtualFile {
+        return LocalFileSystem.getInstance().findFileByIoFile(file)!!
     }
 }
 
