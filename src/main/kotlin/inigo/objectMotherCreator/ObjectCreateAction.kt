@@ -15,7 +15,6 @@ import com.intellij.psi.PsiJavaFile
 import java.io.File
 
 abstract class ObjectCreateAction : AnAction() {
-    lateinit var createdFiles : List<String>
 
     fun createObjectMother(project: Project, e: AnActionEvent) {
         val creator = ObjectMotherGenerator(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile)
@@ -25,15 +24,23 @@ abstract class ObjectCreateAction : AnAction() {
         FileChooser.chooseFile(
             descriptor,
             project,
-            e.getData(CommonDataKeys.VIRTUAL_FILE),
-            { createdFiles = creator.generateObjectMother(project, it)
-                createdFiles.forEach {
-                    val file = File(it)
-                    if (file.exists()) {
-                        FileEditorManager.getInstance(project).openFile(findVirtualFile(file), true)
-                    }
-                }
-            })
+            e.getData(CommonDataKeys.VIRTUAL_FILE)) {
+            generateObjectMother(creator, project, it)
+        }
+    }
+
+    private fun generateObjectMother(creator: ObjectMotherGenerator, project: Project, it: VirtualFile) {
+        creator.generateObjectMotherFiles(project, it)
+        openFilesInEditor(project, creator.createdFileNames)
+    }
+
+    private fun openFilesInEditor(project: Project, createdFiles : List<String>) {
+        createdFiles.forEach {
+            val file = File(it)
+            if (file.exists()) {
+                FileEditorManager.getInstance(project).openFile(findVirtualFile(file), true)
+            }
+        }
     }
 
     private fun findVirtualFile (file: File) : VirtualFile {

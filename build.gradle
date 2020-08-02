@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'org.example'
-version '1.0.1-SNAPSHOT'
+version '1.0.1'
 
 sourceCompatibility = 1.8
 
@@ -41,6 +41,6 @@ patchPluginXml {
     sinceBuild 193
 
     changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+    Now generated files are open after been created
+    """
 }

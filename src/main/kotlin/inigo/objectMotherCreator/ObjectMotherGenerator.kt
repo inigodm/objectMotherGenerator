@@ -6,12 +6,13 @@ import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 
 class ObjectMotherGenerator(var root: PsiJavaFile) {
+    lateinit var createdFileNames : List<String>
 
-    fun generateObjectMother(project: Project, dir: VirtualFile): List<String> {
-        val template = ObjectMotherBuilder(root, project)
+    fun generateObjectMotherFiles(project: Project, dir: VirtualFile) {
+        val template = ObjectMotherBuilder(project)
         val infoExtractor = JavaFileInfo(root, project)
         template.buildFor(infoExtractor.mainClass, PsiManager.getInstance(project).findDirectory(dir))
-        return template.classesTreated
+        createdFileNames = template.classesTreated
     }
 }
 
