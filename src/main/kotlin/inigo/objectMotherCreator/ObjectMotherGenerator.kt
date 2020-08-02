@@ -7,11 +7,11 @@ import com.intellij.psi.search.GlobalSearchScope
 
 class ObjectMotherGenerator(var root: PsiJavaFile) {
 
-    fun generateObjectMother(project: Project, dir: VirtualFile){
-        println("directory -> $dir")
+    fun generateObjectMother(project: Project, dir: VirtualFile): List<String> {
         val template = ObjectMotherBuilder(root, project)
         val infoExtractor = JavaFileInfo(root, project)
         template.buildFor(infoExtractor.mainClass, PsiManager.getInstance(project).findDirectory(dir))
+        return template.classesTreated
     }
 }
 
@@ -26,7 +26,7 @@ class JavaFileInfo(var root: PsiJavaFile, var project: Project){
     }
 
     fun extractFileInfo(){
-        packageStr = root.packageStatement?.packageName ?: "";
+        packageStr = root.packageStatement?.packageName ?: ""
         psiClasses = root.classes
         mainClass = PsiJavaClassInfo(mainClass(psiClasses), packageStr, project)
     }
@@ -80,7 +80,7 @@ class PsiParametersInfo(var param: PsiParameter, var project: Project){
         val aux = param.type.getCanonicalText(true)
         val clazz = JavaPsiFacade.getInstance(project).findClass(aux, GlobalSearchScope.projectScope(project))
         if (clazz != null) {
-            clazzInfo = PsiJavaClassInfo(clazz, clazz.qualifiedName!!.substringBefore(name), project)
+            clazzInfo = PsiJavaClassInfo(clazz, clazz.qualifiedName!!.substringBeforeLast("."), project)
         }
     }
 }

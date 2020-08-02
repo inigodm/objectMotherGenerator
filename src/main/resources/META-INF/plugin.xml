@@ -7,8 +7,30 @@
     <depends>com.intellij.java</depends>
 
     <description><![CDATA[
-      Helps creating java object mothers for unit testing
-    ]]></description>
+      Creates a java object mothers for selected java class.
+      <br><br>
+      <a href="https://martinfowler.com/bliki/ObjectMother.html">https://martinfowler.com/bliki/ObjectMother.html</a>
+      <br><br>
+      To use it you must select the java class from which you want to create a ObjectMother, right click and select<br>
+      "Create object mother for current class"<br><br>
+
+      Then select the test source directory in which you want it to be created and it will replicate the package of the original class
+      and will let the <ClassName>ObjectMother.java file into it.<br><br>
+
+      Also, if selected class receives, in its constructor, another class of your project the objectMother of that class will be generated and used in first one
+<br><br>
+      IMPORTANT: In this version the generated code uses, to generate random Strings, and only because is really funny, Javafaker library <a href="https://github.com/DiUS/java-faker">in github</a>
+<br><br>
+
+      You can add it to your project using maven or gradle;
+<br><br>
+      dependencies {<br>
+        testImplementation "com.github.javafaker:javafaker:1.0.2"<br>
+      }<br>
+<br>
+      Anyway, if you don't want to use javafaker library, this plugin will do the TEDIOUS work of creating the packages, the ObjectMother.java files, and
+      a 'randomClassName' static methods with required parameters and you only would have to change those parameters.
+]]></description>
 
     <change-notes>1.0 - Initial release. Creates ObjectMother for selected java classes</change-notes>
 
@@ -22,7 +44,7 @@
     <actions>
 
         <action id="ObjectMotherCreation.Editor"
-                class="inigo.objectMotherCreator.ObjectCreateAction"
+                class="inigo.objectMotherCreator.ObjectCreateOnCaretSelectedAction"
                 text="Create object mother for current class"
                 description="BuildObjectMother">
              <add-to-group group-id="EditorPopupMenu" anchor="last"/>
