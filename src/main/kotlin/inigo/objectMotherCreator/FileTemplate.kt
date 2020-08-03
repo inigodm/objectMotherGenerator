@@ -1,36 +1,10 @@
 package inigo.objectMotherCreator
 
-import com.intellij.openapi.project.Project
-import com.intellij.psi.*
-import java.io.File
 import kotlin.Any
 import kotlin.String
 import kotlin.toString
 
-
-class ObjectMotherBuilder(var project: Project) {
-    val classesTreated = mutableListOf<String>()
-    val classesToTreat = mutableListOf<PsiJavaClassInfo>()
-    var fileCreator = FileCreator(project)
-    var template = ObjectMotherTemplate()
-
-    fun buildFor(clazz: PsiJavaClassInfo, dir: PsiDirectory?) {
-        classesToTreat.add(clazz)
-        var clazzInfo : PsiJavaClassInfo
-        var javaCode : String
-        var directory: PsiDirectory
-        while (classesToTreat.isNotEmpty()) {
-            clazzInfo = classesToTreat.removeAt(0);
-            javaCode = template.buildJavaFile(clazzInfo)
-            directory = fileCreator.findOrCreateDirectoryForPackage(clazz.packageName, dir)!!
-            fileCreator.createJavaFile(directory, "${clazzInfo.clazz.name}ObjectMother.java", javaCode)
-            classesToTreat.addAll(template.neededObjectMotherClasses)
-            classesTreated.add( "${directory.virtualFile.canonicalPath}${File.separator}${clazzInfo.clazz.name}ObjectMother.java")
-        }
-    }
-}
-
-class ObjectMotherTemplate() {
+class JavaObjectMotherTemplate() {
     val neededObjectMotherClasses = mutableListOf<PsiJavaClassInfo>()
 
     fun buildJavaFile(clazz: PsiJavaClassInfo): String {

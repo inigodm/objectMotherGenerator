@@ -17,21 +17,23 @@ import java.io.File
 abstract class ObjectCreateAction : AnAction() {
 
     fun createObjectMother(project: Project, e: AnActionEvent) {
-        val creator = ObjectMotherGenerator(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile)
-        var descriptor = FileChooserDescriptor(false, true, false, false, false, false)
-        descriptor.title = "Choose project/module's test srcDir root in which ObjectMother's package will be created"
-        descriptor.description = "The source directory for ObjectMother's package must be set. Package would be automatically calculated"
-        FileChooser.chooseFile(
-            descriptor,
-            project,
-            e.getData(CommonDataKeys.VIRTUAL_FILE)) {
-            generateObjectMother(creator, project, it)
+        FileChooser.chooseFile(buildFileChooserDescriptor(), project, e.getData(CommonDataKeys.VIRTUAL_FILE)) {
+            generateObjectMother(e, project, it)
         }
     }
 
-    private fun generateObjectMother(creator: ObjectMotherGenerator, project: Project, it: VirtualFile) {
-        creator.generateObjectMotherFiles(project, it)
-        openFilesInEditor(project, creator.createdFileNames)
+    private fun buildFileChooserDescriptor(): FileChooserDescriptor {
+        var descriptor = FileChooserDescriptor(false, true, false, false, false, false)
+        descriptor.title = "Choose project/module's test srcDir root in which ObjectMother's package will be created"
+        descriptor.description =
+            "The source directory for ObjectMother's package must be set. Package would be automatically calculated"
+        return descriptor
+    }
+
+    private fun generateObjectMother(e: AnActionEvent, project: Project, testSrcDir: VirtualFile) {
+        val builder = ObjectMotherBuilder(project)
+        builder.buildFor(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile, testSrcDir)
+        openFilesInEditor(project, builder.classesTreated)
     }
 
     private fun openFilesInEditor(project: Project, createdFiles : List<String>) {
