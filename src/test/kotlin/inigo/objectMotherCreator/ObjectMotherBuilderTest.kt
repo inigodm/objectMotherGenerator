@@ -7,8 +7,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
-import org.hamcrest.MatcherAssert.assertThat
-import org.junit.Assert
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -27,7 +25,7 @@ class ObjectMotherBuilderTest {
     @MockK
     lateinit var directory : PsiDirectory
     @MockK
-    lateinit var psiJavaClassInfo: PsiJavaClassInfo
+    lateinit var classInfo: ClassInfo
     @MockK
     lateinit var clazz : PsiClass
 
@@ -39,8 +37,8 @@ class ObjectMotherBuilderTest {
     @Test
     fun `extracts info of isolated classes` () {
         every { directory.virtualFile.canonicalPath } returns "file path"
-        every { infoExtractor.mainClass } returns psiJavaClassInfo
-        every { psiJavaClassInfo.clazz } returns clazz
+        every { infoExtractor.mainClass } returns classInfo
+        every { classInfo.clazz } returns clazz
         every { infoExtractor.mainClass.clazz.name } returns "clazzname"
         every { infoExtractor.mainClass.packageName } returns "package"
         every { javaObjectMotherTemplate.buildJavaFile(any()) } returns "source code"
@@ -60,8 +58,8 @@ class ObjectMotherBuilderTest {
     @Test
     fun `extracts info recursively from classes` () {
         every { directory.virtualFile.canonicalPath } returns "file path"
-        every { infoExtractor.mainClass } returns psiJavaClassInfo
-        every { psiJavaClassInfo.clazz } returns clazz
+        every { infoExtractor.mainClass } returns classInfo
+        every { classInfo.clazz } returns clazz
         every { infoExtractor.mainClass.clazz.name } returns "clazzname"
         every { infoExtractor.mainClass.packageName } returns "package"
         every { javaObjectMotherTemplate.buildJavaFile(any()) } returns "source code"

@@ -12,6 +12,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiJavaFile
+import com.intellij.psi.PsiManager
 import java.io.File
 
 abstract class ObjectCreateAction : AnAction() {
@@ -31,8 +32,10 @@ abstract class ObjectCreateAction : AnAction() {
     }
 
     private fun generateObjectMother(e: AnActionEvent, project: Project, testSrcDir: VirtualFile) {
-        val builder = ObjectMotherBuilder(project)
-        builder.buildFor(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile, testSrcDir)
+        val builder = ObjectMotherBuilder(FileCreator(project), JavaObjectMotherTemplate())
+        val dir = PsiManager.getInstance(project).findDirectory(testSrcDir)
+        var fileInfoExtractor = JavaFileInfo(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile, project)
+        builder.buildFor(fileInfoExtractor, dir)
         openFilesInEditor(project, builder.classesTreated)
     }
 

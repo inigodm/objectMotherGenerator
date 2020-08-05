@@ -5,9 +5,9 @@ import kotlin.String
 import kotlin.toString
 
 class JavaObjectMotherTemplate() {
-    val neededObjectMotherClasses = mutableListOf<PsiJavaClassInfo>()
+    val neededObjectMotherClasses = mutableListOf<ClassInfo>()
 
-    fun buildJavaFile(clazz: PsiJavaClassInfo): String {
+    fun buildJavaFile(clazz: ClassInfo): String {
         neededObjectMotherClasses.clear()
         var res = buildPackage(clazz.packageName)
         res += buildImports(clazz.constructors, clazz.packageName)
@@ -18,7 +18,7 @@ class JavaObjectMotherTemplate() {
         return "package $packageName;\n\n"
     }
 
-    fun buildImports(methodsInfo: List<PsiMethodInfo>, packageName: String): String {
+    fun buildImports(methodsInfo: List<MethodInfo>, packageName: String): String {
         var res = "import com.github.javafaker.Faker;\n\n"
         if (methodsInfo.isNotEmpty()) {
             var aux = methodsInfo.get(0).args.filter { it.clazzInfo?.packageName ?: "" != packageName }
@@ -32,7 +32,7 @@ class JavaObjectMotherTemplate() {
         return res
     }
 
-    fun buildClass(className: String, constructors: List<PsiMethodInfo>): String {
+    fun buildClass(className: String, constructors: List<MethodInfo>): String {
         var res = "public class ${className}ObjectMother{\n"
         if (constructors.isNotEmpty()) {
             constructors.forEach { res += buildMotherConstructor(className, it) };
@@ -42,7 +42,7 @@ class JavaObjectMotherTemplate() {
         return "$res\n}"
     }
 
-    private fun buildMotherConstructor(className: String, methodInfo: PsiMethodInfo): Any? {
+    private fun buildMotherConstructor(className: String, methodInfo: MethodInfo): Any? {
         return """  public static $className random$className(){
         Faker faker = new Faker();
         return new $className(${buildArgumentsData(methodInfo.args)});
@@ -55,11 +55,11 @@ class JavaObjectMotherTemplate() {
     }"""
     }
 
-    private fun buildArgumentsData(params: MutableList<PsiParametersInfo>): String {
+    private fun buildArgumentsData(params: MutableList<ParametersInfo>): String {
         return params.map { createDefaultValueFor(it) }.joinToString { it }
     }
 
-    private fun createDefaultValueFor(param: PsiParametersInfo): String {
+    private fun createDefaultValueFor(param: ParametersInfo): String {
         return when (param.name) {
             "String" -> {
                 "\n\t\t\t\t${fakerRandomString()}"

@@ -1,19 +1,14 @@
 package inigo.objectMotherCreator
 
-import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import java.io.File
 
-class ObjectMotherBuilder(var project: Project) {
+class ObjectMotherBuilder(var fileCreator: FileCreator, var template: JavaObjectMotherTemplate) {
     val classesTreated = mutableListOf<String>()
-    var template = JavaObjectMotherTemplate()
-    var fileCreator = FileCreator(project)
 
-    fun buildFor(root: PsiJavaFile, testSrcDir: VirtualFile) {
-        val infoExtractor = JavaFileInfo(root, project)
-        val dir = PsiManager.getInstance(project).findDirectory(testSrcDir)
-        val classesToTreat = mutableListOf<PsiJavaClassInfo>()
+    fun buildFor(infoExtractor: JavaFileInfo, dir: PsiDirectory?) {
+        classesTreated.clear()
+        val classesToTreat = mutableListOf<ClassInfo>()
         classesToTreat.add(infoExtractor.mainClass)
         while (classesToTreat.isNotEmpty()) {
             val clazzInfo = classesToTreat.removeAt(0);
