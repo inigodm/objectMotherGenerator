@@ -1,0 +1,153 @@
+package inigo
+
+import fixedClassInfo
+import fixedMethodInfo
+import inigo.objectMotherCreator.ClassInfo
+import inigo.objectMotherCreator.JavaObjectMotherTemplate
+import inigo.objectMotherCreator.fakerRandomString
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+
+class `JavaObjectMotherTemplate should` {
+    @Test
+    fun `build package line`() {
+        var sut = JavaObjectMotherTemplate()
+
+        assertEquals(sut.buildPackage("packagename").trim(), "package packagename;")
+    }
+
+    @Test
+    fun `build import line for faker if other classes ar in same package`() {
+
+        val sut = JavaObjectMotherTemplate()
+
+        assertEquals(sut.buildImports(listOf(fixedMethodInfo()), "packagename").trim(), "import com.github.javafaker.Faker;")
+    }
+
+    @Test
+    fun `build import line for faker if other classes ar in diferent package`() {
+
+        val sut = JavaObjectMotherTemplate()
+        val res = sut.buildImports(listOf(fixedMethodInfo()), "amotherpackagename")
+
+        assertEquals(res, """import com.github.javafaker.Faker;
+
+import static qualified.clazzNameObjectMother.randomclazzName;
+
+""")}
+
+    @Test
+    fun `build class code with default constructor if no constructors`() {
+        val sut = JavaObjectMotherTemplate()
+
+        val res = sut.buildClass("className", listOf())
+
+        assertEquals(res, """public class classNameObjectMother{
+  public static className randomclassName(){
+        return new className();
+    }
+}""")
+    }
+
+    @Test
+    fun `build class code using existing first constructor if any constructors exist`() {
+        val sut = JavaObjectMotherTemplate()
+
+        val res = sut.buildClass("className", listOf(fixedMethodInfo()))
+
+        assertEquals(res, """public class classNameObjectMother{
+  public static className randomclassName(){
+        Faker faker = new Faker();
+        return new className(
+				randomclazzName());
+    }
+}""")
+    }
+
+    @Test
+    fun `build class code using existing first constructor if any constructors exists`() {
+        assertThatWorksWithType("int", "faker.number.randomNumber()")
+        assertThatWorksWithType("Integer", "faker.number.randomNumber()")
+        assertThatWorksWithType("long", "faker.number.randomLong()")
+        assertThatWorksWithType("Long", "faker.number.randomLong()")
+    }
+
+    @Test
+    fun `strings are generated from list of strings`() {
+        assertTrue { listOf("faker.ancient().god()",
+                "faker.ancient().primordial()",
+                "faker.ancient().titan()",
+                "faker.artist().name()",
+                "faker.backToTheFuture().character()",
+                "faker.backToTheFuture().quote()",
+                "faker.beer().name()",
+                "faker.buffy().characters()",
+                "faker.buffy().quotes()",
+                "faker.chuckNorris().fact()",
+                "faker.dragonBall().character()",
+                "faker.funnyName().name()",
+                "faker.friends().character()",
+                "faker.friends().quote()",
+                "faker.gameOfThrones().character()",
+                "faker.gameOfThrones().quote()",
+                "faker.hipster().word()",
+                "faker.hitchhikersGuideToTheGalaxy().character()",
+                "faker.hitchhikersGuideToTheGalaxy().marvinQuote()",
+                "faker.hitchhikersGuideToTheGalaxy().quote()",
+                "faker.lebowski().quote()",
+                "faker.howIMetYourMother().character()",
+                "faker.howIMetYourMother().catchPhrase()",
+                "faker.howIMetYourMother().highFive()",
+                "faker.howIMetYourMother().quote()",
+                "faker.lordOfTheRings().location()",
+                "faker.princessBride().quote()",
+                "faker.princessBride().character()",
+                "faker.rickAndMorty().quote()",
+                "faker.rickAndMorty().character()",
+                "faker.slackEmoji().activity()",
+                "faker.superhero().name()",
+                "faker.yoda().quote()").contains(fakerRandomString()) }
+    }
+
+    fun assertThatWorksWithType(type: String, expectedGenerator: String) {
+        val sut = JavaObjectMotherTemplate()
+
+        val res = sut.buildClass("className", listOf(fixedMethodInfo(type)))
+
+        assertEquals(res, """public class classNameObjectMother{
+  public static className randomclassName(){
+        Faker faker = new Faker();
+        return new className(
+				$expectedGenerator);
+    }
+}""")
+    }
+
+    @Test
+    fun `have to return needed object classes`() {
+        val sut = JavaObjectMotherTemplate()
+
+        sut.buildClass("className", listOf(fixedMethodInfo()))
+
+        assertFalse { sut.neededObjectMotherClasses.isEmpty() }
+    }
+
+    @Test
+    fun `should build objectmother when asked to`() {
+        val sut = JavaObjectMotherTemplate()
+
+        val res = sut.buildObjectMotherCode(fixedClassInfo())
+
+        assertEquals(res, """package packagename;
+
+import com.github.javafaker.Faker;
+
+public class clazznameObjectMother{
+  public static clazzname randomclazzname(){
+        return new clazzname();
+    }
+}""")
+    }
+}

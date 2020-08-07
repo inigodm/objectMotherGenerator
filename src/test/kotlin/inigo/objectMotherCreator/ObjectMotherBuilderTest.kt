@@ -41,18 +41,18 @@ class ObjectMotherBuilderTest {
         every { classInfo.clazz } returns clazz
         every { infoExtractor.mainClass.clazz.name } returns "clazzname"
         every { infoExtractor.mainClass.packageName } returns "package"
-        every { javaObjectMotherTemplate.buildJavaFile(any()) } returns "source code"
-        every { javaObjectMotherTemplate.neededObjectMotherClasses } returns mutableListOf()
+        every { javaObjectMotherTemplate.buildObjectMotherCode(any()) } returns "source code"
+        every { javaObjectMotherTemplate.getNeededObjectMothers() } returns mutableListOf()
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
-        every { fileCreator.createJavaFile(any(), any(), any()) } returns Unit
+        every { fileCreator.createFile(any(), any(), any()) } returns Unit
 
         var objectMotherBuilder = ObjectMotherBuilder(fileCreator, javaObjectMotherTemplate);
         objectMotherBuilder.buildFor(infoExtractor, dir)
 
-        assertEquals(objectMotherBuilder.classesTreated, mutableListOf("file path/clazznameObjectMother.java"))
+        assertEquals(objectMotherBuilder.objectMotherFileNames, mutableListOf("file path/clazznameObjectMother.java"))
         //verify(exactly = 1) { javaObjectMotherTemplate.buildJavaFile(psiJavaClassInfo) }
         verify(exactly = 1) { fileCreator.findOrCreateDirectoryForPackage("package", dir) }
-        verify(exactly = 1) { fileCreator.createJavaFile(directory, "clazznameObjectMother.java", "source code") }
+        verify(exactly = 1) { fileCreator.createFile(directory, "clazznameObjectMother.java", "source code") }
     }
 
     @Test
@@ -62,17 +62,17 @@ class ObjectMotherBuilderTest {
         every { classInfo.clazz } returns clazz
         every { infoExtractor.mainClass.clazz.name } returns "clazzname"
         every { infoExtractor.mainClass.packageName } returns "package"
-        every { javaObjectMotherTemplate.buildJavaFile(any()) } returns "source code"
-        every { javaObjectMotherTemplate.neededObjectMotherClasses } returnsMany listOf(mutableListOf(infoExtractor.mainClass), mutableListOf())
+        every { javaObjectMotherTemplate.buildObjectMotherCode(any()) } returns "source code"
+        every { javaObjectMotherTemplate.getNeededObjectMothers() } returnsMany listOf(mutableListOf(infoExtractor.mainClass), mutableListOf())
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
-        every { fileCreator.createJavaFile(any(), any(), any()) } returns Unit
+        every { fileCreator.createFile(any(), any(), any()) } returns Unit
 
         var objectMotherBuilder = ObjectMotherBuilder(fileCreator, javaObjectMotherTemplate);
         objectMotherBuilder.buildFor(infoExtractor, dir)
 
-        assertEquals(objectMotherBuilder.classesTreated,
+        assertEquals(objectMotherBuilder.objectMotherFileNames,
                 mutableListOf("file path/clazznameObjectMother.java", "file path/clazznameObjectMother.java"))
         verify(exactly = 2) { fileCreator.findOrCreateDirectoryForPackage("package", dir) }
-        verify(exactly = 2) { fileCreator.createJavaFile(directory, "clazznameObjectMother.java", "source code") }
+        verify(exactly = 2) { fileCreator.createFile(directory, "clazznameObjectMother.java", "source code") }
     }
 }

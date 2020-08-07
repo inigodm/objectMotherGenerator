@@ -4,7 +4,6 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
-import com.intellij.openapi.editor.CaretModel
 import com.intellij.openapi.fileChooser.FileChooser
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileEditor.FileEditorManager
@@ -19,7 +18,7 @@ abstract class ObjectCreateAction : AnAction() {
 
     fun createObjectMother(project: Project, e: AnActionEvent) {
         FileChooser.chooseFile(buildFileChooserDescriptor(), project, e.getData(CommonDataKeys.VIRTUAL_FILE)) {
-            generateObjectMother(e, project, it)
+            generateJavaObjectMother(e, project, it)
         }
     }
 
@@ -31,12 +30,12 @@ abstract class ObjectCreateAction : AnAction() {
         return descriptor
     }
 
-    private fun generateObjectMother(e: AnActionEvent, project: Project, testSrcDir: VirtualFile) {
-        val builder = ObjectMotherBuilder(FileCreator(project), JavaObjectMotherTemplate())
+    private fun generateJavaObjectMother(e: AnActionEvent, project: Project, testSrcDir: VirtualFile) {
+        val builder = ObjectMotherBuilder(JavaFileCreator(project), JavaObjectMotherTemplate())
         val dir = PsiManager.getInstance(project).findDirectory(testSrcDir)
-        var fileInfoExtractor = JavaFileInfo(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile, project)
+        val fileInfoExtractor = JavaFileInfo(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile, project)
         builder.buildFor(fileInfoExtractor, dir)
-        openFilesInEditor(project, builder.classesTreated)
+        openFilesInEditor(project, builder.objectMotherFileNames)
     }
 
     private fun openFilesInEditor(project: Project, createdFiles : List<String>) {
@@ -56,14 +55,13 @@ abstract class ObjectCreateAction : AnAction() {
 class ObjectCreateOnCaretSelectedAction : ObjectCreateAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val caretModel = e.getRequiredData(CommonDataKeys.EDITOR).caretModel
-        if (isCaretInJavaFile(caretModel, e)) {
+        if (isCaretInJavaFile(e)) {
             createObjectMother(project, e)
         }
     }
 
-    private fun isCaretInJavaFile(caretModel: CaretModel, e: AnActionEvent) =
-        (caretModel.currentCaret.hasSelection() && e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals("java", ignoreCase = true))
+    private fun isCaretInJavaFile(e: AnActionEvent) =
+        e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals("java", ignoreCase = true)
 
     override fun update(e: AnActionEvent) {
         val caretModel = e.getRequiredData(CommonDataKeys.EDITOR).caretModel
@@ -75,18 +73,18 @@ class ObjectCreateFileSeletedAction : ObjectCreateAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val selectedFile = e.getData(PlatformDataKeys.VIRTUAL_FILE)
-        if (isAnyJavaFileSelected(selectedFile)) {
+        if (isAnyTreateableFileSelected(selectedFile)) {
             createObjectMother(project, e)
         }
     }
 
     override fun update(e: AnActionEvent) {
         val selectedFile = e.getData(PlatformDataKeys.VIRTUAL_FILE)
-        e.presentation.isVisible = isAnyJavaFileSelected(selectedFile)
+        e.presentation.isVisible = isAnyTreateableFileSelected(selectedFile)
         e.presentation.isEnabled = e.presentation.isVisible
         e.presentation.isEnabledAndVisible = e.presentation.isEnabled
     }
 
-    private fun isAnyJavaFileSelected(selectedFile: VirtualFile?) =
+    private fun isAnyTreateableFileSelected(selectedFile: VirtualFile?) =
         selectedFile != null && selectedFile.toString().endsWith(".java")
 }

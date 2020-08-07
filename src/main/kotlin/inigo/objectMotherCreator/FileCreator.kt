@@ -9,11 +9,18 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.util.IncorrectOperationException
 
-class FileCreator(var project: Project) {
+
+interface FileCreator {
+    @Throws(IncorrectOperationException::class)
+    fun createFile(directory: PsiDirectory, name: String, code: String)
 
     @Throws(IncorrectOperationException::class)
-    fun createJavaFile(directory: PsiDirectory, name: String, code: String) {
-        println("Creating file $name in $directory")
+    fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: PsiDirectory?): PsiDirectory?
+}
+class JavaFileCreator(var project: Project): FileCreator {
+
+    @Throws(IncorrectOperationException::class)
+    override fun createFile(directory: PsiDirectory, name: String, code: String) {
         return CommandProcessor.getInstance().executeCommand(
             project,
             {
@@ -30,8 +37,22 @@ class FileCreator(var project: Project) {
         )
     }
 
+    @Throws(IncorrectOperationException::class)
+    override fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: PsiDirectory?): PsiDirectory? {
+        var psiDirectory: PsiDirectory?
+        psiDirectory = srcDirectory
+        packageName.split(".").forEach {
+            val foundExistingDirectory = psiDirectory!!.findSubdirectory(it)
+            if (foundExistingDirectory == null) {
+                psiDirectory = createSubdirectory(psiDirectory!!, it)
+            } else {
+                psiDirectory = foundExistingDirectory
+            }
+        }
+        return psiDirectory
+    }
+
     private fun makeFileIfDoesntExists(directory: PsiDirectory, name: String, code: String) : PsiFile? {
-        println("Creating file $name in $directory")
         var file = directory.findFile(name)
         if (null == file){
             file = makeFile(directory, name, code)
@@ -46,21 +67,6 @@ class FileCreator(var project: Project) {
         return file
     }
 
-
-    @Throws(IncorrectOperationException::class)
-    fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: PsiDirectory?): PsiDirectory? {
-        var psiDirectory: PsiDirectory?
-        psiDirectory = srcDirectory
-        packageName.split(".").forEach {
-            val foundExistingDirectory = psiDirectory!!.findSubdirectory(it)
-            if (foundExistingDirectory == null) {
-                psiDirectory = createSubdirectory(psiDirectory!!, it)
-            } else {
-                psiDirectory = foundExistingDirectory
-            }
-        }
-        return psiDirectory
-    }
 
     @Throws(IncorrectOperationException::class)
     private fun createSubdirectory(

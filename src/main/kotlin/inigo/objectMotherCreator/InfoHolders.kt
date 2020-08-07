@@ -44,6 +44,10 @@ class ParametersInfo(var param: PsiParameter, var project: Project){
 
     fun extractParamInfo(){
         name = param.typeElement?.type?.getPresentableText() ?: ""
+        findClassInfoIfTypeDefinedInProject()
+    }
+
+    private fun findClassInfoIfTypeDefinedInProject() {
         val aux = param.type.getCanonicalText(true)
         val clazz = JavaPsiFacade.getInstance(project).findClass(aux, GlobalSearchScope.projectScope(project))
         if (clazz != null) {

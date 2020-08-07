@@ -4,14 +4,24 @@ import kotlin.Any
 import kotlin.String
 import kotlin.toString
 
-class JavaObjectMotherTemplate() {
+
+interface ObjectMotherTemplate {
+    fun buildObjectMotherCode(clazz: ClassInfo): String
+    fun getNeededObjectMothers(): List<ClassInfo>
+}
+
+class JavaObjectMotherTemplate: ObjectMotherTemplate {
     val neededObjectMotherClasses = mutableListOf<ClassInfo>()
 
-    fun buildJavaFile(clazz: ClassInfo): String {
+    override fun buildObjectMotherCode(clazz: ClassInfo): String {
         neededObjectMotherClasses.clear()
         var res = buildPackage(clazz.packageName)
         res += buildImports(clazz.constructors, clazz.packageName)
         return res + buildClass(clazz.clazz.name.toString(), clazz.constructors)
+    }
+
+    override fun getNeededObjectMothers(): List<ClassInfo> {
+        return neededObjectMotherClasses
     }
 
     fun buildPackage(packageName: String): String {
@@ -22,7 +32,7 @@ class JavaObjectMotherTemplate() {
         var res = "import com.github.javafaker.Faker;\n\n"
         if (methodsInfo.isNotEmpty()) {
             var aux = methodsInfo.get(0).args.filter { it.clazzInfo?.packageName ?: "" != packageName }
-                .filter { it.clazzInfo?.clazz ?: "" != "" }
+                .filter { it.clazzInfo?.clazz?.name ?: "" != "" }
                 .map { "import static ${it.clazzInfo?.clazz?.qualifiedName}ObjectMother.random${it.clazzInfo?.clazz?.name}" }
                 .joinToString(separator = ";\n")
             if (aux.isNotEmpty()) {
@@ -90,7 +100,7 @@ class JavaObjectMotherTemplate() {
 }
 
 fun fakerRandomString(): String {
-    return listOf<String>("faker.ancient().god()",
+    return listOf("faker.ancient().god()",
     "faker.ancient().primordial()",
     "faker.ancient().titan()",
     "faker.artist().name()",
