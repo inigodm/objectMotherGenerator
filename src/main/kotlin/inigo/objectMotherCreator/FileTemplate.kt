@@ -1,9 +1,5 @@
 package inigo.objectMotherCreator
 
-import kotlin.Any
-import kotlin.String
-import kotlin.toString
-
 
 interface ObjectMotherTemplate {
     fun buildObjectMotherCode(clazz: ClassInfo): String

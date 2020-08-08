@@ -1,8 +1,8 @@
 package inigo.objectMotherCreator
 
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiClass
+import com.intellij.psi.PsiJavaFile
 
 class JavaFileInfo(var root: PsiJavaFile, var project: Project){
 

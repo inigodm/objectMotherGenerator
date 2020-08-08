@@ -1,6 +1,3 @@
-import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiMethod
 import inigo.objectMotherCreator.ClassInfo
 import inigo.objectMotherCreator.MethodInfo
 import inigo.objectMotherCreator.ParametersInfo

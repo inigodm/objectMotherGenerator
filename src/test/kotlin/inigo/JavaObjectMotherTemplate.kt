@@ -2,7 +2,6 @@ package inigo
 
 import fixedClassInfo
 import fixedMethodInfo
-import inigo.objectMotherCreator.ClassInfo
 import inigo.objectMotherCreator.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.fakerRandomString
 import org.junit.jupiter.api.Test
