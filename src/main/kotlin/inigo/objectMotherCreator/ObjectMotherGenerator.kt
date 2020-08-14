@@ -6,14 +6,15 @@ import java.io.File
 class ObjectMotherBuilder(var fileCreator: FileCreator, var template: ObjectMotherTemplate) {
     val objectMotherFileNames = mutableListOf<String>()
 
-    fun buildFor(infoExtractor: JavaFileInfo, baseDir: PsiDirectory?) {
+    fun buildFor(infoExtractor: FileInfo, baseDir: PsiDirectory?) {
         objectMotherFileNames.clear()
         val classesToTreat = mutableListOf<ClassInfo>()
-        classesToTreat.add(infoExtractor.mainClass)
+        val packageName = infoExtractor.packageName()
+        classesToTreat.addAll(infoExtractor.classesToTread())
         while (classesToTreat.isNotEmpty()) {
             val clazzInfo = classesToTreat.removeAt(0);
             createFile(baseDir,
-                    infoExtractor.mainClass.packageName,
+                    packageName,
                     clazzInfo,
                     template.buildObjectMotherCode(clazzInfo))
             classesToTreat.addAll(template.getNeededObjectMothers())
