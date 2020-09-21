@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiManager
 import java.io.File
 
@@ -32,7 +33,8 @@ class PluginLauncher {
     private fun objectMotherCreation(e: AnActionEvent, testSrcDir: PsiDirectory?) {
         val project = e.project!!
         val creator = ObjectMotherCreator(JavaFileCreator(project), JavaObjectMotherTemplate())
-        creator.createObjectMotherFor(e, testSrcDir)
+        val fileInfoExtractor = JavaFileInfo(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile, e.project!!)
+        creator.createObjectMotherFor(fileInfoExtractor, testSrcDir)
         openFilesInEditor(project, creator.objectMotherFileNames)
     }
 

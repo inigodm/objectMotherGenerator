@@ -8,10 +8,9 @@ import java.io.File
 class ObjectMotherCreator(var fileCreator: FileCreator, var template: ObjectMotherTemplate) {
     val objectMotherFileNames = mutableListOf<String>()
 
-    fun createObjectMotherFor(e: AnActionEvent, baseDir: PsiDirectory?) {
+    fun createObjectMotherFor(fileInfoExtractor: FileInfo, baseDir: PsiDirectory?) {
         objectMotherFileNames.clear()
         val classesToTreat = mutableListOf<ClassInfo>()
-        val fileInfoExtractor = JavaFileInfo(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile, e.project!!)
         classesToTreat.addAll(fileInfoExtractor.classesToTread())
         while (classesToTreat.isNotEmpty()) {
             val clazzInfo = classesToTreat.removeAt(0);
