@@ -18,18 +18,10 @@ class `JavaObjectMotherTemplate should` {
     }
 
     @Test
-    fun `build import line for faker if other classes ar in same package`() {
-
-        val sut = JavaObjectMotherTemplate()
-
-        assertEquals(sut.buildImports(listOf(fixedMethodInfo()), "packagename", clazz.constructors).trim(), "import com.github.javafaker.Faker;")
-    }
-
-    @Test
     fun `build import line for faker if other classes ar in diferent package`() {
 
         val sut = JavaObjectMotherTemplate()
-        val res = sut.buildImports(listOf(fixedMethodInfo()), "amotherpackagename", clazz.constructors)
+        val res = sut.buildImports(listOf(fixedMethodInfo()))
 
         assertEquals(res, """import com.github.javafaker.Faker;
 
@@ -67,10 +59,10 @@ import static qualified.clazzNameObjectMother.randomclazzName;
 
     @Test
     fun `build class code using existing first constructor if any constructors exists`() {
-        assertThatWorksWithType("int", "faker.number.randomNumber()")
-        assertThatWorksWithType("Integer", "faker.number.randomNumber()")
-        assertThatWorksWithType("long", "faker.number.randomLong()")
-        assertThatWorksWithType("Long", "faker.number.randomLong()")
+        assertThatWorksWithType("int", "faker.number().randomNumber()")
+        assertThatWorksWithType("Integer", "faker.number().randomNumber()")
+        assertThatWorksWithType("long", "faker.number().randomNumber()")
+        assertThatWorksWithType("Long", "faker.number().randomNumber()")
     }
 
     @Test

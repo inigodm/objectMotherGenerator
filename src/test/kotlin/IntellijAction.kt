@@ -32,6 +32,7 @@ class `Option in menu appears` {
         every { actionEvent.getRequiredData(CommonDataKeys.EDITOR).caretModel } returns caret
         every { caret.currentCaret.hasSelection() } returns true
         every { actionEvent.presentation } returns presentation
+        every { actionEvent.getData(CommonDataKeys.PSI_FILE)!!.language.displayName } returns "java"
         val sut = ObjectCreateOnCaretSelectedAction()
 
         sut.update(actionEvent)
