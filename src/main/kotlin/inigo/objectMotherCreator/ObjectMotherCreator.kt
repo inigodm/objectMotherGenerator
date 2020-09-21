@@ -12,20 +12,18 @@ class ObjectMotherCreator(var fileCreator: FileCreator, var template: ObjectMoth
         objectMotherFileNames.clear()
         val classesToTreat = mutableListOf<ClassInfo>()
         val fileInfoExtractor = JavaFileInfo(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile, e.project!!)
-        val packageName = fileInfoExtractor.packageName()
         classesToTreat.addAll(fileInfoExtractor.classesToTread())
         while (classesToTreat.isNotEmpty()) {
             val clazzInfo = classesToTreat.removeAt(0);
             createFile(baseDir,
-                    packageName,
                     clazzInfo,
                     template.buildObjectMotherCode(clazzInfo))
             classesToTreat.addAll(template.getNeededObjectMothers())
         }
     }
 
-    private fun createFile(baseDir: PsiDirectory?, packageName: String, clazzInfo: ClassInfo, javaCode: String) {
-        val directory = fileCreator.findOrCreateDirectoryForPackage(packageName, baseDir)!!
+    private fun createFile(baseDir: PsiDirectory?, clazzInfo: ClassInfo, javaCode: String) {
+        val directory = fileCreator.findOrCreateDirectoryForPackage(clazzInfo.packageName, baseDir)!!
         fileCreator.createFile(directory, "${clazzInfo.clazz.name}ObjectMother.java", javaCode)
         addGeneratedObjectMotherFileName(directory, clazzInfo)
     }
