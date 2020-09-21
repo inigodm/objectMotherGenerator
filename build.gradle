@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'org.example'
-version '1.0.1'
+version '1.0.1.1'
 
 sourceCompatibility = 1.8
 
@@ -41,6 +41,9 @@ patchPluginXml {
     sinceBuild 193
 
     changeNotes """
-    Now generated files are open after been created
+    Bugs fixed:<br><br>
+    - A problem when calculating package names for nested objectMothers<br>
+    - The number generator in Faker is a function (number(), not number)<br>
+    - The static imports of generated objectmothers where broken
     """
 }

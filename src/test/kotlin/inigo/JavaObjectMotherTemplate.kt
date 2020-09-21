@@ -22,14 +22,14 @@ class `JavaObjectMotherTemplate should` {
 
         val sut = JavaObjectMotherTemplate()
 
-        assertEquals(sut.buildImports(listOf(fixedMethodInfo()), "packagename").trim(), "import com.github.javafaker.Faker;")
+        assertEquals(sut.buildImports(listOf(fixedMethodInfo()), "packagename", clazz.constructors).trim(), "import com.github.javafaker.Faker;")
     }
 
     @Test
     fun `build import line for faker if other classes ar in diferent package`() {
 
         val sut = JavaObjectMotherTemplate()
-        val res = sut.buildImports(listOf(fixedMethodInfo()), "amotherpackagename")
+        val res = sut.buildImports(listOf(fixedMethodInfo()), "amotherpackagename", clazz.constructors)
 
         assertEquals(res, """import com.github.javafaker.Faker;
 

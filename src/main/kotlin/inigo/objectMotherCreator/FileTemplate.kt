@@ -27,9 +27,10 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
     fun buildImports(methodsInfo: List<MethodInfo>, packageName: String): String {
         var res = "import com.github.javafaker.Faker;\n\n"
         if (methodsInfo.isNotEmpty()) {
-            var aux = methodsInfo.get(0).args.filter { it.clazzInfo?.packageName ?: "" != packageName }
-                .filter { it.clazzInfo?.clazz?.name ?: "" != "" }
-                .map { "import static ${it.clazzInfo?.clazz?.qualifiedName}ObjectMother.random${it.clazzInfo?.clazz?.name}" }
+            var aux = methodsInfo.get(0).args.filter { it.clazzInfo?.clazz?.name ?: "" != "" }
+                .map {
+                    "import static ${it.clazzInfo?.clazz?.qualifiedName}ObjectMother.random${it.clazzInfo?.clazz?.name}"
+                }
                 .joinToString(separator = ";\n")
             if (aux.isNotEmpty()) {
                 res += "$aux;\n\n";

@@ -35,7 +35,6 @@ class JavaFileInfo(var root: PsiJavaFile, var project: Project): FileInfo{
     }
 
     fun mainClass(psiClasses: Array<out PsiClass>): PsiClass {
-        psiClasses.forEach { println(it.text) }
         return psiClasses.filter {
             it.modifierList!!.text.contains("public")
         }.first()

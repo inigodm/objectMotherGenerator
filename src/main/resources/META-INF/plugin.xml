@@ -3,7 +3,6 @@
     <name>Object mother creator</name>
     <version>1.0</version>
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
-
     <depends>com.intellij.java</depends>
 
     <description><![CDATA[
@@ -30,6 +29,8 @@
 <br>
       Anyway, if you don't want to use javafaker library, this plugin will do the TEDIOUS work of creating the packages, the ObjectMother.java files, and
       a 'randomClassName' static methods with required parameters and you only would have to change those parameters.
+
+      You can find the source code here: https://github.com/inigodm/objectMotherGenerator
 ]]></description>
 
     <change-notes>1.0 - Initial release. Creates ObjectMother for selected java classes</change-notes>
