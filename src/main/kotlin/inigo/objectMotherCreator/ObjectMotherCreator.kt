@@ -1,16 +1,19 @@
 package inigo.objectMotherCreator
 
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.psi.*
 import java.io.File
 
-class ObjectMotherBuilder(var fileCreator: FileCreator, var template: ObjectMotherTemplate) {
+class ObjectMotherCreator(var fileCreator: FileCreator, var template: ObjectMotherTemplate) {
     val objectMotherFileNames = mutableListOf<String>()
 
-    fun buildFor(infoExtractor: FileInfo, baseDir: PsiDirectory?) {
+    fun createObjectMotherFor(e: AnActionEvent, baseDir: PsiDirectory?) {
         objectMotherFileNames.clear()
         val classesToTreat = mutableListOf<ClassInfo>()
-        val packageName = infoExtractor.packageName()
-        classesToTreat.addAll(infoExtractor.classesToTread())
+        val fileInfoExtractor = JavaFileInfo(e.getData(CommonDataKeys.PSI_FILE) as PsiJavaFile, e.project!!)
+        val packageName = fileInfoExtractor.packageName()
+        classesToTreat.addAll(fileInfoExtractor.classesToTread())
         while (classesToTreat.isNotEmpty()) {
             val clazzInfo = classesToTreat.removeAt(0);
             createFile(baseDir,

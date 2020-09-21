@@ -1,5 +1,6 @@
 package inigo.objectMotherCreator
 
+import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiDirectory
@@ -11,7 +12,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class ObjectMotherBuilderTest {
+class ObjectMotherCreatorTest {
     @MockK
     lateinit var project : Project
     @MockK
@@ -28,6 +29,8 @@ class ObjectMotherBuilderTest {
     lateinit var classInfo: ClassInfo
     @MockK
     lateinit var clazz : PsiClass
+    @MockK
+    lateinit var e: AnActionEvent
 
     @BeforeEach
     fun setup() {
@@ -45,9 +48,10 @@ class ObjectMotherBuilderTest {
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returns mutableListOf()
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
         every { fileCreator.createFile(any(), any(), any()) } returns Unit
+        every { e.project } returns project
 
-        var objectMotherBuilder = ObjectMotherBuilder(fileCreator, javaObjectMotherTemplate);
-        objectMotherBuilder.buildFor(infoExtractor, dir)
+        var objectMotherBuilder = ObjectMotherCreator(fileCreator, javaObjectMotherTemplate);
+        objectMotherBuilder.createObjectMotherFor(e, dir)
 
         assertEquals(objectMotherBuilder.objectMotherFileNames, mutableListOf("file path/clazznameObjectMother.java"))
         //verify(exactly = 1) { javaObjectMotherTemplate.buildJavaFile(psiJavaClassInfo) }
@@ -66,9 +70,10 @@ class ObjectMotherBuilderTest {
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returnsMany listOf(mutableListOf(infoExtractor.mainClass), mutableListOf())
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
         every { fileCreator.createFile(any(), any(), any()) } returns Unit
+        every { e.project } returns project
 
-        var objectMotherBuilder = ObjectMotherBuilder(fileCreator, javaObjectMotherTemplate);
-        objectMotherBuilder.buildFor(infoExtractor, dir)
+        var objectMotherBuilder = ObjectMotherCreator(fileCreator, javaObjectMotherTemplate);
+        objectMotherBuilder.createObjectMotherFor(e, dir)
 
         assertEquals(objectMotherBuilder.objectMotherFileNames,
                 mutableListOf("file path/clazznameObjectMother.java", "file path/clazznameObjectMother.java"))

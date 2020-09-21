@@ -45,14 +45,14 @@
 
         <action id="ObjectMotherCreation.Editor"
                 class="inigo.objectMotherCreator.ObjectCreateOnCaretSelectedAction"
-                text="Create object mother for current class"
+                text="Create Object Mother for Current Class"
                 description="BuildObjectMother">
              <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 
         <action id="ObjectCreateFileSeletedAction.Editor"
                 class="inigo.objectMotherCreator.ObjectCreateFileSeletedAction"
-                text="Create object mother for current class"
+                text="Create Object Mother for Current Class"
                 description="BuildObjectMother">
             <add-to-group group-id="RunContextGroup" anchor="last"/>
         </action>
