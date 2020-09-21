@@ -12,7 +12,7 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
     override fun buildObjectMotherCode(clazz: ClassInfo): String {
         neededObjectMotherClasses.clear()
         var res = buildPackage(clazz.packageName)
-        res += buildImports(clazz.constructors, clazz.packageName)
+        res += buildImports(clazz.constructors)
         return res + buildClass(clazz.clazz.name.toString(), clazz.constructors)
     }
 
@@ -24,7 +24,7 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
         return "package $packageName;\n\n"
     }
 
-    fun buildImports(methodsInfo: List<MethodInfo>, packageName: String): String {
+    fun buildImports(methodsInfo: List<MethodInfo>): String {
         var res = "import com.github.javafaker.Faker;\n\n"
         if (methodsInfo.isNotEmpty()) {
             var aux = methodsInfo.get(0).args.filter { it.clazzInfo?.clazz?.name ?: "" != "" }
