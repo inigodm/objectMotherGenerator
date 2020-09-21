@@ -71,16 +71,16 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
                 "\n\t\t\t\t${fakerRandomString()}"
             }
             "int" -> {
-                "\n\t\t\t\tfaker.number.randomNumber()"
+                "\n\t\t\t\tfaker.number().randomNumber()"
             }
             "Integer" -> {
-                "\n\t\t\t\tfaker.number.randomNumber()"
+                "\n\t\t\t\tfaker.number().randomNumber()"
             }
             "long" -> {
-                "\n\t\t\t\tfaker.number.randomLong()"
+                "\n\t\t\t\tfaker.number().randomNumber()"
             }
             "Long" -> {
-                "\n\t\t\t\tfaker.number.randomLong()"
+                "\n\t\t\t\tfaker.number().randomNumber()"
             }
             else -> {
                 var clazzInfo = param.clazzInfo
