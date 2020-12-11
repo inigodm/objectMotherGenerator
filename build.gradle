@@ -1,12 +1,12 @@
 plugins {
     id 'java'
     id 'idea'
-    id 'org.jetbrains.intellij' version '0.4.21'
-    id 'org.jetbrains.kotlin.jvm' version '1.3.61'
+    id 'org.jetbrains.intellij' version '0.6.5'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.21'
 }
 
 group 'org.example'
-version '1.0.1.1'
+version '1.0.1.2'
 
 sourceCompatibility = 1.8
 
@@ -41,9 +41,7 @@ patchPluginXml {
     sinceBuild 193
 
     changeNotes """
-    Bugs fixed:<br><br>
-    - A problem when calculating package names for nested objectMothers<br>
-    - The number generator in Faker is a function (number(), not number)<br>
-    - The static imports of generated objectmothers where broken
+    - Increased sported Intellij IDES until 2020.3<br>
+    - Improved description to set more visible github url
     """
 }

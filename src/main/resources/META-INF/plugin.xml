@@ -30,10 +30,15 @@
       Anyway, if you don't want to use javafaker library, this plugin will do the TEDIOUS work of creating the packages, the ObjectMother.java files, and
       a 'randomClassName' static methods with required parameters and you only would have to change those parameters.
 
-      You can find the source code here: https://github.com/inigodm/objectMotherGenerator
+      <br><br>Source code can be found <a href="https://github.com/inigodm/objectMotherGenerator">HERE</a>
+
+      <br><br> PR and issues are welcome <br><br>
 ]]></description>
 
-    <change-notes>1.0 - Initial release. Creates ObjectMother for selected java classes</change-notes>
+    <change-notes>
+        1.0 - Initial release. Creates ObjectMother for selected java classes
+        1.0.1.2 - Increased support until 203.*
+    </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="201" until-build="203.*"/>
