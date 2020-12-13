@@ -3,11 +3,11 @@ package inigo.objectMotherCreator
 import com.intellij.ide.IdeBundle
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.util.IncorrectOperationException
+import inigo.objectMotherCreator.infraestructure.IdeaShits
 
 
 interface FileCreator {
@@ -17,12 +17,12 @@ interface FileCreator {
     @Throws(IncorrectOperationException::class)
     fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: PsiDirectory?): PsiDirectory?
 }
-class JavaFileCreator(var project: Project): FileCreator {
+class JavaFileCreator(var ideaShits: IdeaShits): FileCreator {
 
     @Throws(IncorrectOperationException::class)
     override fun createFile(directory: PsiDirectory, name: String, code: String) {
         return CommandProcessor.getInstance().executeCommand(
-            project,
+            ideaShits.getProject(),
             {
                 ApplicationManager.getApplication()
                     .runWriteAction<PsiFile> {
@@ -62,7 +62,7 @@ class JavaFileCreator(var project: Project): FileCreator {
 
     private fun makeFile(directory: PsiDirectory, name: String, code: String): PsiFile? {
         val file = directory.createFile(name)
-        val documentManager = PsiDocumentManager.getInstance(project)
+        val documentManager = PsiDocumentManager.getInstance(ideaShits.getProject()!!)
         documentManager.getDocument(file)?.insertString(0, code)
         return file
     }
@@ -76,7 +76,7 @@ class JavaFileCreator(var project: Project): FileCreator {
         val psiDirectory = arrayOfNulls<PsiDirectory>(1)
         val exception = arrayOfNulls<IncorrectOperationException>(1)
         CommandProcessor.getInstance().executeCommand(
-            project,
+            ideaShits.getProject(),
             {
                 psiDirectory[0] = ApplicationManager.getApplication()
                     .runWriteAction<PsiDirectory> {

@@ -2,8 +2,6 @@ package inigo.objectMotherCreator
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.vfs.VirtualFile
 import inigo.objectMotherCreator.infraestructure.IdeaShits
 
@@ -12,7 +10,7 @@ class ObjectCreateOnCaretSelectedAction : AnAction() {
         e.project ?: return
         val ideShits = IdeaShits(e)
         if (ideShits.isCaretInJavaFile()) {
-            PluginLauncher().doObjectMotherCreation(e)
+            PluginLauncher().doObjectMotherCreation(ideShits)
         }
     }
 
@@ -28,7 +26,7 @@ class ObjectCreateFileSeletedAction : AnAction() {
         val ideShits = IdeaShits(e)
         val selectedFile = ideShits.getCurrentVirtualFile()
         if (isAnyTreateableFileSelected(selectedFile)) {
-            PluginLauncher().doObjectMotherCreation(e)
+            PluginLauncher().doObjectMotherCreation(ideShits)
         }
     }
 

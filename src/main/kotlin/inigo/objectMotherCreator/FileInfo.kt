@@ -1,15 +1,15 @@
 package inigo.objectMotherCreator
 
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiJavaFile
+import inigo.objectMotherCreator.infraestructure.IdeaShits
 
 interface FileInfo{
     fun classesToTread(): List<ClassInfo>
     fun packageName(): String
 }
 
-class JavaFileInfo(var root: PsiJavaFile, var project: Project): FileInfo{
+class JavaFileInfo(var root: PsiJavaFile, var ideaShits: IdeaShits): FileInfo{
 
     lateinit var packageStr: String
     lateinit var psiClasses: Array<out PsiClass>
@@ -23,7 +23,7 @@ class JavaFileInfo(var root: PsiJavaFile, var project: Project): FileInfo{
         packageStr = root.packageStatement?.packageName ?: ""
         psiClasses = root.classes
         var main =  mainClass(psiClasses)
-        mainClass = ClassInfo(main, packageStr, project)
+        mainClass = ClassInfo(main, packageStr, ideaShits.getProject()!!)
     }
 
     override fun classesToTread(): List<ClassInfo>{
