@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'org.example'
-version '1.0.1.2'
+version '1.1.0'
 
 sourceCompatibility = 1.8
 
@@ -41,7 +41,6 @@ patchPluginXml {
     sinceBuild 193
 
     changeNotes """
-    - Increased sported Intellij IDES until 2020.3<br>
-    - Improved description to set more visible github url
+    - Autodetect test source directory if exists and unique
     """
 }
