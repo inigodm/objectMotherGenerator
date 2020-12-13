@@ -5,37 +5,37 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.vfs.VirtualFile
+import inigo.objectMotherCreator.infraestructure.IdeaShits
 
 class ObjectCreateOnCaretSelectedAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         e.project ?: return
-        if (isCaretInJavaFile(e)) {
+        val ideShits = IdeaShits(e)
+        if (ideShits.isCaretInJavaFile()) {
             PluginLauncher().doObjectMotherCreation(e)
         }
     }
 
-    private fun isCaretInJavaFile(e: AnActionEvent) =
-        e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals("java", ignoreCase = true)
-
     override fun update(e: AnActionEvent) {
-        e.presentation.isEnabledAndVisible = isCaretInJavaFile(e)
+        val ideShits = IdeaShits(e)
+        ideShits.setMenuItemEnabled(ideShits.isCaretInJavaFile())
     }
 }
 
 class ObjectCreateFileSeletedAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         e.project ?: return
-        val selectedFile = e.getData(PlatformDataKeys.VIRTUAL_FILE)
+        val ideShits = IdeaShits(e)
+        val selectedFile = ideShits.getCurrentVirtualFile()
         if (isAnyTreateableFileSelected(selectedFile)) {
             PluginLauncher().doObjectMotherCreation(e)
         }
     }
 
     override fun update(e: AnActionEvent) {
-        val selectedFile = e.getData(PlatformDataKeys.VIRTUAL_FILE)
-        e.presentation.isVisible = isAnyTreateableFileSelected(selectedFile)
-        e.presentation.isEnabled = e.presentation.isVisible
-        e.presentation.isEnabledAndVisible = e.presentation.isEnabled
+        val ideShits = IdeaShits(e)
+        val selectedFile = ideShits.getCurrentVirtualFile()
+        ideShits.setMenuItemEnabled(isAnyTreateableFileSelected(selectedFile))
     }
 
     private fun isAnyTreateableFileSelected(selectedFile: VirtualFile?) =
