@@ -8,6 +8,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.util.IncorrectOperationException
 import inigo.objectMotherCreator.infraestructure.IdeaShits
+import java.io.File
 
 
 interface FileCreator {
@@ -91,5 +92,11 @@ class JavaFileCreator(var ideaShits: IdeaShits): FileCreator {
         )
         if (exception[0] != null) throw exception[0]!!
         return psiDirectory[0]
+    }
+
+    fun createFile(baseDir: PsiDirectory?, clazzInfo: ClassInfo, javaCode: String): String {
+        val directory = findOrCreateDirectoryForPackage(clazzInfo.packageName, baseDir)!!
+        createFile(directory, "${clazzInfo.clazz.name}ObjectMother.java", javaCode)
+        return "${directory.virtualFile.canonicalPath}${File.separator}${clazzInfo.clazz.name}ObjectMother.java"
     }
 }

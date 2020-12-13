@@ -23,7 +23,7 @@ class JavaFileInfo(var root: PsiJavaFile, var ideaShits: IdeaShits): FileInfo{
         packageStr = root.packageStatement?.packageName ?: ""
         psiClasses = root.classes
         var main =  mainClass(psiClasses)
-        mainClass = ClassInfo(main, packageStr, ideaShits.getProject()!!)
+        mainClass = ClassInfo(main, packageStr, ideaShits)
     }
 
     override fun classesToTread(): List<ClassInfo>{

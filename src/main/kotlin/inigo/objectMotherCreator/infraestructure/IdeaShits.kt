@@ -11,9 +11,8 @@ import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiManager
+import com.intellij.psi.*
+import com.intellij.psi.search.GlobalSearchScope
 import org.jetbrains.annotations.Nullable
 import org.jetbrains.jps.model.java.JavaSourceRootType
 import java.io.File
@@ -78,5 +77,9 @@ class IdeaShits(val e: AnActionEvent) {
 
     fun getProject(): @Nullable Project? {
         return e.project
+    }
+
+    fun findClass(qualifiedName: String): @Nullable PsiClass? {
+        return JavaPsiFacade.getInstance(e.project!!).findClass(qualifiedName, GlobalSearchScope.projectScope(e.project!!))
     }
 }

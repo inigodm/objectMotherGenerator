@@ -1,11 +1,10 @@
 package inigo.objectMotherCreator
 
-import com.intellij.openapi.project.Project
 import com.intellij.psi.*
-import com.intellij.psi.search.GlobalSearchScope
+import inigo.objectMotherCreator.infraestructure.IdeaShits
 
 
-class ClassInfo(var clazz: PsiClass, var packageName: String, var project: Project) {
+class ClassInfo(var clazz: PsiClass, var packageName: String, var ideaShits: IdeaShits) {
     lateinit var fields: Array<out PsiField>
     lateinit var methods: Array<out PsiMethod>
     lateinit var constructors: List<MethodInfo>
@@ -17,11 +16,11 @@ class ClassInfo(var clazz: PsiClass, var packageName: String, var project: Proje
     fun extractInfo(){
         fields = clazz.allFields
         methods = clazz.allMethods
-        constructors = clazz.constructors.map { MethodInfo(it, project) }.toList()
+        constructors = clazz.constructors.map { MethodInfo(it, ideaShits) }.toList()
     }
 }
 
-class MethodInfo(var method: PsiMethod, var project: Project){
+class MethodInfo(var method: PsiMethod, var ideaShits: IdeaShits){
     var args =  mutableListOf<ParametersInfo>()
     lateinit var name: String
     init{
@@ -30,11 +29,11 @@ class MethodInfo(var method: PsiMethod, var project: Project){
 
     fun extractMethodInfo(){
         name = method.name
-        method.parameterList.parameters.map { args.add(ParametersInfo(it, project)) }
+        method.parameterList.parameters.map { args.add(ParametersInfo(it, ideaShits)) }
     }
 }
 
-class ParametersInfo(var param: PsiParameter, var project: Project){
+class ParametersInfo(var param: PsiParameter, var ideaShits: IdeaShits){
     lateinit var name: String
     var clazzInfo: ClassInfo? = null
 
@@ -49,9 +48,9 @@ class ParametersInfo(var param: PsiParameter, var project: Project){
 
     private fun findClassInfoIfTypeDefinedInProject() {
         val aux = param.type.getCanonicalText(true)
-        val clazz = JavaPsiFacade.getInstance(project).findClass(aux, GlobalSearchScope.projectScope(project))
+        val clazz = ideaShits.findClass(aux)
         if (clazz != null) {
-            clazzInfo = ClassInfo(clazz, clazz.qualifiedName!!.substringBeforeLast("."), project)
+            clazzInfo = ClassInfo(clazz, clazz.qualifiedName!!.substringBeforeLast("."), ideaShits)
         }
     }
 }
