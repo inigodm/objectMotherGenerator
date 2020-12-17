@@ -22,8 +22,8 @@ class IdeaShits(val e: AnActionEvent) {
         return e.getData(CommonDataKeys.PSI_FILE)!!
     }
 
-    fun getCurrentVirtualFile(): VirtualFile {
-        return e.getData(PlatformDataKeys.VIRTUAL_FILE)!!
+    fun getCurrentVirtualFile(): OMFile {
+        return OMFile(e.getData(PlatformDataKeys.VIRTUAL_FILE)!!)
     }
 
     fun isCaretInJavaFile() =
@@ -33,13 +33,24 @@ class IdeaShits(val e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = enabled
     }
 
-
     fun obtainTestSourceDirectory(): @Nullable PsiDirectory? {
         val dirVirtualFile: VirtualFile? = findTestSourceDirectory()
         if (dirVirtualFile == null){
             return null
         }
         return PsiManager.getInstance(e.project!!).findDirectory(dirVirtualFile!!)
+    }
+
+    fun openFileInNewTab(file: File) {
+        FileEditorManager.getInstance(e.project!!).openFile(findVirtualFile(file), true)
+    }
+
+    fun getProject(): @Nullable Project? {
+        return e.project
+    }
+
+    fun findClass(qualifiedName: String): @Nullable PsiClass? {
+        return JavaPsiFacade.getInstance(e.project!!).findClass(qualifiedName, GlobalSearchScope.projectScope(e.project!!))
     }
 
     private fun findTestSourceDirectory(): VirtualFile? {
@@ -59,6 +70,10 @@ class IdeaShits(val e: AnActionEvent) {
         return dirVirtualFile
     }
 
+    private fun findVirtualFile (file: File) : VirtualFile {
+        return LocalFileSystem.getInstance().findFileByIoFile(file)!!
+    }
+
     private fun buildFileChooserDescriptor(): FileChooserDescriptor {
         val descriptor = FileChooserDescriptor(false, true, false, false, false, false)
         descriptor.title = "Choose project/module's test srcDir root in which ObjectMother's package will be created"
@@ -67,19 +82,4 @@ class IdeaShits(val e: AnActionEvent) {
         return descriptor
     }
 
-    fun openFileInNewTab(file: File) {
-        FileEditorManager.getInstance(e.project!!).openFile(findVirtualFile(file), true)
-    }
-
-    private fun findVirtualFile (file: File) : VirtualFile {
-        return LocalFileSystem.getInstance().findFileByIoFile(file)!!
-    }
-
-    fun getProject(): @Nullable Project? {
-        return e.project
-    }
-
-    fun findClass(qualifiedName: String): @Nullable PsiClass? {
-        return JavaPsiFacade.getInstance(e.project!!).findClass(qualifiedName, GlobalSearchScope.projectScope(e.project!!))
-    }
 }

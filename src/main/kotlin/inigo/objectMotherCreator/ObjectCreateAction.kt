@@ -2,8 +2,8 @@ package inigo.objectMotherCreator
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.vfs.VirtualFile
 import inigo.objectMotherCreator.infraestructure.IdeaShits
+import inigo.objectMotherCreator.infraestructure.OMFile
 
 class ObjectCreateOnCaretSelectedAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
@@ -36,6 +36,6 @@ class ObjectCreateFileSeletedAction : AnAction() {
         ideShits.setMenuItemEnabled(isAnyTreateableFileSelected(selectedFile))
     }
 
-    private fun isAnyTreateableFileSelected(selectedFile: VirtualFile?) =
+    private fun isAnyTreateableFileSelected(selectedFile: OMFile?) =
         selectedFile != null && selectedFile.toString().endsWith(".java")
 }
