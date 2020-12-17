@@ -18,8 +18,8 @@ import org.jetbrains.jps.model.java.JavaSourceRootType
 import java.io.File
 
 class IdeaShits(val e: AnActionEvent) {
-    fun getCurrentPSIFile(): PsiFile? {
-        return e.getData(CommonDataKeys.PSI_FILE)!!
+    fun getCurrentJavaFile(): JavaFile {
+        return JavaFile(e.getData(CommonDataKeys.PSI_FILE)!! as PsiJavaFile)
     }
 
     fun getCurrentVirtualFile(): OMFile {
@@ -33,12 +33,9 @@ class IdeaShits(val e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = enabled
     }
 
-    fun obtainTestSourceDirectory(): @Nullable PsiDirectory? {
-        val dirVirtualFile: VirtualFile? = findTestSourceDirectory()
-        if (dirVirtualFile == null){
-            return null
-        }
-        return PsiManager.getInstance(e.project!!).findDirectory(dirVirtualFile!!)
+    fun obtainTestSourceDirectory(): @Nullable JavaDirectory? {
+        val dirVirtualFile: VirtualFile = findTestSourceDirectory() ?: return null
+        return JavaDirectory(PsiManager.getInstance(e.project!!).findDirectory(dirVirtualFile)!!)
     }
 
     fun openFileInNewTab(file: File) {
@@ -49,8 +46,13 @@ class IdeaShits(val e: AnActionEvent) {
         return e.project
     }
 
-    fun findClass(qualifiedName: String): @Nullable PsiClass? {
-        return JavaPsiFacade.getInstance(e.project!!).findClass(qualifiedName, GlobalSearchScope.projectScope(e.project!!))
+    fun findClass(qualifiedName: String): @Nullable JavaClass? {
+        val psiClass = JavaPsiFacade.getInstance(e.project!!).findClass(qualifiedName, GlobalSearchScope.projectScope(e.project!!))
+        return if (psiClass == null) {
+            null
+        } else {
+            JavaClass(psiClass)
+        }
     }
 
     private fun findTestSourceDirectory(): VirtualFile? {

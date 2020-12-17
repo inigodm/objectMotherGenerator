@@ -1,8 +1,7 @@
 package inigo.objectMotherCreator
 
-import com.intellij.psi.PsiDirectory
-import com.intellij.psi.PsiJavaFile
 import inigo.objectMotherCreator.infraestructure.IdeaShits
+import inigo.objectMotherCreator.infraestructure.JavaDirectory
 import java.io.File
 
 class PluginLauncher {
@@ -12,9 +11,9 @@ class PluginLauncher {
         objectMotherCreation(ideaShits, dir)
     }
 
-    private fun objectMotherCreation(ideaShits: IdeaShits, testSrcDir: PsiDirectory?) {
+    private fun objectMotherCreation(ideaShits: IdeaShits, testSrcDir: JavaDirectory) {
         val creator = ObjectMotherCreator(JavaFileCreator(ideaShits), JavaObjectMotherTemplate())
-        val fileInfoExtractor = JavaFileInfo(ideaShits.getCurrentPSIFile() as PsiJavaFile, ideaShits)
+        val fileInfoExtractor = JavaFileInfo(ideaShits.getCurrentJavaFile() , ideaShits)
         creator.createObjectMotherFor(fileInfoExtractor, testSrcDir)
         openFilesInEditor(ideaShits, creator.objectMotherFileNames)
     }

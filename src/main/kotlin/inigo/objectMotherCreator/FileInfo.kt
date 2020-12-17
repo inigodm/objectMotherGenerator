@@ -1,18 +1,18 @@
 package inigo.objectMotherCreator
 
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiJavaFile
 import inigo.objectMotherCreator.infraestructure.IdeaShits
+import inigo.objectMotherCreator.infraestructure.JavaClass
+import inigo.objectMotherCreator.infraestructure.JavaFile
 
 interface FileInfo{
     fun classesToTread(): List<ClassInfo>
     fun packageName(): String
 }
 
-class JavaFileInfo(var root: PsiJavaFile, var ideaShits: IdeaShits): FileInfo{
+class JavaFileInfo(var root: JavaFile, var ideaShits: IdeaShits): FileInfo{
 
     lateinit var packageStr: String
-    lateinit var psiClasses: Array<out PsiClass>
+    lateinit var javaClasses: List<JavaClass>
     lateinit var mainClass: ClassInfo
 
     init{
@@ -20,9 +20,9 @@ class JavaFileInfo(var root: PsiJavaFile, var ideaShits: IdeaShits): FileInfo{
     }
 
     fun extractFileInfo(){
-        packageStr = root.packageStatement?.packageName ?: ""
-        psiClasses = root.classes
-        var main =  mainClass(psiClasses)
+        packageStr = root.getPackageNameOrVoid()
+        javaClasses = root.getClasses()
+        val main =  mainClass(javaClasses)
         mainClass = ClassInfo(main, packageStr, ideaShits)
     }
 
@@ -34,9 +34,9 @@ class JavaFileInfo(var root: PsiJavaFile, var ideaShits: IdeaShits): FileInfo{
         return packageStr
     }
 
-    fun mainClass(psiClasses: Array<out PsiClass>): PsiClass {
-        return psiClasses.filter {
-            it.modifierList!!.text.contains("public")
+    fun mainClass(javaClasses: List<JavaClass>): JavaClass {
+        return javaClasses.filter {
+            it.isPublic()
         }.first()
     }
 }
