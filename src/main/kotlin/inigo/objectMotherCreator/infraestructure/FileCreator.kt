@@ -12,17 +12,11 @@ import inigo.objectMotherCreator.infraestructure.JavaDirectory
 import java.io.File
 
 
-interface FileCreator {
-    @Throws(IncorrectOperationException::class)
-    fun createFile(directory: JavaDirectory, name: String, code: String)
+class JavaFileCreator(var ideaShits: IdeaShits) {
+    lateinit var createdFilename: String
 
     @Throws(IncorrectOperationException::class)
-    fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: JavaDirectory): JavaDirectory?
-}
-
-class JavaFileCreator(var ideaShits: IdeaShits): FileCreator {
-    @Throws(IncorrectOperationException::class)
-    override fun createFile(directory: JavaDirectory, name: String, code: String) {
+    fun createFile(directory: JavaDirectory, name: String, code: String) {
         return CommandProcessor.getInstance().executeCommand(
             ideaShits.getProject(),
             {
@@ -40,7 +34,7 @@ class JavaFileCreator(var ideaShits: IdeaShits): FileCreator {
     }
 
     @Throws(IncorrectOperationException::class)
-    override fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: JavaDirectory): JavaDirectory? {
+    fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: JavaDirectory): JavaDirectory? {
         var psiDirectory: JavaDirectory?
         psiDirectory = srcDirectory
         packageName.split(".").forEach {
@@ -69,7 +63,6 @@ class JavaFileCreator(var ideaShits: IdeaShits): FileCreator {
         return file
     }
 
-
     @Throws(IncorrectOperationException::class)
     private fun createSubdirectory(
         oldDirectory: JavaDirectory,
@@ -95,9 +88,10 @@ class JavaFileCreator(var ideaShits: IdeaShits): FileCreator {
         return psiDirectory[0]
     }
 
-    fun createFile(baseDir: JavaDirectory, clazzInfo: ClassInfo, javaCode: String): String {
+    fun buildFile(baseDir: JavaDirectory, clazzInfo: ClassInfo, javaCode: String) {
         val directory = findOrCreateDirectoryForPackage(clazzInfo.packageName, baseDir)!!
         createFile(directory, "${clazzInfo.clazz.getName()}ObjectMother.java", javaCode)
-        return "${directory.getOMFile().getCanonicalPath()}${File.separator}${clazzInfo.clazz.getName()}ObjectMother.java"
+        createdFilename =
+            "${directory.getOMFile().getCanonicalPath()}${File.separator}${clazzInfo.clazz.getName()}ObjectMother.java"
     }
 }

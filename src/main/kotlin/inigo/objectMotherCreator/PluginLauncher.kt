@@ -11,10 +11,10 @@ class PluginLauncher {
         objectMotherCreation(ideaShits, dir)
     }
 
-    private fun objectMotherCreation(ideaShits: IdeaShits, testSrcDir: JavaDirectory) {
+    private fun objectMotherCreation(ideaShits: IdeaShits, destDirectory: JavaDirectory) {
         val creator = ObjectMotherCreator(JavaFileCreator(ideaShits), JavaObjectMotherTemplate())
-        val fileInfoExtractor = JavaFileInfo(ideaShits.getCurrentJavaFile() , ideaShits)
-        creator.createObjectMotherFor(fileInfoExtractor, testSrcDir)
+        val javaFile = JavaFileInfo(ideaShits.getCurrentJavaFile() , ideaShits)
+        creator.createObjectMotherFor(javaFile, destDirectory)
         openFilesInEditor(ideaShits, creator.objectMotherFileNames)
     }
 

@@ -5,16 +5,14 @@ import inigo.objectMotherCreator.infraestructure.JavaDirectory
 class ObjectMotherCreator(var fileCreator: JavaFileCreator, var template: ObjectMotherTemplate) {
     val objectMotherFileNames = mutableListOf<String>()
 
-    fun createObjectMotherFor(fileInfoExtractor: FileInfo, baseDir: JavaDirectory) {
+    fun createObjectMotherFor(fileInfo: FileInfo, baseDir: JavaDirectory) {
         objectMotherFileNames.clear()
         val classesToTreat = mutableListOf<ClassInfo>()
-        classesToTreat.addAll(fileInfoExtractor.classesToTread())
+        classesToTreat.addAll(fileInfo.classesToTread())
         while (classesToTreat.isNotEmpty()) {
             val clazzInfo = classesToTreat.removeAt(0);
-            val filename = fileCreator.createFile(baseDir,
-                    clazzInfo,
-                    template.buildObjectMotherCode(clazzInfo))
-            objectMotherFileNames.add(filename)
+            fileCreator.buildFile(baseDir, clazzInfo, template.buildObjectMotherCode(clazzInfo))
+            objectMotherFileNames.add(fileCreator.createdFilename)
             classesToTreat.addAll(template.getNeededObjectMothers())
         }
     }

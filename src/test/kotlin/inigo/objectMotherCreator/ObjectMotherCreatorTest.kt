@@ -2,8 +2,8 @@ package inigo.objectMotherCreator
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiDirectory
+import inigo.objectMotherCreator.infraestructure.JavaClass
+import inigo.objectMotherCreator.infraestructure.JavaDirectory
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -16,19 +16,19 @@ class ObjectMotherCreatorTest {
     @MockK
     lateinit var project : Project
     @MockK
-    lateinit var fileCreator : FileCreator
+    lateinit var fileCreator : JavaFileCreator
     @MockK
     lateinit var javaObjectMotherTemplate: JavaObjectMotherTemplate
     @MockK
     lateinit var infoExtractor : FileInfo
     @MockK
-    lateinit var dir : PsiDirectory
+    lateinit var dir : JavaDirectory
     @MockK
-    lateinit var directory : PsiDirectory
+    lateinit var directory : JavaDirectory
     @MockK
     lateinit var classInfo: ClassInfo
     @MockK
-    lateinit var clazz : PsiClass
+    lateinit var clazz : JavaClass
     @MockK
     lateinit var e: AnActionEvent
 
@@ -39,45 +39,45 @@ class ObjectMotherCreatorTest {
 
     @Test
     fun `extracts info of isolated classes` () {
-        every { directory.virtualFile.canonicalPath } returns "file path"
+        every { directory.getOMFile().getCanonicalPath() } returns "file path"
         every { infoExtractor.classesToTread() } returns listOf(classInfo)
         every { classInfo.clazz } returns clazz
-        every { classInfo.clazz.name } returns "clazzname"
+        every { classInfo.clazz.getName() } returns "clazzname"
         every { classInfo.packageName } returns "package"
         every { javaObjectMotherTemplate.buildObjectMotherCode(any()) } returns "source code"
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returns mutableListOf()
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
-        every { fileCreator.createFile(any(), any(), any()) } returns Unit
+        every { fileCreator.buildFile(any(), any(), any()) } returns Unit
         every { e.project } returns project
+        every { fileCreator.createdFilename } returns "file path/clazznameObjectMother.java"
 
-        val objectMotherBuilder = ObjectMotherCreator(fileCreator, javaObjectMotherTemplate);
-        objectMotherBuilder.createObjectMotherFor(infoExtractor, dir)
+        val sut = ObjectMotherCreator(fileCreator, javaObjectMotherTemplate);
+        sut.createObjectMotherFor(infoExtractor, dir)
 
-        assertEquals(objectMotherBuilder.objectMotherFileNames, mutableListOf("file path/clazznameObjectMother.java"))
-        //verify(exactly = 1) { javaObjectMotherTemplate.buildJavaFile(psiJavaClassInfo) }
-        verify(exactly = 1) { fileCreator.findOrCreateDirectoryForPackage("package", dir) }
-        verify(exactly = 1) { fileCreator.createFile(directory, "clazznameObjectMother.java", "source code") }
+        assertEquals(sut.objectMotherFileNames, mutableListOf("file path/clazznameObjectMother.java"))
+        verify(exactly = 1) { javaObjectMotherTemplate.getNeededObjectMothers() }
+        verify(exactly = 1) { fileCreator.buildFile(dir, classInfo, "source code") }
     }
 
     @Test
     fun `extracts info recursively from classes` () {
-        every { directory.virtualFile.canonicalPath } returns "file path"
+        every { directory.getOMFile().getCanonicalPath() } returns "file path"
         every { infoExtractor.classesToTread() } returns listOf(classInfo)
         every { classInfo.clazz } returns clazz
-        every { classInfo.clazz.name } returns "clazzname"
+        every { classInfo.clazz.getName() } returns "clazzname"
         every { classInfo.packageName } returns "package"
         every { javaObjectMotherTemplate.buildObjectMotherCode(any()) } returns "source code"
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returnsMany listOf(mutableListOf(classInfo), mutableListOf())
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
-        every { fileCreator.createFile(any(), any(), any()) } returns Unit
+        every { fileCreator.buildFile(any(), any(), any()) } returns Unit
         every { e.project } returns project
+        every { fileCreator.createdFilename } returns "file path/clazznameObjectMother.java"
 
-        var objectMotherBuilder = ObjectMotherCreator(fileCreator, javaObjectMotherTemplate);
-        objectMotherBuilder.createObjectMotherFor(infoExtractor, dir)
+        val sut = ObjectMotherCreator(fileCreator, javaObjectMotherTemplate);
+        sut.createObjectMotherFor(infoExtractor, dir)
 
-        assertEquals(objectMotherBuilder.objectMotherFileNames,
+        assertEquals(sut.objectMotherFileNames,
                 mutableListOf("file path/clazznameObjectMother.java", "file path/clazznameObjectMother.java"))
-        verify(exactly = 2) { fileCreator.findOrCreateDirectoryForPackage("package", dir) }
-        verify(exactly = 2) { fileCreator.createFile(directory, "clazznameObjectMother.java", "source code") }
+        verify(exactly = 2) { fileCreator.buildFile(dir, classInfo, "source code") }
     }
 }
