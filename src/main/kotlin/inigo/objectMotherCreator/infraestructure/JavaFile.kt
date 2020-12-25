@@ -9,7 +9,7 @@ class JavaFile(val inner: PsiJavaFile) {
     }
 }
 
-class JavaClass(val inner: PsiClass) {
+data class JavaClass(private val inner: PsiClass) {
     fun isPublic() = inner.modifierList!!.text.contains("public")
     fun getPackageName() = inner.qualifiedName!!.substringBeforeLast(".")
     fun getAllMethods() = inner.methods.map { JavaMethod(it) }
@@ -18,17 +18,17 @@ class JavaClass(val inner: PsiClass) {
     fun getQualifiedName() = inner.qualifiedName
 }
 
-class JavaMethod(val inner: PsiMethod) {
+data class JavaMethod(private val inner: PsiMethod) {
     fun getName() = inner.name
     fun getParameters() = inner.parameterList.parameters.map { JavaParameter(it) }
 }
 
-class JavaParameter(val inner: PsiParameter) {
+data class JavaParameter(private val inner: PsiParameter) {
     fun getNameOrVoid() = inner.typeElement?.type?.getPresentableText() ?: ""
     fun getClassCanonicalName() = inner.type.getCanonicalText(true)
 }
 
-class JavaDirectory(val inner: PsiDirectory) {
+data class JavaDirectory(val inner: PsiDirectory) {
     fun findSubdirectory(name: String): JavaDirectory? {
         val subDirectory = inner.findSubdirectory(name) ?: return null
         return JavaDirectory(subDirectory)
