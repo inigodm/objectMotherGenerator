@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 class `JavaObjectMotherTemplate should` {
     @Test
     fun `build package line`() {
-        var sut = JavaObjectMotherTemplate()
+        val sut = JavaObjectMotherTemplate()
 
         assertEquals(sut.buildPackage("packagename").trim(), "package packagename;")
     }
@@ -102,7 +102,7 @@ import static qualified.clazzNameObjectMother.randomclazzName;
                 "faker.yoda().quote()").contains(fakerRandomString()) }
     }
 
-    fun assertThatWorksWithType(type: String, expectedGenerator: String) {
+    private fun assertThatWorksWithType(type: String, expectedGenerator: String) {
         val sut = JavaObjectMotherTemplate()
 
         val res = sut.buildClass("className", listOf(fixedMethodInfo(type)))

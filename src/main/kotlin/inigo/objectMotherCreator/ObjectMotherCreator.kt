@@ -1,33 +1,19 @@
 package inigo.objectMotherCreator
 
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.CommonDataKeys
-import com.intellij.psi.*
-import java.io.File
+import inigo.objectMotherCreator.infraestructure.JavaDirectory
 
-class ObjectMotherCreator(var fileCreator: FileCreator, var template: ObjectMotherTemplate) {
+class ObjectMotherCreator(var fileCreator: JavaFileCreator, var template: ObjectMotherTemplate) {
     val objectMotherFileNames = mutableListOf<String>()
 
-    fun createObjectMotherFor(fileInfoExtractor: FileInfo, baseDir: PsiDirectory?) {
+    fun createObjectMotherFor(fileInfo: FileInfo, baseDir: JavaDirectory) {
         objectMotherFileNames.clear()
         val classesToTreat = mutableListOf<ClassInfo>()
-        classesToTreat.addAll(fileInfoExtractor.classesToTread())
+        classesToTreat.addAll(fileInfo.classesToTread())
         while (classesToTreat.isNotEmpty()) {
             val clazzInfo = classesToTreat.removeAt(0);
-            createFile(baseDir,
-                    clazzInfo,
-                    template.buildObjectMotherCode(clazzInfo))
+            fileCreator.buildFile(baseDir, clazzInfo, template.buildObjectMotherCode(clazzInfo))
+            objectMotherFileNames.add(fileCreator.createdFilename)
             classesToTreat.addAll(template.getNeededObjectMothers())
         }
-    }
-
-    private fun createFile(baseDir: PsiDirectory?, clazzInfo: ClassInfo, javaCode: String) {
-        val directory = fileCreator.findOrCreateDirectoryForPackage(clazzInfo.packageName, baseDir)!!
-        fileCreator.createFile(directory, "${clazzInfo.clazz.name}ObjectMother.java", javaCode)
-        addGeneratedObjectMotherFileName(directory, clazzInfo)
-    }
-
-    private fun addGeneratedObjectMotherFileName(directory: PsiDirectory, clazzInfo: ClassInfo) {
-        objectMotherFileNames.add("${directory.virtualFile.canonicalPath}${File.separator}${clazzInfo.clazz.name}ObjectMother.java")
     }
 }

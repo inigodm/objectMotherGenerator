@@ -9,8 +9,8 @@ fun fixedMethodInfo() : MethodInfo  {
     var parametersInfo = mockk<ParametersInfo>()
     every { parametersInfo.clazzInfo?.packageName } returns "packagename"
     every { parametersInfo.name } returns "parameterName"
-    every { parametersInfo.clazzInfo?.clazz?.name } returns "clazzName"
-    every { parametersInfo.clazzInfo?.clazz?.qualifiedName } returns "qualified.clazzName"
+    every { parametersInfo.clazzInfo?.clazz?.getName() } returns "clazzName"
+    every { parametersInfo.clazzInfo?.clazz?.getQualifiedName() } returns "qualified.clazzName"
     every { methodInfo.args } returns mutableListOf(parametersInfo)
     return methodInfo
 }
@@ -20,8 +20,8 @@ fun fixedMethodInfo(type: String) : MethodInfo  {
     var parametersInfo = mockk<ParametersInfo>()
     every { parametersInfo.clazzInfo?.packageName } returns "packagename"
     every { parametersInfo.name } returns type
-    every { parametersInfo.clazzInfo?.clazz?.name } returns type
-    every { parametersInfo.clazzInfo?.clazz?.qualifiedName } returns "qualified.$type"
+    every { parametersInfo.clazzInfo?.clazz?.getName() } returns type
+    every { parametersInfo.clazzInfo?.clazz?.getQualifiedName() } returns "qualified.$type"
     every { methodInfo.args } returns mutableListOf(parametersInfo)
     return methodInfo
 }
@@ -29,7 +29,7 @@ fun fixedMethodInfo(type: String) : MethodInfo  {
 fun fixedClassInfo(): ClassInfo {
     var classInfo = mockk<ClassInfo>()
     every { classInfo.packageName } returns "packagename"
-    every { classInfo.clazz.name } returns "clazzname"
+    every { classInfo.clazz.getName() } returns "clazzname"
     every { classInfo.constructors } returns listOf()
     return classInfo
 

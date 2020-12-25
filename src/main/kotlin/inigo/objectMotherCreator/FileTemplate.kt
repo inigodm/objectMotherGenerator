@@ -13,7 +13,7 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
         neededObjectMotherClasses.clear()
         var res = buildPackage(clazz.packageName)
         res += buildImports(clazz.constructors)
-        return res + buildClass(clazz.clazz.name.toString(), clazz.constructors)
+        return res + buildClass(clazz.clazz.getName().toString(), clazz.constructors)
     }
 
     override fun getNeededObjectMothers(): List<ClassInfo> {
@@ -27,9 +27,9 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
     fun buildImports(methodsInfo: List<MethodInfo>): String {
         var res = "import com.github.javafaker.Faker;\n\n"
         if (methodsInfo.isNotEmpty()) {
-            var aux = methodsInfo.get(0).args.filter { it.clazzInfo?.clazz?.name ?: "" != "" }
+            var aux = methodsInfo.get(0).args.filter { it.clazzInfo?.clazz?.getName() ?: "" != "" }
                 .map {
-                    "import static ${it.clazzInfo?.clazz?.qualifiedName}ObjectMother.random${it.clazzInfo?.clazz?.name}"
+                    "import static ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.random${it.clazzInfo?.clazz?.getName()}"
                 }
                 .joinToString(separator = ";\n")
             if (aux.isNotEmpty()) {
@@ -87,7 +87,7 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
                 var clazzInfo = param.clazzInfo
                 if (clazzInfo != null) {
                     neededObjectMotherClasses.add(clazzInfo)
-                    "\n\t\t\t\trandom${clazzInfo.clazz.name}()"
+                    "\n\t\t\t\trandom${clazzInfo.clazz.getName()}()"
                 } else {
                     "new ${param.name}()"
                 }

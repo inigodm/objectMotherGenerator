@@ -1,13 +1,10 @@
 package inigo.objectMotherCreator
 
-import com.intellij.openapi.project.Project
-import com.intellij.psi.*
-import com.intellij.psi.search.GlobalSearchScope
+import inigo.objectMotherCreator.infraestructure.*
 
 
-class ClassInfo(var clazz: PsiClass, var packageName: String, var project: Project) {
-    lateinit var fields: Array<out PsiField>
-    lateinit var methods: Array<out PsiMethod>
+class ClassInfo(var clazz: JavaClass, var packageName: String, var ideaShits: IdeaShits) {
+    lateinit var methods: List<JavaMethod>
     lateinit var constructors: List<MethodInfo>
 
     init {
@@ -15,13 +12,12 @@ class ClassInfo(var clazz: PsiClass, var packageName: String, var project: Proje
     }
 
     fun extractInfo(){
-        fields = clazz.allFields
-        methods = clazz.allMethods
-        constructors = clazz.constructors.map { MethodInfo(it, project) }.toList()
+        methods = clazz.getAllMethods()
+        constructors = clazz.getAllConstructors().map { MethodInfo(it, ideaShits) }.toList()
     }
 }
 
-class MethodInfo(var method: PsiMethod, var project: Project){
+class MethodInfo(var method: JavaMethod, var ideaShits: IdeaShits){
     var args =  mutableListOf<ParametersInfo>()
     lateinit var name: String
     init{
@@ -29,12 +25,12 @@ class MethodInfo(var method: PsiMethod, var project: Project){
     }
 
     fun extractMethodInfo(){
-        name = method.name
-        method.parameterList.parameters.map { args.add(ParametersInfo(it, project)) }
+        name = method.getName()
+        method.getParameters().map { args.add(ParametersInfo(it, ideaShits)) }
     }
 }
 
-class ParametersInfo(var param: PsiParameter, var project: Project){
+class ParametersInfo(var param: JavaParameter, var ideaShits: IdeaShits){
     lateinit var name: String
     var clazzInfo: ClassInfo? = null
 
@@ -43,15 +39,15 @@ class ParametersInfo(var param: PsiParameter, var project: Project){
     }
 
     fun extractParamInfo(){
-        name = param.typeElement?.type?.getPresentableText() ?: ""
+        name = param.getNameOrVoid()
         findClassInfoIfTypeDefinedInProject()
     }
 
     private fun findClassInfoIfTypeDefinedInProject() {
-        val aux = param.type.getCanonicalText(true)
-        val clazz = JavaPsiFacade.getInstance(project).findClass(aux, GlobalSearchScope.projectScope(project))
+        val aux = param.getClassCanonicalName()
+        val clazz = ideaShits.findClass(aux)
         if (clazz != null) {
-            clazzInfo = ClassInfo(clazz, clazz.qualifiedName!!.substringBeforeLast("."), project)
+            clazzInfo = ClassInfo(clazz, clazz.getPackageName(), ideaShits)
         }
     }
 }
