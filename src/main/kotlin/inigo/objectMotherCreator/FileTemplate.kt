@@ -11,9 +11,9 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
 
     override fun buildObjectMotherCode(clazz: ClassInfo): String {
         neededObjectMotherClasses.clear()
-        var res = buildPackage(clazz.packageName)
+        var res = buildPackage(clazz.packageStr)
         res += buildImports(clazz.constructors)
-        return res + buildClass(clazz.clazz.getName().toString(), clazz.constructors)
+        return res + buildClass(clazz.clazz!!.getName().toString(), clazz.constructors)
     }
 
     override fun getNeededObjectMothers(): List<ClassInfo> {
@@ -87,7 +87,7 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
                 var clazzInfo = param.clazzInfo
                 if (clazzInfo != null) {
                     neededObjectMotherClasses.add(clazzInfo)
-                    "\n\t\t\t\trandom${clazzInfo.clazz.getName()}()"
+                    "\n\t\t\t\trandom${clazzInfo.clazz!!.getName()}()"
                 } else {
                     "new ${param.name}()"
                 }

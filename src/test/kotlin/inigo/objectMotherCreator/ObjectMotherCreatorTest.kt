@@ -20,7 +20,7 @@ class ObjectMotherCreatorTest {
     @MockK
     lateinit var javaObjectMotherTemplate: JavaObjectMotherTemplate
     @MockK
-    lateinit var infoExtractor : FileInfo
+    lateinit var infoExtractor : ClassInfo
     @MockK
     lateinit var dir : JavaDirectory
     @MockK
@@ -40,10 +40,6 @@ class ObjectMotherCreatorTest {
     @Test
     fun `extracts info of isolated classes` () {
         every { directory.getOMFile().getCanonicalPath() } returns "file path"
-        every { infoExtractor.classesToTread() } returns listOf(classInfo)
-        every { classInfo.clazz } returns clazz
-        every { classInfo.clazz.getName() } returns "clazzname"
-        every { classInfo.packageName } returns "package"
         every { javaObjectMotherTemplate.buildObjectMotherCode(any()) } returns "source code"
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returns mutableListOf()
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
@@ -56,16 +52,15 @@ class ObjectMotherCreatorTest {
 
         assertEquals(sut.objectMotherFileNames, mutableListOf("file path/clazznameObjectMother.java"))
         verify(exactly = 1) { javaObjectMotherTemplate.getNeededObjectMothers() }
-        verify(exactly = 1) { fileCreator.buildFile(dir, classInfo, "source code") }
+        verify(exactly = 1) { fileCreator.buildFile(dir, infoExtractor, "source code") }
     }
 
     @Test
     fun `extracts info recursively from classes` () {
         every { directory.getOMFile().getCanonicalPath() } returns "file path"
-        every { infoExtractor.classesToTread() } returns listOf(classInfo)
         every { classInfo.clazz } returns clazz
-        every { classInfo.clazz.getName() } returns "clazzname"
-        every { classInfo.packageName } returns "package"
+        every { classInfo.clazz!!.getName() } returns "clazzname"
+        every { classInfo.packageStr } returns "package"
         every { javaObjectMotherTemplate.buildObjectMotherCode(any()) } returns "source code"
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returnsMany listOf(mutableListOf(classInfo), mutableListOf())
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
@@ -78,6 +73,7 @@ class ObjectMotherCreatorTest {
 
         assertEquals(sut.objectMotherFileNames,
                 mutableListOf("file path/clazznameObjectMother.java", "file path/clazznameObjectMother.java"))
-        verify(exactly = 2) { fileCreator.buildFile(dir, classInfo, "source code") }
+        verify(exactly = 1) { fileCreator.buildFile(dir, infoExtractor, "source code") }
+        verify(exactly = 1) { fileCreator.buildFile(dir, classInfo, "source code") }
     }
 }

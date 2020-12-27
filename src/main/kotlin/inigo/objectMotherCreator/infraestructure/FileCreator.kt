@@ -89,9 +89,9 @@ class JavaFileCreator(var ideaShits: IdeaShits) {
     }
 
     fun buildFile(baseDir: JavaDirectory, clazzInfo: ClassInfo, javaCode: String) {
-        val directory = findOrCreateDirectoryForPackage(clazzInfo.packageName, baseDir)!!
-        createFile(directory, "${clazzInfo.clazz.getName()}ObjectMother.java", javaCode)
+        val directory = findOrCreateDirectoryForPackage(clazzInfo.packageStr, baseDir)!!
+        createFile(directory, "${clazzInfo.clazz!!.getName()}ObjectMother.java", javaCode)
         createdFilename =
-            "${directory.getOMFile().getCanonicalPath()}${File.separator}${clazzInfo.clazz.getName()}ObjectMother.java"
+            "${directory.getOMFile().getCanonicalPath()}${File.separator}${clazzInfo.clazz!!.getName()}ObjectMother.java"
     }
 }
