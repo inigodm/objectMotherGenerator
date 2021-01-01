@@ -74,10 +74,10 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
                 "\n\t\t\t\t${fakerRandomString()}"
             }
             "int" -> {
-                "\n\t\t\t\tfaker.number().randomNumber()"
+                "\n\t\t\t\tfaker.number().randomDigit()"
             }
             "Integer" -> {
-                "\n\t\t\t\tfaker.number().randomNumber()"
+                "\n\t\t\t\tfaker.number().randomDigit()"
             }
             "long" -> {
                 "\n\t\t\t\tfaker.number().randomNumber()"
@@ -86,7 +86,7 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
                 "\n\t\t\t\tfaker.number().randomNumber()"
             }
             else -> {
-                var clazzInfo = param.clazzInfo
+                val clazzInfo = param.clazzInfo
                 if (clazzInfo != null) {
                     neededObjectMotherClasses.add(clazzInfo)
                     "\n\t\t\t\trandom${clazzInfo.clazz!!.getName()}()"

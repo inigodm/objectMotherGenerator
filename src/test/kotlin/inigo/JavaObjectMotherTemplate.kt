@@ -60,8 +60,8 @@ import static qualified.clazzNameObjectMother.randomclazzName;
 
     @Test
     fun `build class code using existing first constructor if any constructors exists`() {
-        assertThatWorksWithType("int", "faker.number().randomNumber()")
-        assertThatWorksWithType("Integer", "faker.number().randomNumber()")
+        assertThatWorksWithType("int", "faker.number().randomDigit()")
+        assertThatWorksWithType("Integer", "faker.number().randomDigit()")
         assertThatWorksWithType("long", "faker.number().randomNumber()")
         assertThatWorksWithType("Long", "faker.number().randomNumber()")
     }
