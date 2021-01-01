@@ -42,15 +42,17 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
     fun buildClass(className: String, constructors: List<MethodInfo>): String {
         var res = "public class ${className}ObjectMother{\n"
         if (constructors.isNotEmpty()) {
-            constructors.forEach { res += buildMotherConstructor(className, it) };
+            var i = 0
+            constructors.forEach { res += buildMotherConstructor(className, it, i++) };
         } else {
             res += buildMotherConstructor(className)
         }
         return "$res\n}"
     }
 
-    private fun buildMotherConstructor(className: String, methodInfo: MethodInfo): Any? {
-        return """  public static $className random$className(){
+    private fun buildMotherConstructor(className: String, methodInfo: MethodInfo, index: Int): Any? {
+        return """
+    public static $className random$className${if(index > 0) index else ""}(){
         Faker faker = new Faker();
         return new $className(${buildArgumentsData(methodInfo.args)});
     }"""

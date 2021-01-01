@@ -49,7 +49,8 @@ import static qualified.clazzNameObjectMother.randomclazzName;
         val res = sut.buildClass("className", listOf(fixedMethodInfo()))
 
         assertEquals(res, """public class classNameObjectMother{
-  public static className randomclassName(){
+
+    public static className randomclassName(){
         Faker faker = new Faker();
         return new className(
 				randomclazzName());
@@ -108,7 +109,8 @@ import static qualified.clazzNameObjectMother.randomclazzName;
         val res = sut.buildClass("className", listOf(fixedMethodInfo(type)))
 
         assertEquals(res, """public class classNameObjectMother{
-  public static className randomclassName(){
+
+    public static className randomclassName(){
         Faker faker = new Faker();
         return new className(
 				$expectedGenerator);
