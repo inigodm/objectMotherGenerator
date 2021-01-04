@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>inigo.objectmothercreator</id>
     <name>Object mother creator</name>
-    <version>1.1.0.1</version>
+    <version>1.1.0.2</version>
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
     <depends>com.intellij.java</depends>
 
@@ -34,6 +34,7 @@
         1.0.1.2 - Increased support until 203.*
         1.1.0 - Autodetect test source directory if exists and unique
         1.1.0.1 - Remove support until label and refactor
+        1.1.0.2 - Fix multiple contructors format and the generation of random integer
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->

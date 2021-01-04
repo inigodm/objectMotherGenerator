@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'org.example'
-version '1.1.0.1'
+version '1.1.0.2'
 
 sourceCompatibility = 1.8
 
@@ -42,7 +42,7 @@ patchPluginXml {
     sinceBuild 193
 
     changeNotes """
-    - Removed deprecation on 211.*
-    - Refactor
+        - Fix multiple contructors format<br>
+        - Fix the generation of random integer
     """
 }
