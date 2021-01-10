@@ -14,7 +14,7 @@ class PluginLauncher {
     private fun objectMotherCreation(ideaShits: IdeaShits, destDirectory: JavaDirectory) {
         val creator = ObjectMotherCreator(JavaFileCreator(ideaShits), JavaObjectMotherTemplate())
         val javaFile = ClassInfo(
-            root =ideaShits.getCurrentJavaFile() ,
+            root = ideaShits.getCurrentJavaFile() ,
             ideaShits = ideaShits)
         creator.createObjectMotherFor(javaFile, destDirectory)
         openFilesInEditor(ideaShits, creator.objectMotherFileNames)
