@@ -27,7 +27,7 @@ class ClassInfo(var clazz: JavaClass? = null, var packageStr: String = "", var r
     fun mainClass(javaClasses: List<JavaClass>): JavaClass {
         return javaClasses.filter {
             it.isPublic()
-        }.first()
+        }.firstOrNull() ?: javaClasses[0]
     }
 }
 
