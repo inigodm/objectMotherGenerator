@@ -6,17 +6,17 @@ import java.io.File
 
 class PluginLauncher {
 
-    fun doObjectMotherCreation(ideaShits: IdeaShits) {
+    fun doObjectMotherCreation(ideaShits: IdeaShits, extension: String = "java") {
         val dir = ideaShits.obtainTestSourceDirectory() ?: return
-        objectMotherCreation(ideaShits, dir)
+        objectMotherCreation(ideaShits, dir, extension)
     }
 
-    private fun objectMotherCreation(ideaShits: IdeaShits, destDirectory: JavaDirectory) {
+    private fun objectMotherCreation(ideaShits: IdeaShits, destDirectory: JavaDirectory, extension: String) {
         val creator = ObjectMotherCreator(JavaFileCreator(ideaShits), JavaObjectMotherTemplate())
         val javaFile = ClassInfo(
             root = ideaShits.getCurrentJavaFile() ,
             ideaShits = ideaShits)
-        creator.createObjectMotherFor(javaFile, destDirectory)
+        creator.createObjectMotherFor(javaFile, destDirectory, extension)
         openFilesInEditor(ideaShits, creator.objectMotherFileNames)
     }
 

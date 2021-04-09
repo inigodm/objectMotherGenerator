@@ -12,7 +12,7 @@ class ObjectCreateOnCaretSelectedAction : AnAction() {
         if (ideShits.isCaretInJavaFile()) {
             PluginLauncher().doObjectMotherCreation(ideShits)
         } else if (ideShits.isCaretInGroovyFile()) {
-            PluginLauncher().doObjectMotherCreation(ideShits)
+            PluginLauncher().doObjectMotherCreation(ideShits, "groovy")
         }
     }
 
