@@ -13,13 +13,12 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
-import org.jetbrains.annotations.Nullable
 import org.jetbrains.jps.model.java.JavaSourceRootType
 import java.io.File
 
 class IdeaShits(val e: AnActionEvent) {
     fun getCurrentJavaFile(): JavaFile {
-        return JavaFile(e.getData(CommonDataKeys.PSI_FILE)!! as PsiJavaFile)
+        return JavaFile(e.getData(CommonDataKeys.PSI_FILE)!!)
     }
 
     fun getCurrentVirtualFile(): OMFile {
@@ -29,11 +28,14 @@ class IdeaShits(val e: AnActionEvent) {
     fun isCaretInJavaFile() =
         e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals("java", ignoreCase = true)
 
+    fun isCaretInGroovyFile() =
+        e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals("groovy", ignoreCase = true)
+
     fun setMenuItemEnabled(enabled: Boolean) {
         e.presentation.isEnabledAndVisible = enabled
     }
 
-    fun obtainTestSourceDirectory(): @Nullable JavaDirectory? {
+    fun obtainTestSourceDirectory(): JavaDirectory? {
         val dirVirtualFile: VirtualFile = findTestSourceDirectory() ?: return null
         return JavaDirectory(PsiManager.getInstance(e.project!!).findDirectory(dirVirtualFile)!!)
     }
@@ -42,11 +44,11 @@ class IdeaShits(val e: AnActionEvent) {
         FileEditorManager.getInstance(e.project!!).openFile(findVirtualFile(file), true)
     }
 
-    fun getProject(): @Nullable Project? {
+    fun getProject(): Project? {
         return e.project
     }
 
-    fun findClass(qualifiedName: String): @Nullable JavaClass? {
+    fun findClass(qualifiedName: String): JavaClass? {
         val psiClass = JavaPsiFacade.getInstance(e.project!!).findClass(qualifiedName, GlobalSearchScope.projectScope(e.project!!))
         return if (psiClass == null) {
             null

@@ -11,6 +11,8 @@ class ObjectCreateOnCaretSelectedAction : AnAction() {
         val ideShits = IdeaShits(e)
         if (ideShits.isCaretInJavaFile()) {
             PluginLauncher().doObjectMotherCreation(ideShits)
+        } else if (ideShits.isCaretInGroovyFile()) {
+            PluginLauncher().doObjectMotherCreation(ideShits, "groovy")
         }
     }
 
@@ -37,5 +39,6 @@ class ObjectCreateFileSeletedAction : AnAction() {
     }
 
     private fun isAnyTreateableFileSelected(selectedFile: OMFile?) =
-        selectedFile != null && selectedFile.toString().endsWith(".java")
+        selectedFile != null &&
+                (selectedFile.toString().endsWith(".java") || selectedFile.toString().endsWith(".groovy"))
 }
