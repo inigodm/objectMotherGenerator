@@ -7,7 +7,7 @@ plugins {
 }
 
 group 'org.example'
-version '1.1.0.2'
+version '1.2.0.1'
 
 sourceCompatibility = 1.8
 
@@ -43,7 +43,6 @@ patchPluginXml {
     sinceBuild 193
 
     changeNotes """
-        - Fix multiple contructors format<br>
-        - Fix the generation of random integer
+        - Added Groovy support. Fixed documentation
     """
 }

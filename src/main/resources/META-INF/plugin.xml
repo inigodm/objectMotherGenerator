@@ -1,20 +1,19 @@
 <idea-plugin>
     <id>inigo.objectmothercreator</id>
     <name>Object mother creator</name>
-    <version>1.1.0.2</version>
+    <version>1.2.0.1</version>
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
     <depends>com.intellij.java</depends>
     <depends>org.intellij.groovy</depends>
     <description><![CDATA[
-      Creates a java object mothers for selected java class on rigth clicking over it.
+      Creates object mothers for selected class on rigth clicking over it.
+      <br><br><b>Supports Java and Groovy projects</b>
       <br><br>Source code can be found <a href="https://github.com/inigodm/objectMotherGenerator">HERE</a>
-
-      <br><br> PR and issues are welcome <br><br>
-
+      <br><br> PR and issues are welcome
 <br><br>
-      <b>IMPORTANT: In this version the generated code uses, to generate random Strings, and only because is really funny, Javafaker library <a href="https://github.com/DiUS/java-faker">in github</a></b>
+      <b>IMPORTANT: Generated code uses, to generate random Strings, and only because is really funny, Javafaker library (<a href="https://github.com/DiUS/java-faker">in github</a>)</b>
 <br><br>
-      You can add it to your project using maven or gradle, as example, for version 1.0.2 (currrent);
+      You can add it (it generates random data for your tests, very usefull) to your project using maven or gradle, as example, for version 1.0.2 (currrent);
 <br><br>
       dependencies {<br>
         testImplementation "com.github.javafaker:javafaker:1.0.2"<br>
@@ -35,6 +34,8 @@
         1.1.0 - Autodetect test source directory if exists and unique
         1.1.0.1 - Remove support until label and refactor
         1.1.0.2 - Fix multiple contructors format and the generation of random integer
+        1.2.0.0 - Add groovy support
+        1.2.0.1 - Fix documentation
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
