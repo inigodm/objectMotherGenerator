@@ -5,7 +5,7 @@ import inigo.objectMotherCreator.infraestructure.JavaDirectory
 class ObjectMotherCreator(var fileCreator: JavaFileCreator, var template: ObjectMotherTemplate) {
     val objectMotherFileNames = mutableListOf<String>()
 
-    fun createObjectMotherFor(fileInfo: ClassInfo, baseDir: JavaDirectory, extension: String = "java") {
+    fun createObjectMotherFor(fileInfo: ClassInfo, baseDir: JavaDirectory, extension: String) {
         objectMotherFileNames.clear()
         val classesToTreat = mutableListOf<ClassInfo>()
         classesToTreat.add(fileInfo)

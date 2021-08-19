@@ -25,11 +25,8 @@ class IdeaShits(val e: AnActionEvent) {
         return OMFile(e.getData(PlatformDataKeys.VIRTUAL_FILE)!!)
     }
 
-    fun isCaretInJavaFile() =
-        e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals("java", ignoreCase = true)
-
-    fun isCaretInGroovyFile() =
-        e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals("groovy", ignoreCase = true)
+    fun isCaretInFileType(extension: String) =
+        e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals(extension, ignoreCase = true)
 
     fun setMenuItemEnabled(enabled: Boolean) {
         e.presentation.isEnabledAndVisible = enabled

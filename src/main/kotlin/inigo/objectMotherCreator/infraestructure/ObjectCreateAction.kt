@@ -9,16 +9,18 @@ class ObjectCreateOnCaretSelectedAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         e.project ?: return
         val ideShits = IdeaShits(e)
-        if (ideShits.isCaretInJavaFile()) {
-            PluginLauncher().doObjectMotherCreation(ideShits)
-        } else if (ideShits.isCaretInGroovyFile()) {
+        if (ideShits.isCaretInFileType("java")) {
+            PluginLauncher().doObjectMotherCreation(ideShits, "java")
+        } else if (ideShits.isCaretInFileType("groovy")) {
             PluginLauncher().doObjectMotherCreation(ideShits, "groovy")
         }
     }
 
     override fun update(e: AnActionEvent) {
         val ideShits = IdeaShits(e)
-        ideShits.setMenuItemEnabled(ideShits.isCaretInJavaFile())
+        ideShits.setMenuItemEnabled(
+            ideShits.isCaretInFileType("java") ||
+                    ideShits.isCaretInFileType("groovy"))
     }
 }
 
@@ -27,18 +29,22 @@ class ObjectCreateFileSeletedAction : AnAction() {
         e.project ?: return
         val ideShits = IdeaShits(e)
         val selectedFile = ideShits.getCurrentVirtualFile()
-        if (isAnyTreateableFileSelected(selectedFile)) {
-            PluginLauncher().doObjectMotherCreation(ideShits)
+        if (isFileSelectedOfType(selectedFile, "java")) {
+            PluginLauncher().doObjectMotherCreation(ideShits, "java")
+        } else if (isFileSelectedOfType(selectedFile, "groovy")) {
+            PluginLauncher().doObjectMotherCreation(ideShits, "groovy")
         }
     }
 
     override fun update(e: AnActionEvent) {
         val ideShits = IdeaShits(e)
         val selectedFile = ideShits.getCurrentVirtualFile()
-        ideShits.setMenuItemEnabled(isAnyTreateableFileSelected(selectedFile))
+        ideShits.setMenuItemEnabled(
+            isFileSelectedOfType(selectedFile, "java")
+                    ||  isFileSelectedOfType(selectedFile, "groovy"))
     }
 
-    private fun isAnyTreateableFileSelected(selectedFile: OMFile?) =
+    private fun isFileSelectedOfType(selectedFile: OMFile?, extension: String) =
         selectedFile != null &&
-                (selectedFile.toString().endsWith(".java") || selectedFile.toString().endsWith(".groovy"))
+                (selectedFile.toString().endsWith(".$extension"))
 }

@@ -43,16 +43,16 @@ class ObjectMotherCreatorTest {
         every { javaObjectMotherTemplate.buildObjectMotherCode(any()) } returns "source code"
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returns mutableListOf()
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
-        every { fileCreator.buildFile(any(), any(), any()) } returns Unit
+        every { fileCreator.buildFile(any(), any(), any(), "java") } returns Unit
         every { e.project } returns project
         every { fileCreator.createdFilename } returns "file path/clazznameObjectMother.java"
 
         val sut = ObjectMotherCreator(fileCreator, javaObjectMotherTemplate);
-        sut.createObjectMotherFor(infoExtractor, dir)
+        sut.createObjectMotherFor(infoExtractor, dir, "java")
 
         assertEquals(sut.objectMotherFileNames, mutableListOf("file path/clazznameObjectMother.java"))
         verify(exactly = 1) { javaObjectMotherTemplate.getNeededObjectMothers() }
-        verify(exactly = 1) { fileCreator.buildFile(dir, infoExtractor, "source code") }
+        verify(exactly = 1) { fileCreator.buildFile(dir, infoExtractor, "source code", "java") }
     }
 
     @Test
@@ -64,16 +64,16 @@ class ObjectMotherCreatorTest {
         every { javaObjectMotherTemplate.buildObjectMotherCode(any()) } returns "source code"
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returnsMany listOf(mutableListOf(classInfo), mutableListOf())
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
-        every { fileCreator.buildFile(any(), any(), any()) } returns Unit
+        every { fileCreator.buildFile(any(), any(), any(), "java") } returns Unit
         every { e.project } returns project
         every { fileCreator.createdFilename } returns "file path/clazznameObjectMother.java"
 
         val sut = ObjectMotherCreator(fileCreator, javaObjectMotherTemplate);
-        sut.createObjectMotherFor(infoExtractor, dir)
+        sut.createObjectMotherFor(infoExtractor, dir, "java")
 
         assertEquals(sut.objectMotherFileNames,
                 mutableListOf("file path/clazznameObjectMother.java", "file path/clazznameObjectMother.java"))
-        verify(exactly = 1) { fileCreator.buildFile(dir, infoExtractor, "source code") }
-        verify(exactly = 1) { fileCreator.buildFile(dir, classInfo, "source code") }
+        verify(exactly = 1) { fileCreator.buildFile(dir, infoExtractor, "source code", "java") }
+        verify(exactly = 1) { fileCreator.buildFile(dir, classInfo, "source code", "java") }
     }
 }

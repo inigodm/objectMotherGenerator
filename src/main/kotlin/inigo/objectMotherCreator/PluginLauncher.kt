@@ -6,7 +6,7 @@ import java.io.File
 
 class PluginLauncher {
 
-    fun doObjectMotherCreation(ideaShits: IdeaShits, extension: String = "java") {
+    fun doObjectMotherCreation(ideaShits: IdeaShits, extension: String) {
         val dir = ideaShits.obtainTestSourceDirectory() ?: return
         objectMotherCreation(ideaShits, dir, extension)
     }

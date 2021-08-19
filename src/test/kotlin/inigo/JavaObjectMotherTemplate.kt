@@ -4,10 +4,8 @@ import fixedClassInfo
 import fixedMethodInfo
 import inigo.objectMotherCreator.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.fakerRandomString
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class `JavaObjectMotherTemplate should` {
     @Test
