@@ -1,19 +1,25 @@
 package inigo.objectMotherCreator
 
+import inigo.objectMotherCreator.infraestructure.regex
 
 interface ObjectMotherTemplate {
     fun buildObjectMotherCode(clazz: ClassInfo): String
     fun getNeededObjectMothers(): List<ClassInfo>
 }
 
+data class ClassCode(var packageCode: String = "", var imports: String = "", var code: String = "")
+
 class JavaObjectMotherTemplate: ObjectMotherTemplate {
     val neededObjectMotherClasses = mutableListOf<ClassInfo>()
+    lateinit var classCode:ClassCode
 
-    override fun buildObjectMotherCode(clazz: ClassInfo): String {
+    override fun buildObjectMotherCode(clazz: ClassInfo) : String {
+        classCode = ClassCode()
         neededObjectMotherClasses.clear()
-        var res = buildPackage(clazz.packageStr)
-        res += buildImports(clazz.constructors)
-        return res + buildClass(clazz.clazz!!.getName().toString(), clazz.constructors)
+        classCode.packageCode = buildPackage(clazz.packageStr)
+        classCode.imports = buildImports(clazz.constructors)
+        classCode.code = buildClass(clazz.clazz!!.getName().toString(), clazz.constructors)
+        return classCode.packageCode + classCode.imports + classCode.code
     }
 
     override fun getNeededObjectMothers(): List<ClassInfo> {
@@ -65,36 +71,69 @@ class JavaObjectMotherTemplate: ObjectMotherTemplate {
     }
 
     private fun buildArgumentsData(params: MutableList<ParametersInfo>): String {
-        return params.map { createDefaultValueFor(it) }.joinToString { it }
+        return params.map { "\n" +
+                "\t\t\t\t${createDefaultValueFor(it.name, it.clazzInfo)}" }.joinToString { it }
     }
 
-    private fun createDefaultValueFor(param: ParametersInfo): String {
-        return when (param.name) {
-            "String" -> {
-                "\n\t\t\t\t${fakerRandomString()}"
+    private fun createDefaultValueFor(name: String, classInfo: ClassInfo?): String {
+        return when {
+            name == "String" -> {
+                fakerRandomString()
             }
-            "int" -> {
-                "\n\t\t\t\tfaker.number().randomDigit()"
+            name == "int" -> {
+                "faker.number().randomDigit()"
             }
-            "Integer" -> {
-                "\n\t\t\t\tfaker.number().randomDigit()"
+            name == "Integer" -> {
+                "faker.number().randomDigit()"
             }
-            "long" -> {
-                "\n\t\t\t\tfaker.number().randomNumber()"
+            name == "long" -> {
+                "faker.number().randomNumber()"
             }
-            "Long" -> {
-                "\n\t\t\t\tfaker.number().randomNumber()"
+            name == "Long" -> {
+                "faker.number().randomNumber()"
+            }
+            name.matches("^[\\s\\S]*Map[<]{0,1}[\\S\\s]*[>]{0,1}\$".toRegex()) -> {
+                randomMap(name);
+            }
+            name.matches("^[\\s\\S]*List[<]{0,1}[\\S]*[>]{0,1}\$".toRegex()) -> {
+                randomList(name, classInfo);
             }
             else -> {
-                val clazzInfo = param.clazzInfo
-                if (clazzInfo != null) {
-                    neededObjectMotherClasses.add(clazzInfo)
-                    "\n\t\t\t\trandom${clazzInfo.clazz!!.getName()}()"
+                if (classInfo != null) {
+                    neededObjectMotherClasses.add(classInfo)
+                    "random${classInfo.clazz!!.getName()}()"
                 } else {
-                    "new ${param.name}()"
+                    "new ${name}()"
                 }
             }
         }
+    }
+
+    private fun randomMap(name: String): String {
+        if (! classCode.imports.contains("java.util.Map")) {
+            classCode.imports += "import java.util.Map;\n"
+        }
+        val types = getGroups(name)
+
+        return """Map.of(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
+            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)},
+				        ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
+            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)})"""
+    }
+
+    private fun randomList(name: String, classInfo: ClassInfo?): String {
+        if (! classCode.imports.contains("java.util.List")) {
+            classCode.imports += "import java.util.List;\n"
+        }
+        val types = getGroups(name)
+        return """List.of(
+            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)},
+            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)})""".trimMargin()
+    }
+
+    private fun createDefaultValueForTypedClass(clazz: String?): String{
+        if (clazz == null)  return fakerRandomString()
+        return createDefaultValueFor(clazz, null)
     }
 }
 
@@ -132,4 +171,64 @@ fun fakerRandomString(): String {
     "faker.slackEmoji().activity()",
     "faker.superhero().name()",
     "faker.yoda().quote()").random()
+
+
 }
+
+fun getGroups(canonicalText: String): List<TypedClass> {
+    if (canonicalText.isEmpty()) {
+        return mutableListOf()
+    }
+    var (type, value) = regex.find(canonicalText.trim())?.destructured
+        ?: return mutableListOf(TypedClass(canonicalText.trim()))
+    val types = mutableListOf<String>()
+    var index: Int
+    while (value.isNotEmpty()) {
+        if (!value.contains("<")) { // A, B, C...
+            types.addAll(value.split(","))
+            value = ""
+        } else if (value.contains(",")) { // A<B>, ...
+            if (value.indexOf(",") < value.indexOf("<")) {
+                types.add(value.substringBefore(","))
+                value = value.substringAfter(",")
+            } else {
+                index = indexOfTheFirstClosing(value)
+                types.add(value.substring(0, index))
+                value = value.substring(index)
+                if (value.isNotEmpty()) {
+                    value = value.substringAfter(",")
+                }
+            }
+        } else {
+            index = indexOfTheFirstClosing(value)
+            types.add(value.substring(0, index))
+            value = ""
+        }
+    }
+    return mutableListOf(TypedClass(type.trim(), types.flatMap { getGroups(it.trim()) }))
+}
+
+private fun indexOfTheFirstClosing(canonicalText: String): Int {
+    var opening = 0
+    var index = 0
+    var i = 0
+    canonicalText.chars().forEach {
+        if (index != 0) {
+            return@forEach
+        }
+        if (it == '<'.code) {
+            opening++
+        } else {
+            if (it == '>'.code) {
+                opening--
+                if (opening == 0) {
+                    index = i + 1
+                }
+            }
+        }
+        i++
+    }
+    return index
+}
+
+data class TypedClass(var className: String, var types: List<TypedClass> = mutableListOf())

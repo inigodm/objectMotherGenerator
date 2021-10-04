@@ -22,7 +22,7 @@ class IdeaShits(val e: AnActionEvent) {
     }
 
     fun getCurrentVirtualFile(): OMFile {
-        return OMFile(e.getData(PlatformDataKeys.VIRTUAL_FILE)!!)
+        return OMFile(e.getData(PlatformDataKeys.VIRTUAL_FILE))
     }
 
     fun isCaretInFileType(extension: String) =

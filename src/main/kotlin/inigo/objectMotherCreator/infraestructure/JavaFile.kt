@@ -3,7 +3,9 @@ package inigo.objectMotherCreator.infraestructure
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 
-class JavaFile(val inner: PsiFile) {
+val regex = Regex("^([^<]*)<([^\$]*)>")
+
+class JavaFile(private val inner: PsiFile) {
     fun getPackageNameOrVoid() : String {
         return JavaDirectoryService.getInstance().getPackage(inner.containingDirectory)?.qualifiedName ?: ""
     }
@@ -17,7 +19,6 @@ class JavaFile(val inner: PsiFile) {
 data class JavaClass(private val inner: PsiClass) {
     fun isPublic() = inner.modifierList!!.text.contains("public")
     fun getPackageName() = inner.qualifiedName!!.substringBeforeLast(".")
-    fun getAllMethods() = inner.methods.map { JavaMethod(it) }
     fun getAllConstructors() = inner.constructors.map { JavaMethod(it) }
     fun getName() = inner.name
     fun getQualifiedName() = inner.qualifiedName
@@ -29,8 +30,13 @@ data class JavaMethod(private val inner: PsiMethod) {
 }
 
 data class JavaParameter(private val inner: PsiParameter) {
-    fun getNameOrVoid() = inner.typeElement?.type?.getPresentableText() ?: ""
+    fun getNameOrVoid() = inner.typeElement?.type?.presentableText ?: ""
     fun getClassCanonicalName() = inner.type.getCanonicalText(true)
+    fun getTypes() : String? {
+        return inner.type.canonicalText
+    }
+
+
 }
 
 data class JavaDirectory(val inner: PsiDirectory) {
@@ -40,7 +46,7 @@ data class JavaDirectory(val inner: PsiDirectory) {
     }
 
     fun createSubdirectory(name: String): JavaDirectory? {
-        val createdSubdirectory = inner.createSubdirectory(name) ?: return null
+        val createdSubdirectory = inner.createSubdirectory(name)
         return JavaDirectory(createdSubdirectory)
     }
 

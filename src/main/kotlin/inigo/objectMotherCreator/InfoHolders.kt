@@ -3,15 +3,18 @@ package inigo.objectMotherCreator
 import inigo.objectMotherCreator.infraestructure.*
 
 
-class ClassInfo(var clazz: JavaClass? = null, var packageStr: String = "", var root: JavaFile? = null, var ideaShits: IdeaShits) {
-    lateinit var methods: List<JavaMethod>
+class ClassInfo(
+    var clazz: JavaClass? = null,
+    var packageStr: String = "",
+    var root: JavaFile? = null,
+    var ideaShits: IdeaShits
+) {
     lateinit var constructors: List<MethodInfo>
 
     init {
         if (clazz == null) {
             extractInfo()
         } else {
-            methods = clazz!!.getAllMethods()
             constructors = clazz!!.getAllConstructors().map { MethodInfo(it, ideaShits) }.toList()
         }
     }
@@ -19,7 +22,6 @@ class ClassInfo(var clazz: JavaClass? = null, var packageStr: String = "", var r
     fun extractInfo(){
         val javaClasses = root!!.getClasses()
         clazz =  mainClass(javaClasses)
-        methods = clazz!!.getAllMethods()
         packageStr = root!!.getPackageNameOrVoid()
         constructors = clazz!!.getAllConstructors().map { MethodInfo(it, ideaShits) }.toList()
     }
@@ -44,15 +46,15 @@ class MethodInfo(var method: JavaMethod, var ideaShits: IdeaShits){
     }
 }
 
-class ParametersInfo(var param: JavaParameter, var ideaShits: IdeaShits){
+class ParametersInfo(var param: JavaParameter, var ideaShits: IdeaShits) {
     lateinit var name: String
     var clazzInfo: ClassInfo? = null
 
-    init{
+    init {
         extractParamInfo()
     }
 
-    fun extractParamInfo(){
+    fun extractParamInfo() {
         name = param.getNameOrVoid()
         findClassInfoIfTypeDefinedInProject()
     }
