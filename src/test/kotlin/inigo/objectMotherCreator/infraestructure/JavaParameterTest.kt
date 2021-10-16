@@ -2,9 +2,8 @@ package inigo.objectMotherCreator.infraestructure
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import inigo.objectMotherCreator.TypedClass
-import inigo.objectMotherCreator.getGroups
-import org.junit.jupiter.api.Assertions.*
+import inigo.objectMotherCreator.application.TypedClass
+import inigo.objectMotherCreator.application.getGroups
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -51,18 +50,24 @@ internal class JavaParameterTest{
         val clazz = getGroups("java.util.Map < java.lang.String, java.util.Map < java.lang.String, java.lang.Integer > >")
         assertThat(clazz.get(0).className).isEqualTo("java.util.Map")
         assertThat(clazz.get(0).types).isEqualTo(
-            mutableListOf(TypedClass("java.lang.String"),
+            mutableListOf(
+                TypedClass("java.lang.String"),
                 TypedClass("java.util.Map",
-                    mutableListOf(TypedClass("java.lang.String"),
-                        TypedClass("java.lang.Integer")))))
+                    mutableListOf(
+                        TypedClass("java.lang.String"),
+                        TypedClass("java.lang.Integer")
+                    ))
+            ))
     }
     @Test
     fun `should return List List Integer` () {
         val clazz = getGroups("java.util.List < java.util.List < java.lang.String> >")
         assertThat(clazz.get(0).className).isEqualTo("java.util.List")
         assertThat(clazz.get(0).types).isEqualTo(
-            mutableListOf(TypedClass("java.util.List",
-                mutableListOf(TypedClass("java.lang.String")))))
+            mutableListOf(
+                TypedClass("java.util.List",
+                mutableListOf(TypedClass("java.lang.String")))
+            ))
     }
 
     @Test
@@ -72,7 +77,8 @@ internal class JavaParameterTest{
         assertThat(clazz.get(0).types).isEqualTo(
             mutableListOf(
                 TypedClass("java.util.List", mutableListOf(TypedClass("java.lang.Integer"))),
-                TypedClass("java.lang.String")))
+                TypedClass("java.lang.String")
+            ))
     }
 
     @Test
@@ -83,7 +89,8 @@ internal class JavaParameterTest{
             mutableListOf(
                 TypedClass("A"),
                 TypedClass("B"),
-                TypedClass("C")))
+                TypedClass("C")
+            ))
     }
 
     @Test
@@ -94,7 +101,8 @@ internal class JavaParameterTest{
             mutableListOf(
                 TypedClass("A"),
                 TypedClass("B"),
-                TypedClass("C", mutableListOf(TypedClass("D")))))
+                TypedClass("C", mutableListOf(TypedClass("D")))
+            ))
     }
 
     @Test
@@ -105,7 +113,8 @@ internal class JavaParameterTest{
             mutableListOf(
                 TypedClass("A", mutableListOf(TypedClass("D"))),
                 TypedClass("B"),
-                TypedClass("C", mutableListOf(TypedClass("D")))))
+                TypedClass("C", mutableListOf(TypedClass("D")))
+            ))
     }
 
     @Test

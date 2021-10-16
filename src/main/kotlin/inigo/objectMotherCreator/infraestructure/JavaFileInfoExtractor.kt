@@ -1,9 +1,14 @@
 package inigo.objectMotherCreator.infraestructure
 
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 
-val regex = Regex("^([^<]*)<([^\$]*)>")
+
+class OMFile(val inner: VirtualFile?) {
+    override fun toString() = inner.toString()
+    fun getCanonicalPath() = inner?.canonicalPath
+}
 
 class JavaFile(private val inner: PsiFile) {
     fun getPackageNameOrVoid() : String {
@@ -35,8 +40,6 @@ data class JavaParameter(private val inner: PsiParameter) {
     fun getTypes() : String? {
         return inner.type.canonicalText
     }
-
-
 }
 
 data class JavaDirectory(val inner: PsiDirectory) {

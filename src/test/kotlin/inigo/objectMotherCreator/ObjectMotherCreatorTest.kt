@@ -2,8 +2,10 @@ package inigo.objectMotherCreator
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
+import inigo.objectMotherCreator.application.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.infraestructure.JavaClass
 import inigo.objectMotherCreator.infraestructure.JavaDirectory
+import inigo.objectMotherCreator.infraestructure.ObjectMotherCreator
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

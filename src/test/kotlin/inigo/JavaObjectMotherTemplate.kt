@@ -2,8 +2,8 @@ package inigo
 
 import fixedClassInfo
 import fixedMethodInfo
-import inigo.objectMotherCreator.JavaObjectMotherTemplate
-import inigo.objectMotherCreator.fakerRandomString
+import inigo.objectMotherCreator.application.JavaObjectMotherTemplate
+import inigo.objectMotherCreator.application.fakerRandomString
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
