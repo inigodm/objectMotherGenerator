@@ -1,10 +1,10 @@
-import inigo.objectMotherCreator.ClassInfo
-import inigo.objectMotherCreator.MethodInfo
-import inigo.objectMotherCreator.ParametersInfo
+import inigo.objectMotherCreator.application.infoholders.ClassInfo
+import inigo.objectMotherCreator.application.infoholders.MethodInfo
+import inigo.objectMotherCreator.application.infoholders.ParametersInfo
 import io.mockk.every
 import io.mockk.mockk
 
-fun fixedMethodInfo() : MethodInfo  {
+fun fixedMethodInfo() : MethodInfo {
     val methodInfo = mockk<MethodInfo>()
     val parametersInfo = mockk<ParametersInfo>()
     every { parametersInfo.clazzInfo?.packageStr } returns "packagename"
@@ -15,7 +15,7 @@ fun fixedMethodInfo() : MethodInfo  {
     return methodInfo
 }
 
-fun fixedMethodInfo(type: String) : MethodInfo  {
+fun fixedMethodInfo(type: String) : MethodInfo {
     val methodInfo = mockk<MethodInfo>()
     val parametersInfo = mockk<ParametersInfo>()
     every { parametersInfo.clazzInfo?.packageStr } returns "packagename"

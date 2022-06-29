@@ -1,4 +1,4 @@
-package inigo.objectMotherCreator
+package inigo.objectMotherCreator.infraestructure
 
 import com.intellij.ide.IdeBundle
 import com.intellij.openapi.application.ApplicationManager
@@ -7,16 +7,17 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.util.IncorrectOperationException
-import inigo.objectMotherCreator.infraestructure.IdeaShits
-import inigo.objectMotherCreator.infraestructure.JavaDirectory
+import inigo.objectMotherCreator.application.JavaFileCreator
+import inigo.objectMotherCreator.application.infoholders.ClassInfo
+import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
 import java.io.File
 
 
-class JavaFileCreator(var ideaShits: IdeaShits) {
+class IdeaJavaFileCreator(var ideaShits: IdeaShits) : JavaFileCreator {
     lateinit var createdFilename: String
 
     @Throws(IncorrectOperationException::class)
-    fun createFile(directory: JavaDirectory, name: String, code: String) {
+    override fun createFile(directory: OMDirectory, name: String, code: String) {
         return CommandProcessor.getInstance().executeCommand(
             ideaShits.getProject(),
             {
@@ -34,8 +35,8 @@ class JavaFileCreator(var ideaShits: IdeaShits) {
     }
 
     @Throws(IncorrectOperationException::class)
-    fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: JavaDirectory): JavaDirectory? {
-        var psiDirectory: JavaDirectory?
+    override fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: OMDirectory): OMDirectory? {
+        var psiDirectory: OMDirectory?
         psiDirectory = srcDirectory
         packageName.split(".").forEach {
             val foundExistingDirectory = psiDirectory!!.findSubdirectory(it)
@@ -46,6 +47,17 @@ class JavaFileCreator(var ideaShits: IdeaShits) {
             }
         }
         return psiDirectory
+    }
+
+    override fun buildFile(baseDir: OMDirectory, clazzInfo: ClassInfo, javaCode: String, extension: String) {
+        val directory = findOrCreateDirectoryForPackage(clazzInfo.packageStr, baseDir)!!
+        createFile(directory, "${clazzInfo.clazz!!.getName()}ObjectMother.$extension", javaCode)
+        createdFilename =
+            "${directory.getOMFile().getCanonicalPath()}${File.separator}${clazzInfo.clazz!!.getName()}ObjectMother.$extension"
+    }
+
+    override fun createdFileName(): String {
+        return createdFilename
     }
 
     private fun makeFileIfDoesntExists(directory: PsiDirectory, name: String, code: String) : PsiFile? {
@@ -65,16 +77,16 @@ class JavaFileCreator(var ideaShits: IdeaShits) {
 
     @Throws(IncorrectOperationException::class)
     private fun createSubdirectory(
-        oldDirectory: JavaDirectory,
+        oldDirectory: OMDirectory,
         name: String
-    ): JavaDirectory? {
-        val psiDirectory = arrayOfNulls<JavaDirectory>(1)
+    ): OMDirectory? {
+        val psiDirectory = arrayOfNulls<OMDirectory>(1)
         val exception = arrayOfNulls<IncorrectOperationException>(1)
         CommandProcessor.getInstance().executeCommand(
             ideaShits.getProject(),
             {
                 psiDirectory[0] = ApplicationManager.getApplication()
-                    .runWriteAction<JavaDirectory> {
+                    .runWriteAction<OMDirectory> {
                         try {
                             return@runWriteAction oldDirectory.createSubdirectory(name)
                         } catch (e: IncorrectOperationException) {
@@ -86,12 +98,5 @@ class JavaFileCreator(var ideaShits: IdeaShits) {
         )
         if (exception[0] != null) throw exception[0]!!
         return psiDirectory[0]
-    }
-
-    fun buildFile(baseDir: JavaDirectory, clazzInfo: ClassInfo, javaCode: String, extension: String) {
-        val directory = findOrCreateDirectoryForPackage(clazzInfo.packageStr, baseDir)!!
-        createFile(directory, "${clazzInfo.clazz!!.getName()}ObjectMother.$extension", javaCode)
-        createdFilename =
-            "${directory.getOMFile().getCanonicalPath()}${File.separator}${clazzInfo.clazz!!.getName()}ObjectMother.java"
     }
 }

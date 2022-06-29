@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>inigo.objectmothercreator</id>
     <name>Object mother creator</name>
-    <version>1.3.0.0</version>
+    <version>1.3.0.1</version>
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
     <depends>com.intellij.java</depends>
     <depends>org.intellij.groovy</depends>
@@ -39,10 +39,11 @@
         1.2.0.2 - Add support until 211.*
         1.2.0.3 - Remove a bug
         1.3.0.0 - Add list and map support, opening it to typed classes
+        1.3.0.1 - Add support until 293.*
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="201" until-build="215.*"/>
+    <idea-version since-build="201" until-build="293.*"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
@@ -51,14 +52,14 @@
     <actions>
 
         <action id="ObjectMotherCreation.Editor"
-                class="inigo.objectMotherCreator.ObjectCreateOnCaretSelectedAction"
+                class="inigo.objectMotherCreator.infraestructure.OMActions.ObjectCreateOnCaretSelectedAction"
                 text="Create Object Mother for Current Class"
                 description="BuildObjectMother">
              <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 
         <action id="ObjectCreateFileSeletedAction.Editor"
-                class="inigo.objectMotherCreator.ObjectCreateFileSeletedAction"
+                class="inigo.objectMotherCreator.infraestructure.OMActions.ObjectCreateFileSeletedAction"
                 text="Create Object Mother for Current Class"
                 description="BuildObjectMother">
             <add-to-group group-id="RunContextGroup" anchor="last"/>

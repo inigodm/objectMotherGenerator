@@ -9,15 +9,16 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import com.intellij.psi.*
+import inigo.objectMotherCreator.model.infoExtractor.*
 import io.mockk.verify
 import org.junit.Ignore
 
-class JavaFileTest {
+class OMFileTest {
 
     lateinit var psiJavaFile: PsiJavaFile
     lateinit var psiMethod: PsiMethod
-    lateinit var javafile : JavaFile
-    lateinit var javaClass: JavaClass
+    lateinit var javafile : OMFile
+    lateinit var OMClass: OMClass
     lateinit var psiClass: PsiClass
     lateinit var psiParameter : PsiParameter
     lateinit var psiDirectory: PsiDirectory
@@ -34,7 +35,7 @@ class JavaFileTest {
 
     @Ignore
     fun `should get from java file package name or void` () {
-        javafile = JavaFile(psiJavaFile as PsiFile)
+        javafile = OMFile(psiJavaFile as PsiFile)
         every { psiJavaFile.containingDirectory } returns null
         assertThat( javafile.getPackageNameOrVoid()).isEqualTo( "")
         every { psiJavaFile.packageStatement?.packageName } returns "packagename"
@@ -43,41 +44,41 @@ class JavaFileTest {
 
     @Ignore
     fun `should get classes from javaFile as an array of JavaClasses` () {
-        javafile = JavaFile(psiJavaFile as PsiFile)
+        javafile = OMFile(psiJavaFile as PsiFile)
         val clazz = mockk<PsiClass>()
         every { psiJavaFile.classes } returns arrayOf(clazz)
 
-        assertThat(javafile.getClasses()).isEqualTo(listOf(JavaClass(clazz)))
+        assertThat(javafile.getClasses()).isEqualTo(listOf(OMClass(clazz)))
     }
 
     @Test
     fun `should tell whether class is public or not` () {
         every { psiClass.modifierList!!.text } returns "public"
-        javaClass = JavaClass(psiClass)
+        OMClass = OMClass(psiClass)
 
-        assertThat(javaClass.isPublic()).isTrue()
+        assertThat(OMClass.isPublic()).isTrue()
     }
 
     @Test
     fun `should get method name` () {
         every { psiMethod.name } returns "methodName"
-        val javaMethod = JavaMethod(psiMethod)
+        val OMMethod = OMMethod(psiMethod)
 
-        assertThat(javaMethod.getName()).isEqualTo("methodName")
+        assertThat(OMMethod.getName()).isEqualTo("methodName")
     }
 
     @Test
     fun `should obtain method parameters`() {
         every { psiMethod.parameterList.parameters } returns arrayOf(psiParameter)
 
-        val javaMethod = JavaMethod(psiMethod)
+        val OMMethod = OMMethod(psiMethod)
 
-        assertThat(javaMethod.getParameters()).isEqualTo(listOf(JavaParameter(psiParameter)))
+        assertThat(OMMethod.getParameters()).isEqualTo(listOf(OMParameter(psiParameter)))
     }
 
     @Test
     fun `should get parameters name or void` () {
-        val param = JavaParameter(psiParameter)
+        val param = OMParameter(psiParameter)
 
         assertThat(param.getNameOrVoid()).isEqualTo("")
 
@@ -88,7 +89,7 @@ class JavaFileTest {
 
     @Test
     fun `should get parameters class canonical name` () {
-        val param = JavaParameter(psiParameter)
+        val param = OMParameter(psiParameter)
 
         every { psiParameter.type.getCanonicalText(true) } returns "canonicalName"
 
@@ -97,16 +98,16 @@ class JavaFileTest {
 
     @Test
     fun `should find a subdirectory if exists` () {
-        val directory = JavaDirectory(psiDirectory)
+        val directory = OMDirectory(psiDirectory)
         val returned = psiDirectory
         every { psiDirectory.findSubdirectory(any()) } returns returned
 
-        assertThat(directory.findSubdirectory("subdirectory")).isEqualTo(JavaDirectory(returned))
+        assertThat(directory.findSubdirectory("subdirectory")).isEqualTo(OMDirectory(returned))
     }
 
     @Test
     fun `should return null if subdirectory doesn't exists` () {
-        val directory = JavaDirectory(psiDirectory)
+        val directory = OMDirectory(psiDirectory)
 
         every { psiDirectory.findSubdirectory(any()) } returns null
 
@@ -115,11 +116,11 @@ class JavaFileTest {
 
     @Test
     fun `should create a new subdirectory` () {
-        val directory = JavaDirectory(psiDirectory)
+        val directory = OMDirectory(psiDirectory)
 
         every { psiDirectory.createSubdirectory(any()) } returns psiDirectory
 
-        assertThat(directory.createSubdirectory("subdirectory")).isEqualTo(JavaDirectory(psiDirectory))
+        assertThat(directory.createSubdirectory("subdirectory")).isEqualTo(OMDirectory(psiDirectory))
         verify { psiDirectory.createSubdirectory("subdirectory") }
     }
 }

@@ -2,10 +2,13 @@ package inigo.objectMotherCreator
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
-import inigo.objectMotherCreator.application.JavaObjectMotherTemplate
-import inigo.objectMotherCreator.infraestructure.JavaClass
-import inigo.objectMotherCreator.infraestructure.JavaDirectory
-import inigo.objectMotherCreator.infraestructure.ObjectMotherCreator
+import inigo.objectMotherCreator.application.infoholders.ClassInfo
+import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
+import inigo.objectMotherCreator.model.infoExtractor.OMClass
+import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
+import inigo.objectMotherCreator.infraestructure.IdeaJavaFileCreator
+import inigo.objectMotherCreator.application.ObjectMotherCreator
+import inigo.objectMotherCreator.model.infoExtractor.OMVirtualFile
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -18,36 +21,38 @@ class ObjectMotherCreatorTest {
     @MockK
     lateinit var project : Project
     @MockK
-    lateinit var fileCreator : JavaFileCreator
+    lateinit var fileCreator : IdeaJavaFileCreator
     @MockK
     lateinit var javaObjectMotherTemplate: JavaObjectMotherTemplate
     @MockK
     lateinit var infoExtractor : ClassInfo
     @MockK
-    lateinit var dir : JavaDirectory
+    lateinit var dir : OMDirectory
     @MockK
-    lateinit var directory : JavaDirectory
+    lateinit var directory : OMDirectory
     @MockK
     lateinit var classInfo: ClassInfo
     @MockK
-    lateinit var clazz : JavaClass
+    lateinit var clazz : OMClass
     @MockK
     lateinit var e: AnActionEvent
-
+    @MockK
+    lateinit var omVirtualFile: OMVirtualFile
     @BeforeEach
     fun setup() {
         MockKAnnotations.init(this)
+        every { directory.getOMFile() } returns omVirtualFile
     }
 
     @Test
     fun `extracts info of isolated classes` () {
         every { directory.getOMFile().getCanonicalPath() } returns "file path"
-        every { javaObjectMotherTemplate.buildObjectMotherCode(any()) } returns "source code"
+        every { javaObjectMotherTemplate.createObjectMotherSourceCode(any()) } returns "source code"
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returns mutableListOf()
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
         every { fileCreator.buildFile(any(), any(), any(), "java") } returns Unit
         every { e.project } returns project
-        every { fileCreator.createdFilename } returns "file path/clazznameObjectMother.java"
+        every { fileCreator.createdFileName() } returns "file path/clazznameObjectMother.java"
 
         val sut = ObjectMotherCreator(fileCreator, javaObjectMotherTemplate);
         sut.createObjectMotherFor(infoExtractor, dir, "java")
@@ -63,12 +68,12 @@ class ObjectMotherCreatorTest {
         every { classInfo.clazz } returns clazz
         every { classInfo.clazz!!.getName() } returns "clazzname"
         every { classInfo.packageStr } returns "package"
-        every { javaObjectMotherTemplate.buildObjectMotherCode(any()) } returns "source code"
+        every { javaObjectMotherTemplate.createObjectMotherSourceCode(any()) } returns "source code"
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returnsMany listOf(mutableListOf(classInfo), mutableListOf())
         every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
         every { fileCreator.buildFile(any(), any(), any(), "java") } returns Unit
         every { e.project } returns project
-        every { fileCreator.createdFilename } returns "file path/clazznameObjectMother.java"
+        every { fileCreator.createdFileName() } returns "file path/clazznameObjectMother.java"
 
         val sut = ObjectMotherCreator(fileCreator, javaObjectMotherTemplate);
         sut.createObjectMotherFor(infoExtractor, dir, "java")

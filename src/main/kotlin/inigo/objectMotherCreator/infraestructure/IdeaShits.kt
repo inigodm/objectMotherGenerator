@@ -13,16 +13,20 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
+import inigo.objectMotherCreator.model.infoExtractor.OMClass
+import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
+import inigo.objectMotherCreator.model.infoExtractor.OMFile
+import inigo.objectMotherCreator.model.infoExtractor.OMVirtualFile
 import org.jetbrains.jps.model.java.JavaSourceRootType
 import java.io.File
 
 class IdeaShits(val e: AnActionEvent) {
-    fun getCurrentJavaFile(): JavaFile {
-        return JavaFile(e.getData(CommonDataKeys.PSI_FILE)!!)
+    fun getCurrentJavaFile(): OMFile {
+        return OMFile(e.getData(CommonDataKeys.PSI_FILE)!!)
     }
 
-    fun getCurrentVirtualFile(): OMFile {
-        return OMFile(e.getData(PlatformDataKeys.VIRTUAL_FILE))
+    fun getCurrentOMFile(): OMVirtualFile {
+        return OMVirtualFile(e.getData(PlatformDataKeys.VIRTUAL_FILE))
     }
 
     fun isCaretInFileType(extension: String) =
@@ -32,9 +36,9 @@ class IdeaShits(val e: AnActionEvent) {
         e.presentation.isEnabledAndVisible = enabled
     }
 
-    fun obtainTestSourceDirectory(): JavaDirectory? {
+    fun obtainTestSourceDirectory(): OMDirectory? {
         val dirVirtualFile: VirtualFile = findTestSourceDirectory() ?: return null
-        return JavaDirectory(PsiManager.getInstance(e.project!!).findDirectory(dirVirtualFile)!!)
+        return OMDirectory(PsiManager.getInstance(e.project!!).findDirectory(dirVirtualFile)!!)
     }
 
     fun openFileInNewTab(file: File) {
@@ -45,12 +49,21 @@ class IdeaShits(val e: AnActionEvent) {
         return e.project
     }
 
-    fun findClass(qualifiedName: String): JavaClass? {
+    fun findClass(qualifiedName: String): OMClass? {
         val psiClass = JavaPsiFacade.getInstance(e.project!!).findClass(qualifiedName, GlobalSearchScope.projectScope(e.project!!))
         return if (psiClass == null) {
             null
         } else {
-            JavaClass(psiClass)
+            OMClass(psiClass)
+        }
+    }
+
+    fun openFilesInEditor(createdFiles : List<String>) {
+        createdFiles.forEach {
+            val file = File(it)
+            if (file.exists()) {
+                openFileInNewTab(file)
+            }
         }
     }
 
@@ -76,7 +89,13 @@ class IdeaShits(val e: AnActionEvent) {
     }
 
     private fun buildFileChooserDescriptor(): FileChooserDescriptor {
-        val descriptor = FileChooserDescriptor(false, true, false, false, false, false)
+        val descriptor = FileChooserDescriptor(
+            false,
+            true,
+            false,
+            false,
+            false,
+            false)
         descriptor.title = "Choose project/module's test srcDir root in which ObjectMother's package will be created"
         descriptor.description =
             "The source directory for ObjectMother's package must be set. Package would be automatically calculated"

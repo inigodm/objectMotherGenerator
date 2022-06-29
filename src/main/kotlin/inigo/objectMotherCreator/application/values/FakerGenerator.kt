@@ -1,10 +1,4 @@
-package inigo.objectMotherCreator.application
-
-interface FakeValuesGenerator {
-    fun randomString() : String
-    fun randomInteger() : String
-    fun randomLong() : String
-}
+package inigo.objectMotherCreator.application.values
 
 class FakerGenerator: FakeValuesGenerator {
     var strings = listOf(

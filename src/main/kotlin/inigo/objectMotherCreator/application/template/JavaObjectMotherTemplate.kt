@@ -1,8 +1,10 @@
-package inigo.objectMotherCreator.application
+package inigo.objectMotherCreator.application.template
 
-import inigo.objectMotherCreator.ClassInfo
-import inigo.objectMotherCreator.MethodInfo
-import inigo.objectMotherCreator.ParametersInfo
+import inigo.objectMotherCreator.application.infoholders.ClassInfo
+import inigo.objectMotherCreator.application.infoholders.MethodInfo
+import inigo.objectMotherCreator.application.infoholders.ParametersInfo
+import inigo.objectMotherCreator.application.TypedClass
+import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.model.ClassCode
 
 
@@ -10,7 +12,7 @@ class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectM
     val neededObjectMotherClasses = mutableListOf<ClassInfo>()
     lateinit var classCode: ClassCode
 
-    override fun buildObjectMotherCode(clazz: ClassInfo) : String {
+    override fun createObjectMotherSourceCode(clazz: ClassInfo) : String {
         classCode = ClassCode()
         neededObjectMotherClasses.clear()
         classCode.packageCode = buildPackage(clazz.packageStr)
@@ -104,7 +106,7 @@ class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectM
 
     private fun randomMap(name: String): String {
         addImportIfNeeded("java.util.Map")
-        val types = findTypesFrom(name)
+        val types = TypedClass.findTypesFrom(name)
         return """Map.of(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
             ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)},
 				        ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
@@ -113,7 +115,7 @@ class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectM
 
     private fun randomList(classCanonicalName: String): String {
         addImportIfNeeded("java.util.List")
-        val types = findTypesFrom(classCanonicalName)
+        val types = TypedClass.findTypesFrom(classCanonicalName)
         val type = types.getOrNull(0)?.types?.getOrNull(0)?.className
         return """List.of(
             ${createDefaultValueForTypedClass(type)},
@@ -130,8 +132,9 @@ class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectM
         if (clazz == null)  return fakerGenerator.randomString()
         return createDefaultValueFor(clazz, null)
     }
+
+    fun String.ifNotEmpty(doThis: (String) -> String) : String {
+        return if (this.isEmpty()) { "" } else { doThis(this) }
+    }
 }
 
-fun String.ifNotEmpty(doThis: (String) -> String) : String {
-    return if (this.isEmpty()) { "" } else { doThis(this) }
-}
