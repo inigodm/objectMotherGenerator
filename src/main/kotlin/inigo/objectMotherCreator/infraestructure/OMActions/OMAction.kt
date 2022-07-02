@@ -12,9 +12,10 @@ import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
 abstract class OMAction : AnAction() {
     val allowedFileExtensions = listOf("java", "groovy")
 
-    fun execute(ideShits: IdeaShits, extension: String) : List<String> {
+    fun execute(ideShits: IdeaShits, extension: String,
+                fakeValuesGenerator: FakeValuesGenerator = FakerGenerator()) : List<String> {
         val dir = ideShits.obtainTestSourceDirectory() ?: return emptyList()
-        return launchObjectMotherCreation(ideShits, extension, dir, FakerGenerator())
+        return launchObjectMotherCreation(ideShits, extension, dir, fakeValuesGenerator)
     }
 
     private fun launchObjectMotherCreation(ideaShits: IdeaShits,
