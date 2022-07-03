@@ -3,7 +3,7 @@ package inigo.objectMotherCreator.infraestructure.OMActions
 import com.intellij.openapi.actionSystem.AnActionEvent
 import inigo.objectMotherCreator.infraestructure.IdeaShits
 
-class ObjectCreateOnCaretSelectedAction : OMAction() {
+class ObjectCreateOnCaretSelectedAction : OMCreationAction() {
     override fun actionPerformed(e: AnActionEvent) {
         e.project ?: return
         val ideShits = IdeaShits(e)

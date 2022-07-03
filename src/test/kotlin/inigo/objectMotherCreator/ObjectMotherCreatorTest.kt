@@ -29,27 +29,20 @@ class ObjectMotherCreatorTest {
     @MockK
     lateinit var dir : OMDirectory
     @MockK
-    lateinit var directory : OMDirectory
-    @MockK
     lateinit var classInfo: ClassInfo
     @MockK
     lateinit var clazz : OMClass
     @MockK
     lateinit var e: AnActionEvent
-    @MockK
-    lateinit var omVirtualFile: OMVirtualFile
     @BeforeEach
     fun setup() {
         MockKAnnotations.init(this)
-        every { directory.getOMFile() } returns omVirtualFile
     }
 
     @Test
     fun `extracts info of isolated classes` () {
-        every { directory.getOMFile().getCanonicalPath() } returns "file path"
         every { javaObjectMotherTemplate.createObjectMotherSourceCode(any()) } returns "source code"
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returns mutableListOf()
-        every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
         every { fileCreator.buildFile(any(), any(), any(), "java") } returns Unit
         every { e.project } returns project
         every { fileCreator.createdFileName() } returns "file path/clazznameObjectMother.java"
@@ -64,13 +57,11 @@ class ObjectMotherCreatorTest {
 
     @Test
     fun `extracts info recursively from classes` () {
-        every { directory.getOMFile().getCanonicalPath() } returns "file path"
         every { classInfo.clazz } returns clazz
         every { classInfo.clazz!!.getName() } returns "clazzname"
         every { classInfo.packageStr } returns "package"
         every { javaObjectMotherTemplate.createObjectMotherSourceCode(any()) } returns "source code"
         every { javaObjectMotherTemplate.getNeededObjectMothers() } returnsMany listOf(mutableListOf(classInfo), mutableListOf())
-        every { fileCreator.findOrCreateDirectoryForPackage(any(), any())} returns directory
         every { fileCreator.buildFile(any(), any(), any(), "java") } returns Unit
         every { e.project } returns project
         every { fileCreator.createdFileName() } returns "file path/clazznameObjectMother.java"

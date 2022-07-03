@@ -9,7 +9,7 @@ import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.infraestructure.*
 import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
 
-abstract class OMAction : AnAction() {
+abstract class OMCreationAction : AnAction() {
     val allowedFileExtensions = listOf("java", "groovy")
 
     fun execute(ideShits: IdeaShits, extension: String,

@@ -16,8 +16,15 @@ import java.io.File
 class IdeaJavaFileCreator(var ideaShits: IdeaShits) : JavaFileCreator {
     lateinit var createdFilename: String
 
+    override fun buildFile(baseDir: OMDirectory, clazzInfo: ClassInfo, javaCode: String, extension: String) {
+        val directory = findOrCreateDirectoryForPackage(clazzInfo.packageStr, baseDir)!!
+        createFile(directory, "${clazzInfo.clazz!!.getName()}ObjectMother.$extension", javaCode)
+        createdFilename =
+            "${directory.getOMFile().getCanonicalPath()}${File.separator}${clazzInfo.clazz!!.getName()}ObjectMother.$extension"
+    }
+
     @Throws(IncorrectOperationException::class)
-    override fun createFile(directory: OMDirectory, name: String, code: String) {
+    private fun createFile(directory: OMDirectory, name: String, code: String) {
         return CommandProcessor.getInstance().executeCommand(
             ideaShits.getProject(),
             {
@@ -35,7 +42,7 @@ class IdeaJavaFileCreator(var ideaShits: IdeaShits) : JavaFileCreator {
     }
 
     @Throws(IncorrectOperationException::class)
-    override fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: OMDirectory): OMDirectory? {
+    private fun findOrCreateDirectoryForPackage(packageName: String, srcDirectory: OMDirectory): OMDirectory? {
         var psiDirectory: OMDirectory?
         psiDirectory = srcDirectory
         packageName.split(".").forEach {
@@ -47,13 +54,6 @@ class IdeaJavaFileCreator(var ideaShits: IdeaShits) : JavaFileCreator {
             }
         }
         return psiDirectory
-    }
-
-    override fun buildFile(baseDir: OMDirectory, clazzInfo: ClassInfo, javaCode: String, extension: String) {
-        val directory = findOrCreateDirectoryForPackage(clazzInfo.packageStr, baseDir)!!
-        createFile(directory, "${clazzInfo.clazz!!.getName()}ObjectMother.$extension", javaCode)
-        createdFilename =
-            "${directory.getOMFile().getCanonicalPath()}${File.separator}${clazzInfo.clazz!!.getName()}ObjectMother.$extension"
     }
 
     override fun createdFileName(): String {
