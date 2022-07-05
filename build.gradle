@@ -59,6 +59,7 @@ patchPluginXml {
     sinceBuild = '193'
     untilBuild = '293.*'
     changeNotes = """
-        -  Add support until 2029
+        - Big refactor
+        - Little optimizations
     """
 }

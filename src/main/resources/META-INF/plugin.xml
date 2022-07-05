@@ -40,6 +40,7 @@
         1.2.0.3 - Remove a bug
         1.3.0.0 - Add list and map support, opening it to typed classes
         1.3.0.1 - Add support until 293.*
+        1.3.0.2 - Code refactors
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
