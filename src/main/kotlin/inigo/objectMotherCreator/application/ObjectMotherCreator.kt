@@ -11,7 +11,7 @@ class ObjectMotherCreator(var fileCreator: JavaFileCreator, var template: Object
         objectMotherFileNames.clear()
         val classesToTreat = mutableListOf(classInfo)
         while (classesToTreat.isNotEmpty()) {
-            val clazzInfo = classesToTreat.removeFirst()
+            val clazzInfo = classesToTreat.removeAt(0)
             val objectMotherSourceCode = template.createObjectMotherSourceCode(clazzInfo)
             createObjectMotherFile(baseDir, clazzInfo, objectMotherSourceCode, extension)
             classesToTreat.addAll(template.getNeededObjectMothers())

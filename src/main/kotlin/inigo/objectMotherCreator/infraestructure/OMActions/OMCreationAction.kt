@@ -23,11 +23,11 @@ abstract class OMCreationAction : AnAction() {
                                            dir: OMDirectory,
                                            fakeValuesGenerator: FakeValuesGenerator
     ): MutableList<String> {
-        val creator = ObjectMotherCreator(IdeaJavaFileCreator(ideaShits), JavaObjectMotherTemplate(fakeValuesGenerator))
         val classInfo = ClassInfo(
             root = ideaShits.getCurrentJavaFile(),
             ideaShits = ideaShits
         )
+        val creator = ObjectMotherCreator(IdeaJavaFileCreator(ideaShits), JavaObjectMotherTemplate(fakeValuesGenerator))
         creator.createObjectMotherFor(classInfo, dir, extension)
         return creator.objectMotherFileNames
     }
