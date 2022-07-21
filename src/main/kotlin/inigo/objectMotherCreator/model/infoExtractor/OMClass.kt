@@ -1,11 +1,12 @@
 package inigo.objectMotherCreator.model.infoExtractor
 
+import com.intellij.openapi.util.NlsSafe
 import com.intellij.psi.PsiClass
 
-data class OMClass(private val inner: PsiClass) {
-    fun isPublic() = inner.modifierList!!.text.contains("public")
-    fun getPackageName() = inner.qualifiedName!!.substringBeforeLast(".")
-    fun getAllConstructors() = inner.constructors.map { OMMethod(it) }
-    fun getName() = inner.name
-    fun getQualifiedName() = inner.qualifiedName
+interface OMClass {
+    fun isPublic(): Boolean
+    fun getPackageName(): String
+    fun getAllConstructors(): List<OMMethod>
+    fun getName(): @NlsSafe String?
+    fun getQualifiedName(): @NlsSafe String?
 }

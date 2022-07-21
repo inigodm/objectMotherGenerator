@@ -13,19 +13,16 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
-import inigo.objectMotherCreator.model.infoExtractor.OMClass
-import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
-import inigo.objectMotherCreator.model.infoExtractor.OMFile
-import inigo.objectMotherCreator.model.infoExtractor.OMVirtualFile
+import inigo.objectMotherCreator.model.infoExtractor.*
 import org.jetbrains.jps.model.java.JavaSourceRootType
 import java.io.File
 
 class IdeaShits(val e: AnActionEvent) {
-    fun getCurrentJavaFile(): OMFile {
+    fun getCurrentOMFile(): OMFile {
         return OMFile(e.getData(CommonDataKeys.PSI_FILE)!!)
     }
 
-    fun getCurrentOMFile(): OMVirtualFile {
+    fun getCurrentOMVirtualFile(): OMVirtualFile {
         return OMVirtualFile(e.getData(PlatformDataKeys.VIRTUAL_FILE))
     }
 
@@ -54,7 +51,7 @@ class IdeaShits(val e: AnActionEvent) {
         return if (psiClass == null) {
             null
         } else {
-            OMClass(psiClass)
+            OMJavaClass(psiClass)
         }
     }
 

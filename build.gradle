@@ -45,7 +45,7 @@ dependencies {
 
 intellij {
     version = '2021.1'
-    plugins = ['Groovy', 'java']
+    plugins = ['Groovy', 'java', 'Kotlin']
     updateSinceUntilBuild=true
 }
 

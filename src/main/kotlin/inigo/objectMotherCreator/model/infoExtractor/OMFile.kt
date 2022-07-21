@@ -4,6 +4,8 @@ import com.intellij.psi.JavaDirectoryService
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import org.jetbrains.kotlin.psi.KtClass
+import org.jetbrains.kotlin.psi.KtFile
 
 class OMFile(private val inner: PsiFile) {
     fun getPackageNameOrVoid() : String {
@@ -11,7 +13,8 @@ class OMFile(private val inner: PsiFile) {
     }
 
     fun getClasses(): List<OMClass> {
-        return PsiTreeUtil.getChildrenOfType(inner, PsiClass::class.java)!!.map { OMClass(it) }
+        inner.fileType
+        return PsiTreeUtil.getChildrenOfTypeAsList(inner, KtClass::class.java).map { OMKtClass(it, (inner as KtFile).packageFqName?.asString() ?: "") }
+            .plus(PsiTreeUtil.getChildrenOfTypeAsList(inner, PsiClass::class.java).map { OMJavaClass(it) })
     }
-
 }

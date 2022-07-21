@@ -5,6 +5,7 @@ data class TypedClass(var className: String, var types: List<TypedClass> = mutab
     companion object {
         val regex = Regex("^([^<]*)<([^\$]*)>")
 
+        @kotlin.ExperimentalStdlibApi
         fun findTypesFrom(canonicalText: String): List<TypedClass> {
             if (canonicalText.isEmpty()) {
                 return mutableListOf()
@@ -38,6 +39,7 @@ data class TypedClass(var className: String, var types: List<TypedClass> = mutab
             return mutableListOf(TypedClass(type.trim(), types.flatMap { findTypesFrom(it.trim()) }))
         }
 
+        @kotlin.ExperimentalStdlibApi
         private fun indexOfTheFirstClosing(canonicalText: String): Int {
             var opening = 0
             var index = 0

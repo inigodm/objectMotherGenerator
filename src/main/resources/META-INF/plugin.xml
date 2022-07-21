@@ -5,9 +5,10 @@
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
     <depends>com.intellij.java</depends>
     <depends>org.intellij.groovy</depends>
+    <depends>org.jetbrains.kotlin</depends>
     <description><![CDATA[
       Creates object mothers for selected class on rigth clicking over it.
-      <br><br><b>Supports Java and Groovy projects</b>
+      <br><br><b>Supports Kotlin, Java and Groovy classes</b>
       <br><br>Source code can be found <a href="https://github.com/inigodm/objectMotherGenerator">HERE</a>
       <br><br> PR and issues are welcome
 <br><br>
@@ -53,14 +54,14 @@
     <actions>
 
         <action id="ObjectMotherCreation.Editor"
-                class="inigo.objectMotherCreator.infraestructure.OMActions.ObjectCreateOnCaretSelectedAction"
+                class="inigo.objectMotherCreator.infraestructure.actions.ObjectCreateOnCaretSelectedAction"
                 text="Create Object Mother for Current Class"
                 description="BuildObjectMother">
              <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 
         <action id="ObjectCreateFileSeletedAction.Editor"
-                class="inigo.objectMotherCreator.infraestructure.OMActions.ObjectCreateFileSeletedAction"
+                class="inigo.objectMotherCreator.infraestructure.actions.ObjectCreateFileSeletedAction"
                 text="Create Object Mother for Current Class"
                 description="BuildObjectMother">
             <add-to-group group-id="RunContextGroup" anchor="last"/>

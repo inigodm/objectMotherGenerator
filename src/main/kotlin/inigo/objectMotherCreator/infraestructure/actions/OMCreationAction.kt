@@ -1,4 +1,4 @@
-package inigo.objectMotherCreator.infraestructure.OMActions
+package inigo.objectMotherCreator.infraestructure.actions
 
 import com.intellij.openapi.actionSystem.AnAction
 import inigo.objectMotherCreator.application.ObjectMotherCreator
@@ -9,8 +9,9 @@ import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.infraestructure.*
 import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
 
+@kotlin.ExperimentalStdlibApi
 abstract class OMCreationAction : AnAction() {
-    val allowedFileExtensions = listOf("java", "groovy")
+    val allowedFileExtensions = listOf("java", "groovy", "kotlin")
 
     fun execute(ideShits: IdeaShits, extension: String,
                 fakeValuesGenerator: FakeValuesGenerator = FakerGenerator()) : List<String> {
@@ -24,7 +25,7 @@ abstract class OMCreationAction : AnAction() {
                                            fakeValuesGenerator: FakeValuesGenerator
     ): MutableList<String> {
         val classInfo = ClassInfo(
-            root = ideaShits.getCurrentJavaFile(),
+            root = ideaShits.getCurrentOMFile(),
             ideaShits = ideaShits
         )
         val creator = ObjectMotherCreator(IdeaJavaFileCreator(ideaShits), JavaObjectMotherTemplate(fakeValuesGenerator))

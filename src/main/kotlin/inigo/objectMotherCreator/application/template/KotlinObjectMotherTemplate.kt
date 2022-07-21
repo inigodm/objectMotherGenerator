@@ -7,9 +7,8 @@ import inigo.objectMotherCreator.application.TypedClass
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.model.ClassCode
 
-
 @kotlin.ExperimentalStdlibApi
-class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectMotherTemplate {
+class KotlinObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectMotherTemplate {
     val neededObjectMotherClasses = mutableListOf<ClassInfo>()
     lateinit var classCode: ClassCode
 
@@ -27,42 +26,45 @@ class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectM
     }
 
     fun buildPackage(packageName: String): String {
-        return "package $packageName;\n\n"
+        return "package $packageName\n\n"
     }
 
     fun buildImports(neededConstructors: List<MethodInfo>): String {
-        var res = "import com.github.javafaker.Faker;\n\n"
+        var res = "import com.github.javafaker.Faker\n\n"
         if (neededConstructors.isNotEmpty()) {
             res += neededConstructors[0].args.filter { (it.clazzInfo?.clazz?.getName() ?: "") != "" }
                 .map { "import static ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.random${it.clazzInfo?.clazz?.getName()}" }
-                .joinToString(separator = ";\n")
+                .joinToString(separator = "\n")
                 .ifNotEmpty { "$it;\n\n" }
         }
         return res
     }
 
     fun buildClass(className: String, constructors: List<MethodInfo>): String {
-        var res = "public class ${className}ObjectMother{\n"
+        var res = """
+class ${className}ObjectMother{
+    companion object {
+""".trim()
         if (constructors.isNotEmpty()) {
             var i = 0
             constructors.forEach { res += buildMotherConstructor(className, it, i++) };
         } else {
             res += buildMotherConstructor(className)
         }
-        return "$res\n}"
+        return "$res\n\t}\n}"
     }
 
     private fun buildMotherConstructor(className: String, methodInfo: MethodInfo, index: Int): Any? {
         return """
-    public static $className random$className${if(index > 0) index else ""}(){
-        Faker faker = new Faker();
-        return new $className(${buildArgumentsData(methodInfo.args)});
+    fun random$className${if(index > 0) index else ""}(): $className {
+        val faker = new Faker()
+        return $className(${buildArgumentsData(methodInfo.args)})
     }"""
     }
 
     private fun buildMotherConstructor(className: String): Any? {
-        return """  public static $className random$className(){
-        return new $className();
+        return """  fin random$className():  $className{
+        return $className()
     }"""
     }
 
@@ -99,7 +101,7 @@ class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectM
                     neededObjectMotherClasses.add(classInfo)
                     "random${classInfo.clazz!!.getName()}()"
                 } else {
-                    "new ${name}()"
+                    "${name}()"
                 }
             }
         }
@@ -108,7 +110,7 @@ class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectM
     private fun randomMap(name: String): String {
         addImportIfNeeded("java.util.Map")
         val types = TypedClass.findTypesFrom(name)
-        return """Map.of(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
+        return """mapOf(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
             ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)},
 				        ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
             ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)})"""
@@ -118,7 +120,7 @@ class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectM
         addImportIfNeeded("java.util.List")
         val types = TypedClass.findTypesFrom(classCanonicalName)
         val type = types.getOrNull(0)?.types?.getOrNull(0)?.className
-        return """List.of(
+        return """listOf(
             ${createDefaultValueForTypedClass(type)},
             ${createDefaultValueForTypedClass(type)})""".trimMargin()
     }

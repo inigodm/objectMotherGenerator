@@ -4,8 +4,8 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.actionSystem.Presentation
 import com.intellij.openapi.editor.CaretModel
 import com.intellij.openapi.vfs.VirtualFile
-import inigo.objectMotherCreator.infraestructure.OMActions.ObjectCreateFileSeletedAction
-import inigo.objectMotherCreator.infraestructure.OMActions.ObjectCreateOnCaretSelectedAction
+import inigo.objectMotherCreator.infraestructure.actions.ObjectCreateFileSeletedAction
+import inigo.objectMotherCreator.infraestructure.actions.ObjectCreateOnCaretSelectedAction
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
