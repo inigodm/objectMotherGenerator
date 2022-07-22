@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
+@OptIn(ExperimentalStdlibApi::class)
 class `Option in menu appears` {
     @MockK
     lateinit var actionEvent : AnActionEvent

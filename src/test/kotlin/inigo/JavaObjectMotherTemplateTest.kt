@@ -10,7 +10,7 @@ import io.mockk.spyk
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-
+@OptIn(ExperimentalStdlibApi::class)
 class JavaObjectMotherTemplateTest {
     @MockK
     lateinit var fakerGenerator: FakerGenerator

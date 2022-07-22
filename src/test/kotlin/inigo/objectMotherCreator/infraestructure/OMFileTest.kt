@@ -12,7 +12,7 @@ import com.intellij.psi.*
 import inigo.objectMotherCreator.model.infoExtractor.*
 import io.mockk.verify
 import org.junit.Ignore
-
+@OptIn(ExperimentalStdlibApi::class)
 class OMFileTest {
 
     lateinit var psiJavaFile: PsiJavaFile
@@ -48,13 +48,13 @@ class OMFileTest {
         val clazz = mockk<PsiClass>()
         every { psiJavaFile.classes } returns arrayOf(clazz)
 
-        assertThat(javafile.getClasses()).isEqualTo(listOf(OMClass(clazz)))
+        assertThat(javafile.getClasses()).isEqualTo(listOf(OMJavaClass(clazz)))
     }
 
     @Test
     fun `should tell whether class is public or not` () {
         every { psiClass.modifierList!!.text } returns "public"
-        OMClass = OMClass(psiClass)
+        OMClass = OMJavaClass(psiClass)
 
         assertThat(OMClass.isPublic()).isTrue()
     }

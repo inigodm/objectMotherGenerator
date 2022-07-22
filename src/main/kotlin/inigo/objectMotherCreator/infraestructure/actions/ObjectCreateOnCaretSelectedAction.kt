@@ -8,7 +8,6 @@ class ObjectCreateOnCaretSelectedAction : OMCreationAction() {
     override fun actionPerformed(e: AnActionEvent) {
         e.project ?: return
         val ideShits = IdeaShits(e)
-        println("------------------------------Da fuck ${ideShits.getCurrentOMVirtualFile()}")
         allowedLanguages.forEach { extension ->
             if (ideShits.isCaretInFileType(extension)) {
                 ideShits.openFilesInEditor(execute(ideShits, extensions[extension]!!))
