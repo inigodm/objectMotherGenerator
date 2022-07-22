@@ -9,9 +9,9 @@ class ObjectCreateOnCaretSelectedAction : OMCreationAction() {
         e.project ?: return
         val ideShits = IdeaShits(e)
         println("------------------------------Da fuck ${ideShits.getCurrentOMVirtualFile()}")
-        allowedFileExtensions.forEach {extension ->
+        allowedLanguages.forEach { extension ->
             if (ideShits.isCaretInFileType(extension)) {
-                ideShits.openFilesInEditor(execute(ideShits, extension))
+                ideShits.openFilesInEditor(execute(ideShits, extensions[extension]!!))
             }
         }
     }
@@ -19,6 +19,6 @@ class ObjectCreateOnCaretSelectedAction : OMCreationAction() {
     override fun update(e: AnActionEvent) {
         val ideShits = IdeaShits(e)
         ideShits.setMenuItemEnabled(
-            allowedFileExtensions.map(ideShits::isCaretInFileType).filter { it }.any())
+            allowedLanguages.map(ideShits::isCaretInFileType).filter { it }.any())
     }
 }

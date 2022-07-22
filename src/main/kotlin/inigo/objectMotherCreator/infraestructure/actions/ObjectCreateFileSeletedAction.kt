@@ -11,9 +11,9 @@ class ObjectCreateFileSeletedAction : OMCreationAction() {
         val ideShits = IdeaShits(e)
         println("---------------------------Da fuck ${ideShits.getCurrentOMVirtualFile()}")
         val selectedFile = ideShits.getCurrentOMVirtualFile()
-        allowedFileExtensions.forEach { extension ->
+        allowedLanguages.forEach { extension ->
             if (isFileSelectedOfType(selectedFile, extension)) {
-                ideShits.openFilesInEditor(execute(ideShits, extension))
+                ideShits.openFilesInEditor(execute(ideShits, extensions[extension]!!))
             }
         }
     }
@@ -22,7 +22,7 @@ class ObjectCreateFileSeletedAction : OMCreationAction() {
         val ideShits = IdeaShits(e)
         val selectedFile = ideShits.getCurrentOMVirtualFile()
         ideShits.setMenuItemEnabled(
-            allowedFileExtensions.map{ isFileSelectedOfType(selectedFile, it) }.filter { it }.any())
+            allowedLanguages.map{ isFileSelectedOfType(selectedFile, it) }.filter { it }.any())
     }
 
     private fun isFileSelectedOfType(selectedFile: OMVirtualFile?, extension: String) =

@@ -11,8 +11,8 @@ import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
 
 @kotlin.ExperimentalStdlibApi
 abstract class OMCreationAction : AnAction() {
-    val allowedFileExtensions = listOf("java", "groovy", "kotlin")
-
+    val allowedLanguages = listOf("java", "groovy", "kotlin")
+    val extensions = mapOf("java" to "java", "groovy" to "groovy", "kotlin" to "kt")
     fun execute(ideShits: IdeaShits, extension: String,
                 fakeValuesGenerator: FakeValuesGenerator = FakerGenerator()) : List<String> {
         val dir = ideShits.obtainTestSourceDirectory() ?: return emptyList()
