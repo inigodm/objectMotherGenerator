@@ -6,6 +6,7 @@ import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.values.FakerGenerator
 import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
+import inigo.objectMotherCreator.application.template.ObjectMotherTemplate
 import inigo.objectMotherCreator.infraestructure.*
 import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
 
@@ -27,7 +28,8 @@ abstract class OMCreationAction : AnAction() {
             root = ideaShits.getCurrentOMFile(),
             ideaShits = ideaShits
         )
-        val creator = ObjectMotherCreator(IdeaJavaFileCreator(ideaShits), JavaObjectMotherTemplate(fakeValuesGenerator))
+        val creator = ObjectMotherCreator(IdeaJavaFileCreator(ideaShits),
+            ObjectMotherTemplate.buildObjectMotherTemplate(extension, fakeValuesGenerator))
         creator.createObjectMotherFor(classInfo, dir, extension)
         return creator.objectMotherFileNames
     }
