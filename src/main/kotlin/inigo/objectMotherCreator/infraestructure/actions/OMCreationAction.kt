@@ -9,7 +9,6 @@ import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.infraestructure.*
 import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
 
-@kotlin.ExperimentalStdlibApi
 abstract class OMCreationAction : AnAction() {
     val allowedLanguages = listOf("java", "groovy", "kotlin")
     val extensions = mapOf("java" to "java", "groovy" to "groovy", "kotlin" to "kt")

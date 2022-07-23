@@ -3,7 +3,6 @@ package inigo.objectMotherCreator.infraestructure.actions
 import com.intellij.openapi.actionSystem.AnActionEvent
 import inigo.objectMotherCreator.infraestructure.IdeaShits
 
-@kotlin.ExperimentalStdlibApi
 class ObjectCreateOnCaretSelectedAction : OMCreationAction() {
     override fun actionPerformed(e: AnActionEvent) {
         e.project ?: return

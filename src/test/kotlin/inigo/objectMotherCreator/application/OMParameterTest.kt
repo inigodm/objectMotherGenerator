@@ -2,9 +2,8 @@ package inigo.objectMotherCreator.application
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-@OptIn(ExperimentalStdlibApi::class)
+
 internal class OMParameterTest{
 
     @Test

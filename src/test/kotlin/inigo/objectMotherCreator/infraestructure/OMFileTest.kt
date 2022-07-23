@@ -12,7 +12,6 @@ import com.intellij.psi.*
 import inigo.objectMotherCreator.model.infoExtractor.*
 import io.mockk.verify
 import org.junit.Ignore
-@OptIn(ExperimentalStdlibApi::class)
 class OMFileTest {
 
     lateinit var psiJavaFile: PsiJavaFile

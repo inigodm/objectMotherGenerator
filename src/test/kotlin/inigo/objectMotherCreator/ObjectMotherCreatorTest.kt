@@ -8,7 +8,6 @@ import inigo.objectMotherCreator.model.infoExtractor.OMClass
 import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
 import inigo.objectMotherCreator.infraestructure.IdeaJavaFileCreator
 import inigo.objectMotherCreator.application.ObjectMotherCreator
-import inigo.objectMotherCreator.model.infoExtractor.OMVirtualFile
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -16,7 +15,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-@OptIn(ExperimentalStdlibApi::class)
+
 class ObjectMotherCreatorTest {
     @MockK
     lateinit var project : Project

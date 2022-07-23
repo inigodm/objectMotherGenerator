@@ -4,7 +4,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import inigo.objectMotherCreator.infraestructure.IdeaShits
 import inigo.objectMotherCreator.model.infoExtractor.OMVirtualFile
 
-@kotlin.ExperimentalStdlibApi
 class ObjectCreateFileSeletedAction : OMCreationAction() {
     override fun actionPerformed(e: AnActionEvent) {
         e.project ?: return

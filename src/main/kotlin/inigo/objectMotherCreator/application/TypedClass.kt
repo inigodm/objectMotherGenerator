@@ -5,7 +5,6 @@ data class TypedClass(var className: String, var types: List<TypedClass> = mutab
     companion object {
         val regex = Regex("^([^<]*)<([^\$]*)>")
 
-        @kotlin.ExperimentalStdlibApi
         fun findTypesFrom(canonicalText: String): List<TypedClass> {
             if (canonicalText.isEmpty()) {
                 return mutableListOf()
@@ -39,7 +38,6 @@ data class TypedClass(var className: String, var types: List<TypedClass> = mutab
             return mutableListOf(TypedClass(type.trim(), types.flatMap { findTypesFrom(it.trim()) }))
         }
 
-        @kotlin.ExperimentalStdlibApi
         private fun indexOfTheFirstClosing(canonicalText: String): Int {
             var opening = 0
             var index = 0
@@ -48,10 +46,11 @@ data class TypedClass(var className: String, var types: List<TypedClass> = mutab
                 if (index != 0) {
                     return@forEach
                 }
-                if (it == '<'.code) {
+                // TODO change with '<'.code when it get removed
+                if (it == '<'.toByte().toInt()) {
                     opening++
                 } else {
-                    if (it == '>'.code) {
+                    if (it == '>'.toByte().toInt()) {
                         opening--
                         if (opening == 0) {
                             index = i + 1

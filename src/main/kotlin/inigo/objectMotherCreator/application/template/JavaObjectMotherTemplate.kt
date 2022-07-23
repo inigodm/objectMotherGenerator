@@ -8,7 +8,6 @@ import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.model.ClassCode
 
 
-@kotlin.ExperimentalStdlibApi
 class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectMotherTemplate {
     val neededObjectMotherClasses = mutableListOf<ClassInfo>()
     lateinit var classCode: ClassCode
