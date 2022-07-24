@@ -8,7 +8,6 @@ class ObjectCreateFileSeletedAction : OMCreationAction() {
     override fun actionPerformed(e: AnActionEvent) {
         e.project ?: return
         val ideShits = IdeaShits(e)
-        println("---------------------------Da fuck ${ideShits.getCurrentOMVirtualFile()}")
         val selectedFile = ideShits.getCurrentOMVirtualFile()
         allowedLanguages.forEach { extension ->
             if (isFileSelectedOfType(selectedFile, extension)) {

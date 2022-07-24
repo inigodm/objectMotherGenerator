@@ -1,9 +1,13 @@
 package inigo.objectMotherCreator.model.infoExtractor
 
-import com.intellij.psi.PsiMethod
-import org.jetbrains.kotlin.asJava.elements.KtLightMethod
+import org.jetbrains.kotlin.psi.KtConstructor
+import org.jetbrains.kotlin.psi.KtParameter
 
-data class OMKtMethod(private val inner: KtLightMethod) {
-    fun getName() = inner.name
-    fun getParameters() = inner.parameterList.parameters.map { OMParameter(it) }
+data class OMKtMethod<T : KtConstructor<T>>(private val inner: KtConstructor<T>): OMMethod {
+    override fun getName() = inner.name ?: "NONAME"
+    override fun getParameters(): List<OMParameter> {
+        return inner.valueParameters.map {
+            OMKtParameter(it)
+        }
+    }
 }

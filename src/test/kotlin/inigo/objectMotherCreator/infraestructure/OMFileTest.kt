@@ -61,7 +61,7 @@ class OMFileTest {
     @Test
     fun `should get method name` () {
         every { psiMethod.name } returns "methodName"
-        val OMMethod = OMMethod(psiMethod)
+        val OMMethod = OMJavaMethod(psiMethod)
 
         assertThat(OMMethod.getName()).isEqualTo("methodName")
     }
@@ -70,14 +70,14 @@ class OMFileTest {
     fun `should obtain method parameters`() {
         every { psiMethod.parameterList.parameters } returns arrayOf(psiParameter)
 
-        val OMMethod = OMMethod(psiMethod)
+        val OMMethod = OMJavaMethod(psiMethod)
 
-        assertThat(OMMethod.getParameters()).isEqualTo(listOf(OMParameter(psiParameter)))
+        assertThat(OMMethod.getParameters()).isEqualTo(listOf(OMJavaParameter(psiParameter)))
     }
 
     @Test
     fun `should get parameters name or void` () {
-        val param = OMParameter(psiParameter)
+        val param = OMJavaParameter(psiParameter)
 
         assertThat(param.getNameOrVoid()).isEqualTo("")
 
@@ -88,7 +88,7 @@ class OMFileTest {
 
     @Test
     fun `should get parameters class canonical name` () {
-        val param = OMParameter(psiParameter)
+        val param = OMJavaParameter(psiParameter)
 
         every { psiParameter.type.getCanonicalText(true) } returns "canonicalName"
 

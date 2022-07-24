@@ -7,7 +7,6 @@ import inigo.objectMotherCreator.application.TypedClass
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.model.ClassCode
 
-@kotlin.ExperimentalStdlibApi
 class KotlinObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectMotherTemplate {
     val neededObjectMotherClasses = mutableListOf<ClassInfo>()
     lateinit var classCode: ClassCode
@@ -63,7 +62,8 @@ class ${className}ObjectMother{
     }
 
     private fun buildMotherConstructor(className: String): Any? {
-        return """  fin random$className():  $className{
+        return """
+    fun random$className():  $className{
         return $className()
     }"""
     }

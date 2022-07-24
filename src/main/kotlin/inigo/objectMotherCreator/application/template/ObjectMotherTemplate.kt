@@ -8,7 +8,7 @@ interface ObjectMotherTemplate {
         @OptIn(ExperimentalStdlibApi::class)
         fun buildObjectMotherTemplate(extension: String, fakerGenerator: FakeValuesGenerator): ObjectMotherTemplate {
             return when (extension) {
-                "kotlin" -> JavaObjectMotherTemplate(fakerGenerator)
+                "kt" -> KotlinObjectMotherTemplate(fakerGenerator)
                 else -> { // Note the block
                     JavaObjectMotherTemplate(fakerGenerator)
                 }
