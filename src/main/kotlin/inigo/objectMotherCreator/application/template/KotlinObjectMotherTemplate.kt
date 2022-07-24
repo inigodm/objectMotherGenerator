@@ -32,7 +32,7 @@ class KotlinObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): Objec
         var res = "import com.github.javafaker.Faker\n\n"
         if (neededConstructors.isNotEmpty()) {
             res += neededConstructors[0].args.filter { (it.clazzInfo?.clazz?.getName() ?: "") != "" }
-                .map { "import static ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.random${it.clazzInfo?.clazz?.getName()}" }
+                .map { "import ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.random${it.clazzInfo?.clazz?.getName()}" }
                 .joinToString(separator = "\n")
                 .ifNotEmpty { "$it;\n\n" }
         }
@@ -56,7 +56,7 @@ class ${className}ObjectMother{
     private fun buildMotherConstructor(className: String, methodInfo: MethodInfo, index: Int): Any? {
         return """
     fun random$className${if(index > 0) index else ""}(): $className {
-        val faker = new Faker()
+        val faker = Faker()
         return $className(${buildArgumentsData(methodInfo.args)})
     }"""
     }

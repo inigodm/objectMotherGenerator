@@ -1,17 +1,18 @@
 package inigo.objectMotherCreator.model.infoExtractor
 
-import com.intellij.psi.PsiParameter
-import org.jetbrains.kotlin.idea.quickfix.expectactual.getTypeDescription
 import org.jetbrains.kotlin.idea.refactoring.fqName.fqName
-import org.jetbrains.kotlin.load.java.structure.impl.convertCanonicalNameToQName
+import org.jetbrains.kotlin.nj2k.postProcessing.type
 import org.jetbrains.kotlin.psi.KtParameter
-import org.jetbrains.kotlin.psi.KtTypeParameter
-import org.jetbrains.kotlin.resolve.calls.callUtil.getType
+import org.jetbrains.kotlin.psi.KtUserType
 
 data class OMKtParameter(private val inner: KtParameter) : OMParameter{
-    override fun getNameOrVoid() = inner.name ?: ""
-    override fun getClassCanonicalName() = inner.getTypeDescription().convertCanonicalNameToQName()
+    override fun getNameOrVoid() : String {
+        return (inner.typeReference!!.typeElement as KtUserType).referencedName!!
+    }
+    override fun getClassCanonicalName() : String {
+      return inner.type()!!.fqName!!.asString()
+    }
     override fun getTypes() : String? {
-        return inner.getTypeDescription()
+        return (inner.typeReference!!.typeElement as KtUserType).referenceExpression!!.getIdentifier()!!.text
     }
 }
