@@ -1,9 +1,11 @@
-package inigo.objectMotherCreator.model.infoExtractor
+package inigo.objectMotherCreator.model.infoExtractor.om
 
 import com.intellij.psi.JavaDirectoryService
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaClass
+import inigo.objectMotherCreator.model.infoExtractor.omkotlin.OMKtClass
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtFile
 

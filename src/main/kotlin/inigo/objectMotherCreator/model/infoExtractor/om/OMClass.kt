@@ -1,7 +1,4 @@
-package inigo.objectMotherCreator.model.infoExtractor
-
-import com.intellij.openapi.util.NlsSafe
-import com.intellij.psi.PsiClass
+package inigo.objectMotherCreator.model.infoExtractor.om
 
 interface OMClass {
     fun isPublic(): Boolean

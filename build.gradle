@@ -11,7 +11,7 @@ plugins {
 '''id 'io.gitlab.arturbosch.detekt' version '1.17.1'''
 
 group 'org.example'
-version '1.3.0.2'
+version '1.4.0.0'
 
 sourceCompatibility = 1.8
 
@@ -59,7 +59,8 @@ patchPluginXml {
     sinceBuild = '193'
     untilBuild = '293.*'
     changeNotes = """
-        - Big refactor
-        - Little optimizations
+        Added KOTLIN support as beta.
+        It will have to be improved but already is able to generate kotlin ObjectMothers for primary and secondary constructors in one-class files
+        Fixed a bug which prevents correct creation of OM in some cases  
     """
 }

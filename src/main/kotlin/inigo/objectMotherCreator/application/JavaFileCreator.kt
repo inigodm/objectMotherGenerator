@@ -1,8 +1,7 @@
 package inigo.objectMotherCreator.application
 
-import com.intellij.util.IncorrectOperationException
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
-import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
+import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
 
 interface JavaFileCreator {
     fun buildFile(baseDir: OMDirectory, clazzInfo: ClassInfo, javaCode: String, extension: String)

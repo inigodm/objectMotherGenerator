@@ -1,8 +1,8 @@
 package inigo.objectMotherCreator.application.infoholders
 
 import inigo.objectMotherCreator.infraestructure.IdeaShits
-import inigo.objectMotherCreator.model.infoExtractor.OMClass
-import inigo.objectMotherCreator.model.infoExtractor.OMFile
+import inigo.objectMotherCreator.model.infoExtractor.om.OMClass
+import inigo.objectMotherCreator.model.infoExtractor.om.OMFile
 
 class ClassInfo(
     var clazz: OMClass? = null,

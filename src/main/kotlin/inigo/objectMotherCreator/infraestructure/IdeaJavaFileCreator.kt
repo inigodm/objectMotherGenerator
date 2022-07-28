@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.util.IncorrectOperationException
 import inigo.objectMotherCreator.application.JavaFileCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
-import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
+import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
 import java.io.File
 
 

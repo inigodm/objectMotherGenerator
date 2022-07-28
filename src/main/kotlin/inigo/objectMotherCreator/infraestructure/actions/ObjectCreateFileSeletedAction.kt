@@ -2,7 +2,7 @@ package inigo.objectMotherCreator.infraestructure.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import inigo.objectMotherCreator.infraestructure.IdeaShits
-import inigo.objectMotherCreator.model.infoExtractor.OMVirtualFile
+import inigo.objectMotherCreator.model.infoExtractor.om.OMVirtualFile
 
 class ObjectCreateFileSeletedAction : OMCreationAction() {
     override fun actionPerformed(e: AnActionEvent) {

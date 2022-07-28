@@ -9,7 +9,12 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import com.intellij.psi.*
-import inigo.objectMotherCreator.model.infoExtractor.*
+import inigo.objectMotherCreator.model.infoExtractor.om.OMClass
+import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
+import inigo.objectMotherCreator.model.infoExtractor.om.OMFile
+import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaClass
+import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaMethod
+import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaParameter
 import io.mockk.verify
 import org.junit.Ignore
 class OMFileTest {

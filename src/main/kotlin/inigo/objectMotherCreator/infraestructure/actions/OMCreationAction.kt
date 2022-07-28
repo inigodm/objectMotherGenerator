@@ -5,10 +5,9 @@ import inigo.objectMotherCreator.application.ObjectMotherCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.values.FakerGenerator
-import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.application.template.ObjectMotherTemplate
 import inigo.objectMotherCreator.infraestructure.*
-import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
+import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
 
 abstract class OMCreationAction : AnAction() {
     val allowedLanguages = listOf("java", "groovy", "kotlin")

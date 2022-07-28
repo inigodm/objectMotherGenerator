@@ -6,7 +6,7 @@ import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.infraestructure.IdeaShits
-import inigo.objectMotherCreator.model.infoExtractor.*
+import inigo.objectMotherCreator.model.infoExtractor.om.*
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

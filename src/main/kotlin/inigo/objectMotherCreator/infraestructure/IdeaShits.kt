@@ -13,7 +13,11 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
-import inigo.objectMotherCreator.model.infoExtractor.*
+import inigo.objectMotherCreator.model.infoExtractor.om.OMClass
+import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
+import inigo.objectMotherCreator.model.infoExtractor.om.OMFile
+import inigo.objectMotherCreator.model.infoExtractor.om.OMVirtualFile
+import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaClass
 import org.jetbrains.jps.model.java.JavaSourceRootType
 import java.io.File
 

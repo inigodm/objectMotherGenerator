@@ -1,7 +1,7 @@
 package inigo.objectMotherCreator.application.infoholders
 
 import inigo.objectMotherCreator.infraestructure.IdeaShits
-import inigo.objectMotherCreator.model.infoExtractor.OMMethod
+import inigo.objectMotherCreator.model.infoExtractor.om.OMMethod
 
 class MethodInfo(var method: OMMethod, var ideaShits: IdeaShits){
     var args =  mutableListOf<ParametersInfo>()

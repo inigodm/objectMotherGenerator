@@ -4,8 +4,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
-import inigo.objectMotherCreator.model.infoExtractor.OMClass
-import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
+import inigo.objectMotherCreator.model.infoExtractor.om.OMClass
+import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
 import inigo.objectMotherCreator.infraestructure.IdeaJavaFileCreator
 import inigo.objectMotherCreator.application.ObjectMotherCreator
 import io.mockk.MockKAnnotations

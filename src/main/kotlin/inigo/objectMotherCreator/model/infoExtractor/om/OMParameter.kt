@@ -1,4 +1,4 @@
-package inigo.objectMotherCreator.model.infoExtractor
+package inigo.objectMotherCreator.model.infoExtractor.om
 
 import com.intellij.psi.PsiParameter
 
