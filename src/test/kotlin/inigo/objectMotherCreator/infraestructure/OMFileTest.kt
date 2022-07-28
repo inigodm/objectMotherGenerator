@@ -9,10 +9,14 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import com.intellij.psi.*
-import inigo.objectMotherCreator.model.infoExtractor.*
+import inigo.objectMotherCreator.model.infoExtractor.om.OMClass
+import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
+import inigo.objectMotherCreator.model.infoExtractor.om.OMFile
+import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaClass
+import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaMethod
+import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaParameter
 import io.mockk.verify
 import org.junit.Ignore
-
 class OMFileTest {
 
     lateinit var psiJavaFile: PsiJavaFile
@@ -48,13 +52,13 @@ class OMFileTest {
         val clazz = mockk<PsiClass>()
         every { psiJavaFile.classes } returns arrayOf(clazz)
 
-        assertThat(javafile.getClasses()).isEqualTo(listOf(OMClass(clazz)))
+        assertThat(javafile.getClasses()).isEqualTo(listOf(OMJavaClass(clazz)))
     }
 
     @Test
     fun `should tell whether class is public or not` () {
         every { psiClass.modifierList!!.text } returns "public"
-        OMClass = OMClass(psiClass)
+        OMClass = OMJavaClass(psiClass)
 
         assertThat(OMClass.isPublic()).isTrue()
     }
@@ -62,7 +66,7 @@ class OMFileTest {
     @Test
     fun `should get method name` () {
         every { psiMethod.name } returns "methodName"
-        val OMMethod = OMMethod(psiMethod)
+        val OMMethod = OMJavaMethod(psiMethod)
 
         assertThat(OMMethod.getName()).isEqualTo("methodName")
     }
@@ -71,14 +75,14 @@ class OMFileTest {
     fun `should obtain method parameters`() {
         every { psiMethod.parameterList.parameters } returns arrayOf(psiParameter)
 
-        val OMMethod = OMMethod(psiMethod)
+        val OMMethod = OMJavaMethod(psiMethod)
 
-        assertThat(OMMethod.getParameters()).isEqualTo(listOf(OMParameter(psiParameter)))
+        assertThat(OMMethod.getParameters()).isEqualTo(listOf(OMJavaParameter(psiParameter)))
     }
 
     @Test
     fun `should get parameters name or void` () {
-        val param = OMParameter(psiParameter)
+        val param = OMJavaParameter(psiParameter)
 
         assertThat(param.getNameOrVoid()).isEqualTo("")
 
@@ -89,7 +93,7 @@ class OMFileTest {
 
     @Test
     fun `should get parameters class canonical name` () {
-        val param = OMParameter(psiParameter)
+        val param = OMJavaParameter(psiParameter)
 
         every { psiParameter.type.getCanonicalText(true) } returns "canonicalName"
 

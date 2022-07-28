@@ -2,7 +2,7 @@ package inigo.objectMotherCreator.application
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.template.ObjectMotherTemplate
-import inigo.objectMotherCreator.model.infoExtractor.OMDirectory
+import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
 
 class ObjectMotherCreator(var fileCreator: JavaFileCreator, var template: ObjectMotherTemplate) {
     val objectMotherFileNames = mutableListOf<String>()

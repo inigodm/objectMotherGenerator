@@ -46,10 +46,11 @@ data class TypedClass(var className: String, var types: List<TypedClass> = mutab
                 if (index != 0) {
                     return@forEach
                 }
-                if (it == '<'.code) {
+                // TODO change with '<'.code when it get removed
+                if (it == '<'.toByte().toInt()) {
                     opening++
                 } else {
-                    if (it == '>'.code) {
+                    if (it == '>'.toByte().toInt()) {
                         opening--
                         if (opening == 0) {
                             index = i + 1
