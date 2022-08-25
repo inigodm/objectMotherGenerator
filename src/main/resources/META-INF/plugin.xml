@@ -1,20 +1,23 @@
 <idea-plugin>
     <id>inigo.objectmothercreator</id>
     <name>Object mother creator</name>
-    <version>1.4.0.0</version>
+    <version>1.4.1.0</version>
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
     <depends>com.intellij.java</depends>
     <depends>org.intellij.groovy</depends>
     <depends>org.jetbrains.kotlin</depends>
     <description><![CDATA[
-      Creates object mothers for selected class on rigth clicking over it.
-      <br><br><b>Supports Kotlin, Java and Groovy classes</b> 
+      Creates object mothers for selected class on right clicking over it.
+      <br><br><b>Supports Kotlin, Java and Groovy classes</b>
+
+      To use it, select the file containing the class or over the editor tab of the opened file, right click -> Create object mother for current class
+
       <br><br>Source code can be found <a href="https://github.com/inigodm/objectMotherGenerator">HERE</a>
       <br><br> PR and issues are welcome
 <br><br>
-      <b>IMPORTANT: Generated code uses, to generate random Strings, and only because is hilarious, Javafaker library (<a href="https://github.com/DiUS/java-faker">in github</a>)</b>
+      <b>IMPORTANT: Generated code uses, to generate random Strings, Javafaker library (<a href="https://github.com/DiUS/java-faker">in github</a>)</b>
 <br><br>
-      You can add it (it generates random data for your tests, very usefully) to your project using maven or gradle, as example, for version 1.3.0.0 (currrent);
+      You can add it (it generates random data for your tests, very usefully) to your project using maven or gradle, as example;
 <br><br>
       dependencies {<br>
         testImplementation "com.github.javafaker:javafaker:1.0.2"<br>
@@ -25,7 +28,6 @@
       <br><br>
       <a href="https://martinfowler.com/bliki/ObjectMother.html">https://martinfowler.com/bliki/ObjectMother.html</a>
       <br><br>
-      To use it, select the file containing the class or over the editor tab of the opened file, rigth click -> Create object mother for current class
 
 ]]></description>
 
@@ -43,6 +45,7 @@
         1.3.0.1 - Add support until 293.*
         1.3.0.2 - Code refactors
         1.4.0.0 - Add Kotlin support
+        1.4.1.0 - Identify UUID and Instant
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->

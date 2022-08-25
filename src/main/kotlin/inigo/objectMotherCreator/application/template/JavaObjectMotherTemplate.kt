@@ -11,6 +11,7 @@ import inigo.objectMotherCreator.model.ClassCode
 class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectMotherTemplate {
     val neededObjectMotherClasses = mutableListOf<ClassInfo>()
     lateinit var classCode: ClassCode
+    val importedClasses = mutableSetOf<String>()
 
     override fun createObjectMotherSourceCode(clazz: ClassInfo) : String {
         classCode = ClassCode()
@@ -72,6 +73,20 @@ class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectM
 
     private fun createDefaultValueFor(name: String, classInfo: ClassInfo?): String {
         return when {
+            name == "UUID" -> {
+                if (!importedClasses.contains(name)) {
+                    classCode.imports += "import java.util.UUID;\n"
+                    importedClasses.add(name)
+                }
+                "UUID.randomUUID()"
+            }
+            name == "Instant" -> {
+                if (!importedClasses.contains(name)) {
+                    classCode.imports += "import java.time.Instant;\n"
+                    importedClasses.add(name)
+                }
+                "Instant.now()"
+            }
             name == "String" -> {
                 fakerGenerator.randomString()
             }

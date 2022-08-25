@@ -9,6 +9,7 @@ import inigo.objectMotherCreator.model.ClassCode
 
 class KotlinObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectMotherTemplate {
     val neededObjectMotherClasses = mutableListOf<ClassInfo>()
+    val importedClasses = mutableSetOf<String>()
     lateinit var classCode: ClassCode
 
     override fun createObjectMotherSourceCode(clazz: ClassInfo) : String {
@@ -75,6 +76,20 @@ class ${className}ObjectMother{
 
     private fun createDefaultValueFor(name: String, classInfo: ClassInfo?): String {
         return when {
+            name == "UUID" -> {
+                if (!importedClasses.contains(name)) {
+                    classCode.imports += "import java.util.UUID\n"
+                    importedClasses.add(name)
+                }
+                "UUID.randomUUID()"
+            }
+            name == "Instant" -> {
+                if (!importedClasses.contains(name)) {
+                    classCode.imports += "import java.time.Instant\n"
+                    importedClasses.add(name)
+                }
+                "Instant.now()"
+            }
             name == "String" -> {
                 fakerGenerator.randomString()
             }
