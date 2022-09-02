@@ -1,6 +1,7 @@
 package inigo.objectMotherCreator.infraestructure.actions
 
 import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.command.CommandProcessor
 import inigo.objectMotherCreator.application.ObjectMotherCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
@@ -27,7 +28,7 @@ abstract class OMCreationAction : AnAction() {
             root = ideaShits.getCurrentOMFile(),
             ideaShits = ideaShits
         )
-        val creator = ObjectMotherCreator(IdeaJavaFileCreator(ideaShits),
+        val creator = ObjectMotherCreator(IdeaJavaFileCreator(ideaShits, CommandProcessor.getInstance()),
             ObjectMotherTemplate.buildObjectMotherTemplate(extension, fakeValuesGenerator))
         creator.createObjectMotherFor(classInfo, dir, extension)
         return creator.objectMotherFileNames

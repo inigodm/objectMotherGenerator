@@ -35,7 +35,7 @@ class KotlinObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): Objec
             res += neededConstructors[0].args.filter { (it.clazzInfo?.clazz?.getName() ?: "") != "" }
                 .map { "import ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.random${it.clazzInfo?.clazz?.getName()}" }
                 .joinToString(separator = "\n")
-                .ifNotEmpty { "$it;\n\n" }
+                .ifNotEmpty { "$it\n\n" }
         }
         return res
     }
@@ -47,7 +47,7 @@ class ${className}ObjectMother{
 """.trim()
         if (constructors.isNotEmpty()) {
             var i = 0
-            constructors.forEach { res += buildMotherConstructor(className, it, i++) };
+            constructors.forEach { res += buildMotherConstructor(className, it, i++) }
         } else {
             res += buildMotherConstructor(className)
         }
@@ -106,10 +106,10 @@ class ${className}ObjectMother{
                 fakerGenerator.randomLong()
             }
             name.matches("^[\\s\\S]*Map[<]{0,1}[\\S\\s]*[>]{0,1}\$".toRegex()) -> {
-                randomMap(name);
+                randomMap(name)
             }
             name.matches("^[\\s\\S]*List[<]{0,1}[\\S]*[>]{0,1}\$".toRegex()) -> {
-                randomList(name);
+                randomList(name)
             }
             else -> {
                 if (classInfo != null) {

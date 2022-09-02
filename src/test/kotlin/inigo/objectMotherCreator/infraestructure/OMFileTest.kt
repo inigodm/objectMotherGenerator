@@ -37,7 +37,7 @@ class OMFileTest {
         MockKAnnotations.init(this)
     }
 
-    @Ignore
+    @Ignore("Cannot test this because of static methods")
     fun `should get from java file package name or void` () {
         javafile = OMFile(psiJavaFile as PsiFile)
         every { psiJavaFile.containingDirectory } returns null
