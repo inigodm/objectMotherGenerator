@@ -17,7 +17,7 @@ import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaMethod
 import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaParameter
 import io.mockk.verify
 import org.junit.Ignore
-class OMFileTest {
+class OMJavaFileTest {
 
     lateinit var psiJavaFile: PsiJavaFile
     lateinit var psiMethod: PsiMethod
@@ -37,7 +37,7 @@ class OMFileTest {
         MockKAnnotations.init(this)
     }
 
-    @Ignore
+    @Ignore("Cannot test this because of static methods")
     fun `should get from java file package name or void` () {
         javafile = OMFile(psiJavaFile as PsiFile)
         every { psiJavaFile.containingDirectory } returns null

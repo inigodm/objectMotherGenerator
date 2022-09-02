@@ -1,6 +1,6 @@
 package inigo.objectMotherCreator.application.infoholders
 
-import inigo.objectMotherCreator.infraestructure.*
+import inigo.objectMotherCreator.infraestructure.IdeaShits
 import inigo.objectMotherCreator.model.infoExtractor.om.OMParameter
 
 class ParametersInfo(var param: OMParameter, var ideaShits: IdeaShits) {

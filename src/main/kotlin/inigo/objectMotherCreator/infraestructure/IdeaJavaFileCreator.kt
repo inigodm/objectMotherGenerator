@@ -13,7 +13,7 @@ import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
 import java.io.File
 
 
-class IdeaJavaFileCreator(var ideaShits: IdeaShits) : JavaFileCreator {
+class IdeaJavaFileCreator(var ideaShits: IdeaShits, var commandProcessor: CommandProcessor) : JavaFileCreator {
     lateinit var createdFilename: String
 
     override fun buildFile(baseDir: OMDirectory, clazzInfo: ClassInfo, javaCode: String, extension: String) {
@@ -25,7 +25,7 @@ class IdeaJavaFileCreator(var ideaShits: IdeaShits) : JavaFileCreator {
 
     @Throws(IncorrectOperationException::class)
     private fun createFile(directory: OMDirectory, name: String, code: String) {
-        return CommandProcessor.getInstance().executeCommand(
+        return commandProcessor.executeCommand(
             ideaShits.getProject(),
             {
                 ApplicationManager.getApplication()
@@ -82,7 +82,7 @@ class IdeaJavaFileCreator(var ideaShits: IdeaShits) : JavaFileCreator {
     ): OMDirectory? {
         val psiDirectory = arrayOfNulls<OMDirectory>(1)
         val exception = arrayOfNulls<IncorrectOperationException>(1)
-        CommandProcessor.getInstance().executeCommand(
+        commandProcessor.executeCommand(
             ideaShits.getProject(),
             {
                 psiDirectory[0] = ApplicationManager.getApplication()

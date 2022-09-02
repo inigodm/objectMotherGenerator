@@ -60,5 +60,6 @@ patchPluginXml {
     untilBuild = '293.*'
     changeNotes = """
         Added Instant and UUID's static constructors to template
+        Fix some bugs found with creating OM for kotlin (wrong Companion imports)
     """
 }
