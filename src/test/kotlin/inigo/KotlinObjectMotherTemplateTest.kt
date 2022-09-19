@@ -37,7 +37,7 @@ class KotlinObjectMotherTemplateTest {
 
         assertEquals(res, """import com.github.javafaker.Faker
 
-import qualified.clazzNameObjectMother.randomclazzName
+import qualified.clazzNameObjectMother.Companion.randomclazzName
 
 """)}
 
@@ -79,6 +79,8 @@ import qualified.clazzNameObjectMother.randomclazzName
         assertThatWorksWithType("Integer", "faker.number().randomDigit()")
         assertThatWorksWithType("long", "faker.number().randomNumber()")
         assertThatWorksWithType("Long", "faker.number().randomNumber()")
+        assertThatWorksWithType("Boolean", "faker.bool().bool()")
+        assertThatWorksWithType("boolean", "faker.bool().bool()")
     }
 
     @Test

@@ -90,6 +90,14 @@ class ${className}ObjectMother{
                 }
                 "Instant.now()"
             }
+            name == "Timestamp" -> {
+                if (!importedClasses.contains(name)) {
+                    classCode.imports += "import java.sql.Timestamp;\n"
+                    classCode.imports += "import java.time.Instant;\n"
+                    importedClasses.add(name)
+                }
+                "Timestamp.from(Instant.now())"
+            }
             name == "String" -> {
                 fakerGenerator.randomString()
             }
@@ -104,6 +112,12 @@ class ${className}ObjectMother{
             }
             name == "Long" -> {
                 fakerGenerator.randomLong()
+            }
+            name == "Boolean" -> {
+                fakerGenerator.randomBoolean()
+            }
+            name == "boolean" -> {
+                fakerGenerator.randomBoolean()
             }
             name.matches("^[\\s\\S]*Map[<]{0,1}[\\S\\s]*[>]{0,1}\$".toRegex()) -> {
                 randomMap(name)

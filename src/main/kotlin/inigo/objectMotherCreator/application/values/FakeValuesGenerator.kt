@@ -4,4 +4,5 @@ interface FakeValuesGenerator {
     fun randomString() : String
     fun randomInteger() : String
     fun randomLong() : String
+    fun randomBoolean() : String
 }

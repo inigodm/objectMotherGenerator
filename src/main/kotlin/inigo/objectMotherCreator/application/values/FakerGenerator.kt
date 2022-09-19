@@ -48,4 +48,8 @@ class FakerGenerator: FakeValuesGenerator {
     override fun randomLong() : String {
         return "faker.number().randomNumber()"
     }
+
+    override fun randomBoolean(): String {
+        return "faker.bool().bool()"
+    }
 }
