@@ -3,24 +3,19 @@ package inigo.objectMotherCreator.application.template
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.infoholders.MethodInfo
 import inigo.objectMotherCreator.application.infoholders.ParametersInfo
-import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.values.FakerGenerator
-import inigo.objectMotherCreator.model.JavaClassCode
+import inigo.objectMotherCreator.model.ClassCode
 import inigo.objectMotherCreator.model.KotlinClassCode
 
 class KotlinObjectMotherTemplate(var fakerGenerator: FakerGenerator): ObjectMotherTemplate {
 
     override fun createObjectMotherSourceCode(clazz: ClassInfo) : String {
-        fakerGenerator.neededObjectMotherClasses.clear()
-        fakerGenerator.classCode = KotlinClassCode()
-        fakerGenerator.classCode.packageCode = buildPackage(clazz.packageStr)
-        fakerGenerator.classCode.addAllImports(buildImports(clazz.constructors))
-        fakerGenerator.classCode.code = buildClass(clazz.clazz!!.getName().toString(), clazz.constructors)
-        return fakerGenerator.classCode.toSource()
-    }
-
-    override fun getNeededObjectMothers(): List<ClassInfo> {
-        return fakerGenerator.neededObjectMotherClasses
+        fakerGenerator.reset()
+        val classCode = KotlinClassCode()
+        classCode.packageCode = buildPackage(clazz.packageStr)
+        classCode.addAllImports(buildImports(clazz.constructors))
+        classCode.code = buildClass(clazz.clazz!!.getName().toString(), clazz.constructors, classCode)
+        return classCode.toSource()
     }
 
     fun buildPackage(packageName: String): String {
@@ -38,25 +33,25 @@ class KotlinObjectMotherTemplate(var fakerGenerator: FakerGenerator): ObjectMoth
         return result
     }
 
-    fun buildClass(className: String, constructors: List<MethodInfo>): String {
+    fun buildClass(className: String, constructors: List<MethodInfo>, classCode: ClassCode): String {
         var res = """
 class ${className}ObjectMother{
     companion object {
 """.trim()
         if (constructors.isNotEmpty()) {
             var i = 0
-            constructors.forEach { res += buildMotherConstructor(className, it, i++) }
+            constructors.forEach { res += buildMotherConstructor(className, it, i++, classCode) }
         } else {
             res += buildMotherConstructor(className)
         }
         return "$res\n\t}\n}"
     }
 
-    private fun buildMotherConstructor(className: String, methodInfo: MethodInfo, index: Int): Any? {
+    private fun buildMotherConstructor(className: String, methodInfo: MethodInfo, index: Int, classCode: ClassCode): Any? {
         return """
     fun random$className${if(index > 0) index else ""}(): $className {
         val faker = Faker()
-        return $className(${buildArgumentsData(methodInfo.args)})
+        return $className(${buildArgumentsData(methodInfo.args, classCode)})
     }"""
     }
 
@@ -67,9 +62,9 @@ class ${className}ObjectMother{
     }"""
     }
 
-    private fun buildArgumentsData(params: MutableList<ParametersInfo>): String {
+    private fun buildArgumentsData(params: MutableList<ParametersInfo>, classCode: ClassCode): String {
         return params.map { "\n" +
-                "\t\t\t\t${fakerGenerator.createDefaultValueFor(it.name, it.clazzInfo)}" }.joinToString { it }
+                "\t\t\t\t${fakerGenerator.createDefaultValueFor(it.name, it.clazzInfo, classCode)}" }.joinToString { it }
     }
 }
 

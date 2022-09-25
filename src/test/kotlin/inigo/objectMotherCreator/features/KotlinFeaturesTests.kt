@@ -3,7 +3,6 @@ package inigo.objectMotherCreator.features
 import inigo.objectMotherCreator.application.JavaFileCreator
 import inigo.objectMotherCreator.application.ObjectMotherCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
-import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.application.template.KotlinObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.FakerGenerator
 import inigo.objectMotherCreator.application.values.JavaFakerGenerator

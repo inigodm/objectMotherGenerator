@@ -5,14 +5,17 @@ import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.model.ClassCode
 import inigo.objectMotherCreator.model.KotlinClassCode
 
-class KotlinFakerGenerator(classCode: ClassCode = KotlinClassCode()): FakerGenerator(classCode) {
-    override fun randomList(classCanonicalName: String): String {
-        classCode.addImport("import java.util.List")
+class KotlinFakerGenerator(): FakerGenerator() {
+    override fun reset() {
+        neededObjectMotherClasses.clear()
+    }
+
+    override fun randomList(classCanonicalName: String, classCode: ClassCode): String {
         val types = TypedClass.findTypesFrom(classCanonicalName)
         val type = types.getOrNull(0)?.types?.getOrNull(0)?.className
         return """listOf(
-            ${createDefaultValueForTypedClass(type)},
-            ${createDefaultValueForTypedClass(type)})""".trimMargin()
+            ${createDefaultValueForTypedClass(type, classCode)},
+            ${createDefaultValueForTypedClass(type, classCode)})""".trimMargin()
     }
 
     override fun randomOtherTypes(classInfo: ClassInfo?, name: String): String {
@@ -24,17 +27,11 @@ class KotlinFakerGenerator(classCode: ClassCode = KotlinClassCode()): FakerGener
         }
     }
 
-    override fun randomMap(name: String): String {
-        classCode.addImport("import java.util.Map")
+    override fun randomMap(name: String, classCode: ClassCode): String {
         val types = TypedClass.findTypesFrom(name)
-        return """mapOf(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
-            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)},
-				        ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
-            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)})"""
-    }
-
-    private fun createDefaultValueForTypedClass(clazz: String?): String{
-        if (clazz == null)  return randomString()
-        return createDefaultValueFor(clazz, null)
+        return """mapOf(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className, classCode)}, 
+            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className, classCode)},
+				        ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className, classCode)}, 
+            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className, classCode)})"""
     }
 }

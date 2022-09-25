@@ -2,10 +2,13 @@ package inigo.objectMotherCreator.application.values
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.model.ClassCode
-import inigo.objectMotherCreator.model.JavaClassCode
 
-abstract class FakerGenerator(var classCode : ClassCode = JavaClassCode(),
-                              val neededObjectMotherClasses: MutableList<ClassInfo> = mutableListOf()): FakeValuesGenerator {
+abstract class FakerGenerator(val neededObjectMotherClasses: MutableList<ClassInfo> = mutableListOf()) {
+
+    abstract fun reset()
+    abstract fun randomMap(name: String, classCode: ClassCode): String
+    abstract fun randomList(classCanonicalName: String, classCode: ClassCode): String
+    abstract fun randomOtherTypes(classInfo: ClassInfo?, name: String) : String
     companion object {
         fun build(type: String) : FakerGenerator {
             return if (type.toLowerCase() == "kt") {
@@ -15,8 +18,6 @@ abstract class FakerGenerator(var classCode : ClassCode = JavaClassCode(),
             }
         }
     }
-
-    val importedClasses = mutableSetOf<String>()
 
     var strings = listOf(
     "faker.ancient().god()",
@@ -54,44 +55,35 @@ abstract class FakerGenerator(var classCode : ClassCode = JavaClassCode(),
     "faker.yoda().quote()"
     )
 
-    override fun randomString(): String {
+    fun randomString(): String {
         return strings.random()
     }
 
-    override fun randomInteger() : String {
+    fun randomInteger() : String {
         return "faker.number().randomDigit()"
     }
 
-    override fun randomLong() : String {
+    fun randomLong() : String {
         return "faker.number().randomNumber()"
     }
 
-    override fun randomBoolean(): String {
+    fun randomBoolean(): String {
         return "faker.bool().bool()"
     }
 
-    override fun createDefaultValueFor(name: String, classInfo: ClassInfo?): String {
+    fun createDefaultValueFor(name: String, classInfo: ClassInfo?, classCode: ClassCode): String {
         return when {
             name == "UUID" -> {
-                if (!importedClasses.contains(name)) {
-                    classCode.addImport("import java.util.UUID")
-                    importedClasses.add(name)
-                }
+                classCode.addImport("import java.util.UUID")
                 "UUID.randomUUID()"
             }
             name == "Instant" -> {
-                if (!importedClasses.contains(name)) {
-                    classCode.addImport("import java.time.Instant")
-                    importedClasses.add(name)
-                }
+                classCode.addImport("import java.time.Instant")
                 "Instant.now()"
             }
             name == "Timestamp" -> {
-                if (!importedClasses.contains(name)) {
-                    classCode.addImport("import java.sql.Timestamp")
-                    classCode.addImport("import java.time.Instant")
-                    importedClasses.add(name)
-                }
+                classCode.addImport("import java.sql.Timestamp")
+                classCode.addImport("import java.time.Instant")
                 "Timestamp.from(Instant.now())"
             }
             name == "String" -> {
@@ -116,14 +108,21 @@ abstract class FakerGenerator(var classCode : ClassCode = JavaClassCode(),
                 randomBoolean()
             }
             name.matches("^[\\s\\S]*Map[<]{0,1}[\\S\\s]*[>]{0,1}\$".toRegex()) -> {
-                randomMap(name);
+                classCode.addImport("import java.util.Map")
+                randomMap(name, classCode);
             }
             name.matches("^[\\s\\S]*List[<]{0,1}[\\S]*[>]{0,1}\$".toRegex()) -> {
-                randomList(name);
+                classCode.addImport("import java.util.List")
+                randomList(name, classCode);
             }
             else -> {
                 randomOtherTypes(classInfo, name)
             }
         }
+    }
+
+    fun createDefaultValueForTypedClass(clazz: String?, classCode: ClassCode): String{
+        if (clazz == null)  return randomString()
+        return createDefaultValueFor(clazz, null, classCode)
     }
 }

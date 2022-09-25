@@ -46,7 +46,6 @@ class ObjectMotherCreatorTest {
     @Test
     fun `extracts info of isolated classes` () {
         every { javaObjectMotherTemplate.createObjectMotherSourceCode(any()) } returns "source code"
-        every { javaObjectMotherTemplate.getNeededObjectMothers() } returns mutableListOf()
         every { fileCreator.buildFile(any(), any(), any(), "java") } returns Unit
         every { e.project } returns project
         every { fileCreator.createdFileName() } returns "file path/clazznameObjectMother.java"

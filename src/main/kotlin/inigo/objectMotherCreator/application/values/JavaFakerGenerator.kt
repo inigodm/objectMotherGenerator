@@ -3,31 +3,26 @@ package inigo.objectMotherCreator.application.values
 import inigo.objectMotherCreator.application.TypedClass
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.model.ClassCode
-import inigo.objectMotherCreator.model.JavaClassCode
 
-class JavaFakerGenerator(classCode: ClassCode= JavaClassCode()): FakerGenerator(classCode) {
-
-    override fun randomMap(name: String): String {
-        val types = TypedClass.findTypesFrom(name)
-        classCode.addImport("import java.util.Map")
-        return """Map.of(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
-            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)},
-				        ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
-            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)})"""
+class JavaFakerGenerator(): FakerGenerator() {
+    override fun reset() {
+        neededObjectMotherClasses.clear()
     }
 
-    override fun randomList(classCanonicalName: String): String {
+    override fun randomMap(name: String, classCode: ClassCode): String {
+        val types = TypedClass.findTypesFrom(name)
+        return """Map.of(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className, classCode)}, 
+            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className, classCode)},
+				        ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className, classCode)}, 
+            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className, classCode)})"""
+    }
+
+    override fun randomList(classCanonicalName: String, classCode: ClassCode): String {
         val types = TypedClass.findTypesFrom(classCanonicalName)
-        classCode.addImport("import java.util.List")
         val type = types.getOrNull(0)?.types?.getOrNull(0)?.className
         return """List.of(
-            ${createDefaultValueForTypedClass(type)},
-            ${createDefaultValueForTypedClass(type)})""".trimMargin()
-    }
-
-    private fun createDefaultValueForTypedClass(clazz: String?): String{
-        if (clazz == null)  return randomString()
-        return createDefaultValueFor(clazz, null)
+            ${createDefaultValueForTypedClass(type, classCode)},
+            ${createDefaultValueForTypedClass(type, classCode)})""".trimMargin()
     }
 
     override fun randomOtherTypes(
