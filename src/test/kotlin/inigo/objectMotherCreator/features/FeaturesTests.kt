@@ -5,11 +5,14 @@ import inigo.objectMotherCreator.application.ObjectMotherCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
+import inigo.objectMotherCreator.application.values.FakerGenerator
+import inigo.objectMotherCreator.application.values.JavaFakerGenerator
 import inigo.objectMotherCreator.infraestructure.IdeaShits
 import inigo.objectMotherCreator.model.infoExtractor.om.*
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.SpyK
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -28,13 +31,14 @@ class FeaturesTests {
     @MockK lateinit var omParameter3: OMParameter
     @MockK lateinit var ideShits : IdeaShits
     @MockK lateinit var fileCreator: JavaFileCreator
-    @MockK lateinit var fakerGenerator: FakeValuesGenerator
+    @SpyK var fakerGenerator: FakerGenerator = JavaFakerGenerator()
 
     @BeforeEach
     fun setup() {
         MockKAnnotations.init(this)
         every { fileCreator.buildFile(any(), any(), any(), any()) } returns Unit
         every { fileCreator.createdFileName() } returns "createdObjectMother"
+        every { fakerGenerator.randomString() } returns "faker.howIMetYourMother().highFive()"
     }
 
     @Test
@@ -63,12 +67,11 @@ class FeaturesTests {
         every { omClass.getQualifiedName() } returns "${omClass.getPackageName()}.${omClass.getName()}"
         every { omFile.getPackageNameOrVoid() } returns "packagename"
         every { omFile.getClasses() } returns listOf(omClass, omCollaborator)
-        every { fakerGenerator.randomString() } returns "faker.howIMetYourMother().highFive()"
 
         val classInfo = ClassInfo(omClass, "packagename", omFile, ideShits)
         objectMotherCreator = ObjectMotherCreator(fileCreator, JavaObjectMotherTemplate(fakerGenerator))
 
-        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "java")
+        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "java", fakerGenerator)
 
         verify(exactly = 1) { fileCreator.buildFile(any(), any(), eq(simpleA), any()) }
         verify(exactly = 1) { fileCreator.buildFile(any(), any(), eq(simpleB), any()) }
@@ -88,13 +91,11 @@ class FeaturesTests {
         every { omClass.getQualifiedName() } returns "${omClass.getPackageName()}.${omClass.getName()}"
         every { omFile.getPackageNameOrVoid() } returns "packagename"
         every { omFile.getClasses() } returns listOf(omClass)
-        every { fakerGenerator.randomString() } returns "faker.howIMetYourMother().highFive()"
-        every { fakerGenerator.randomInteger() } returns "faker.number().randomNumber()"
 
         val classInfo = ClassInfo(omClass, "packagename", omFile, ideShits)
         objectMotherCreator = ObjectMotherCreator(fileCreator, JavaObjectMotherTemplate(fakerGenerator))
 
-        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "java")
+        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "java", fakerGenerator)
 
         verify(exactly = 1) { fileCreator.buildFile(any(), any(), eq(parametrized), any()) }
     }
@@ -104,7 +105,6 @@ val simpleA = """
 package packagename;
 
 import com.github.javafaker.Faker;
-
 import static packagename.BObjectMother.randomB;
 
 public class AObjectMother{
@@ -135,16 +135,16 @@ var parametrized = """
 package packagename;
 
 import com.github.javafaker.Faker;
-
 import java.util.Map;
+
 public class AObjectMother{
 
     public static A randomA(){
         Faker faker = new Faker();
         return new A(
 				Map.of(faker.howIMetYourMother().highFive(), 
-            faker.number().randomNumber(),
+            faker.number().randomDigit(),
 				        faker.howIMetYourMother().highFive(), 
-            faker.number().randomNumber()));
+            faker.number().randomDigit()));
     }
 }""".trimIndent()

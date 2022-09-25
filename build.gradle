@@ -40,6 +40,7 @@ dependencies {
     testImplementation 'com.willowtreeapps.assertk:assertk-jvm:0.25'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.4'
+    testImplementation group: 'org.mockito.kotlin', name: 'mockito-kotlin', version: '4.0.0'
 }
 
 

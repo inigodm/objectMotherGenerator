@@ -3,42 +3,39 @@ package inigo.objectMotherCreator.application.template
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.infoholders.MethodInfo
 import inigo.objectMotherCreator.application.infoholders.ParametersInfo
-import inigo.objectMotherCreator.application.TypedClass
-import inigo.objectMotherCreator.application.values.FakeValuesGenerator
-import inigo.objectMotherCreator.model.ClassCode
+import inigo.objectMotherCreator.application.values.FakerGenerator
+import inigo.objectMotherCreator.application.values.JavaFakerGenerator
+import inigo.objectMotherCreator.model.JavaClassCode
 
 
-class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectMotherTemplate {
-    val neededObjectMotherClasses = mutableListOf<ClassInfo>()
-    lateinit var classCode: ClassCode
-    val importedClasses = mutableSetOf<String>()
+class JavaObjectMotherTemplate(var fakerGenerator: FakerGenerator = JavaFakerGenerator()): ObjectMotherTemplate {
 
     override fun createObjectMotherSourceCode(clazz: ClassInfo) : String {
-        classCode = ClassCode()
-        neededObjectMotherClasses.clear()
-        classCode.packageCode = buildPackage(clazz.packageStr)
-        classCode.imports = buildImports(clazz.constructors)
-        classCode.code = buildClass(clazz.clazz!!.getName().toString(), clazz.constructors)
-        return classCode.packageCode + classCode.imports + classCode.code
+        fakerGenerator.neededObjectMotherClasses.clear()
+        fakerGenerator.classCode = JavaClassCode()
+        fakerGenerator.classCode.packageCode = buildPackage(clazz.packageStr)
+        fakerGenerator.classCode.addAllImports(buildImports(clazz.constructors))
+        fakerGenerator.classCode.code = buildClass(clazz.clazz!!.getName().toString(), clazz.constructors)
+        return fakerGenerator.classCode.toSource()
     }
 
     override fun getNeededObjectMothers(): List<ClassInfo> {
-        return neededObjectMotherClasses
+        return fakerGenerator.neededObjectMotherClasses
     }
 
     fun buildPackage(packageName: String): String {
-        return "package $packageName;\n\n"
+        return "package $packageName"
     }
 
-    fun buildImports(neededConstructors: List<MethodInfo>): String {
-        var res = "import com.github.javafaker.Faker;\n\n"
+    fun buildImports(neededConstructors: List<MethodInfo>): List<String> {
+        val result = mutableListOf<String>()
+        result.add("import com.github.javafaker.Faker")
         if (neededConstructors.isNotEmpty()) {
-            res += neededConstructors[0].args.filter { (it.clazzInfo?.clazz?.getName() ?: "") != "" }
-                .map { "import static ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.random${it.clazzInfo?.clazz?.getName()}" }
-                .joinToString(separator = ";\n")
-                .ifNotEmpty { "$it;\n\n" }
+            neededConstructors[0].args.filter { (it.clazzInfo?.clazz?.getName() ?: "") != "" }
+                .forEach {
+                    result.add("import static ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.random${it.clazzInfo?.clazz?.getName()}") }
         }
-        return res
+        return result
     }
 
     fun buildClass(className: String, constructors: List<MethodInfo>): String {
@@ -68,102 +65,6 @@ class JavaObjectMotherTemplate(var fakerGenerator: FakeValuesGenerator): ObjectM
 
     private fun buildArgumentsData(params: MutableList<ParametersInfo>): String {
         return params.map { "\n" +
-                "\t\t\t\t${createDefaultValueFor(it.name, it.clazzInfo)}" }.joinToString { it }
-    }
-
-    private fun createDefaultValueFor(name: String, classInfo: ClassInfo?): String {
-        return when {
-            name == "UUID" -> {
-                if (!importedClasses.contains(name)) {
-                    classCode.imports += "import java.util.UUID;\n"
-                    importedClasses.add(name)
-                }
-                "UUID.randomUUID()"
-            }
-            name == "Instant" -> {
-                if (!importedClasses.contains(name)) {
-                    classCode.imports += "import java.time.Instant;\n"
-                    importedClasses.add(name)
-                }
-                "Instant.now()"
-            }
-            name == "Timestamp" -> {
-                if (!importedClasses.contains(name)) {
-                    classCode.imports += "import java.sql.Timestamp;\n"
-                    classCode.imports += "import java.time.Instant;\n"
-                    importedClasses.add(name)
-                }
-                "Timestamp.from(Instant.now())"
-            }
-            name == "String" -> {
-                fakerGenerator.randomString()
-            }
-            name == "int" -> {
-                fakerGenerator.randomInteger()
-            }
-            name == "Integer" -> {
-                fakerGenerator.randomInteger()
-            }
-            name == "long" -> {
-                fakerGenerator.randomLong()
-            }
-            name == "Long" -> {
-                fakerGenerator.randomLong()
-            }
-            name == "Boolean" -> {
-                fakerGenerator.randomBoolean()
-            }
-            name == "boolean" -> {
-                fakerGenerator.randomBoolean()
-            }
-            name.matches("^[\\s\\S]*Map[<]{0,1}[\\S\\s]*[>]{0,1}\$".toRegex()) -> {
-                randomMap(name);
-            }
-            name.matches("^[\\s\\S]*List[<]{0,1}[\\S]*[>]{0,1}\$".toRegex()) -> {
-                randomList(name);
-            }
-            else -> {
-                if (classInfo != null) {
-                    neededObjectMotherClasses.add(classInfo)
-                    "random${classInfo.clazz!!.getName()}()"
-                } else {
-                    "new ${name}()"
-                }
-            }
-        }
-    }
-
-    private fun randomMap(name: String): String {
-        addImportIfNeeded("java.util.Map")
-        val types = TypedClass.findTypesFrom(name)
-        return """Map.of(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
-            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)},
-				        ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
-            ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)})"""
-    }
-
-    private fun randomList(classCanonicalName: String): String {
-        addImportIfNeeded("java.util.List")
-        val types = TypedClass.findTypesFrom(classCanonicalName)
-        val type = types.getOrNull(0)?.types?.getOrNull(0)?.className
-        return """List.of(
-            ${createDefaultValueForTypedClass(type)},
-            ${createDefaultValueForTypedClass(type)})""".trimMargin()
-    }
-
-    private fun addImportIfNeeded(canonicalClassToImport: String) {
-        if (! classCode.imports.contains(canonicalClassToImport)) {
-            classCode.imports += "import $canonicalClassToImport;\n"
-        }
-    }
-
-    private fun createDefaultValueForTypedClass(clazz: String?): String{
-        if (clazz == null)  return fakerGenerator.randomString()
-        return createDefaultValueFor(clazz, null)
-    }
-
-    fun String.ifNotEmpty(doThis: (String) -> String) : String {
-        return if (this.isEmpty()) { "" } else { doThis(this) }
+                "\t\t\t\t${fakerGenerator.createDefaultValueFor(it.name, it.clazzInfo)}" }.joinToString { it }
     }
 }
-
