@@ -25,7 +25,7 @@ class KotlinFakerGenerator(classCode: ClassCode = KotlinClassCode()): FakerGener
     }
 
     override fun randomMap(name: String): String {
-        classCode.addImport("java.util.Map")
+        classCode.addImport("import java.util.Map")
         val types = TypedClass.findTypesFrom(name)
         return """mapOf(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className)}, 
             ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className)},

@@ -4,7 +4,6 @@ import inigo.objectMotherCreator.application.JavaFileCreator
 import inigo.objectMotherCreator.application.ObjectMotherCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
-import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.values.FakerGenerator
 import inigo.objectMotherCreator.application.values.JavaFakerGenerator
 import inigo.objectMotherCreator.infraestructure.IdeaShits
@@ -17,7 +16,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class FeaturesTests {
+class JavaFeaturesTests {
 
     lateinit var objectMotherCreator: ObjectMotherCreator
     @MockK lateinit var omFile : OMFile

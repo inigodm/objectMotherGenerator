@@ -8,7 +8,7 @@ abstract class FakerGenerator(var classCode : ClassCode = JavaClassCode(),
                               val neededObjectMotherClasses: MutableList<ClassInfo> = mutableListOf()): FakeValuesGenerator {
     companion object {
         fun build(type: String) : FakerGenerator {
-            return if (type.toLowerCase().equals("kt")) {
+            return if (type.toLowerCase() == "kt") {
                 KotlinFakerGenerator()
             } else {
                 JavaFakerGenerator()
