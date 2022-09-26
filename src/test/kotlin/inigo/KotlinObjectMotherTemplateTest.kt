@@ -2,33 +2,31 @@ package inigo
 
 import fixedClassInfo
 import fixedMethodInfo
-import inigo.objectMotherCreator.application.values.FakerGenerator
+import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.template.KotlinObjectMotherTemplate
-import inigo.objectMotherCreator.application.values.KotlinFakerGenerator
-import inigo.objectMotherCreator.model.ClassCode
-import inigo.objectMotherCreator.model.KotlinClassCode
+import inigo.objectMotherCreator.application.values.KotlinFakeValuesGenerator
+import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
+import inigo.objectMotherCreator.model.infogenerated.KotlinMotherClassGeneratedData
 import io.mockk.MockKAnnotations
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
-import io.mockk.spyk
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class KotlinObjectMotherTemplateTest {
     @SpyK
-    var fakerGenerator: FakerGenerator = KotlinFakerGenerator()
-    lateinit var classCode : ClassCode
+    var fakeValuesGenerator: FakeValuesGenerator = KotlinFakeValuesGenerator()
+    lateinit var motherClassGeneratedData : MotherClassGeneratedData
 
     @BeforeEach
     fun setUp () {
         MockKAnnotations.init(this)
-        classCode = KotlinClassCode()
+        motherClassGeneratedData = KotlinMotherClassGeneratedData()
     }
 
     @Test
     fun `build package line`() {
-        val sut = KotlinObjectMotherTemplate(KotlinFakerGenerator())
+        val sut = KotlinObjectMotherTemplate(KotlinFakeValuesGenerator())
 
         assertEquals(sut.buildPackage("packagename").trim(), "package packagename")
     }
@@ -36,7 +34,7 @@ class KotlinObjectMotherTemplateTest {
     @Test
     fun `build import line for faker if other classes ar in diferent package`() {
 
-        val sut = KotlinObjectMotherTemplate(KotlinFakerGenerator())
+        val sut = KotlinObjectMotherTemplate(KotlinFakeValuesGenerator())
         val res = sut.buildImports(listOf(fixedMethodInfo()))
 
         assertEquals(res, listOf("import com.github.javafaker.Faker",
@@ -44,9 +42,9 @@ class KotlinObjectMotherTemplateTest {
 
     @Test
     fun `build class code with default constructor if no constructors`() {
-        val sut = KotlinObjectMotherTemplate(KotlinFakerGenerator())
+        val sut = KotlinObjectMotherTemplate(KotlinFakeValuesGenerator())
 
-        val res = sut.buildClass("className", listOf(), classCode)
+        val res = sut.buildClass("className", listOf(), motherClassGeneratedData)
 
         assertEquals(res, """class classNameObjectMother{
     companion object {
@@ -59,9 +57,9 @@ class KotlinObjectMotherTemplateTest {
 
     @Test
     fun `build class code using existing first constructor if any constructors exist`() {
-        val sut = KotlinObjectMotherTemplate(KotlinFakerGenerator())
+        val sut = KotlinObjectMotherTemplate(KotlinFakeValuesGenerator())
 
-        val res = sut.buildClass("className", listOf(fixedMethodInfo()), classCode)
+        val res = sut.buildClass("className", listOf(fixedMethodInfo()), motherClassGeneratedData)
 
         assertEquals(res, """class classNameObjectMother{
     companion object {
@@ -118,13 +116,13 @@ class KotlinObjectMotherTemplateTest {
                 "faker.rickAndMorty().character()",
                 "faker.slackEmoji().activity()",
                 "faker.superhero().name()",
-                "faker.yoda().quote()").contains(KotlinFakerGenerator().strings[0]) }
+                "faker.yoda().quote()").contains(KotlinFakeValuesGenerator().strings[0]) }
     }
 
     private fun assertThatWorksWithType(type: String, expectedGenerator: String) {
-        val sut = KotlinObjectMotherTemplate(KotlinFakerGenerator())
+        val sut = KotlinObjectMotherTemplate(KotlinFakeValuesGenerator())
 
-        val res = sut.buildClass("className", listOf(fixedMethodInfo(type)), classCode)
+        val res = sut.buildClass("className", listOf(fixedMethodInfo(type)), motherClassGeneratedData)
 
         assertEquals(res, """class classNameObjectMother{
     companion object {
@@ -139,16 +137,16 @@ class KotlinObjectMotherTemplateTest {
 
     @Test
     fun `have to return needed object classes`() {
-        val sut = KotlinObjectMotherTemplate(fakerGenerator)
+        val sut = KotlinObjectMotherTemplate(fakeValuesGenerator)
 
-        sut.buildClass("className", listOf(fixedMethodInfo()), classCode)
+        sut.buildClass("className", listOf(fixedMethodInfo()), motherClassGeneratedData)
 
-        assertFalse { sut.fakerGenerator.neededObjectMotherClasses.isEmpty() }
+        assertFalse { sut.fakeValuesGenerator.neededObjectMotherClasses.isEmpty() }
     }
 
     @Test
     fun `should build objectmother when asked to`() {
-        val sut = KotlinObjectMotherTemplate(fakerGenerator)
+        val sut = KotlinObjectMotherTemplate(fakeValuesGenerator)
 
         val res = sut.createObjectMotherSourceCode(fixedClassInfo())
 

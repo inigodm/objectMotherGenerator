@@ -4,9 +4,8 @@ import inigo.objectMotherCreator.application.JavaFileCreator
 import inigo.objectMotherCreator.application.ObjectMotherCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.template.KotlinObjectMotherTemplate
-import inigo.objectMotherCreator.application.values.FakerGenerator
-import inigo.objectMotherCreator.application.values.JavaFakerGenerator
-import inigo.objectMotherCreator.application.values.KotlinFakerGenerator
+import inigo.objectMotherCreator.application.values.FakeValuesGenerator
+import inigo.objectMotherCreator.application.values.KotlinFakeValuesGenerator
 import inigo.objectMotherCreator.infraestructure.IdeaShits
 import inigo.objectMotherCreator.model.infoExtractor.om.*
 import io.mockk.MockKAnnotations
@@ -55,14 +54,14 @@ class KotlinFeaturesTests {
     lateinit var fileCreator: JavaFileCreator
 
     @SpyK
-    var fakerGenerator: FakerGenerator = KotlinFakerGenerator()
+    var fakeValuesGenerator: FakeValuesGenerator = KotlinFakeValuesGenerator()
 
     @BeforeEach
     fun setup() {
         MockKAnnotations.init(this)
         every { fileCreator.buildFile(any(), any(), any(), any()) } returns Unit
         every { fileCreator.createdFileName() } returns "createdObjectMother"
-        every { fakerGenerator.randomString() } returns "faker.howIMetYourMother().highFive()"
+        every { fakeValuesGenerator.randomString() } returns "faker.howIMetYourMother().highFive()"
     }
 
     @Test
@@ -93,9 +92,9 @@ class KotlinFeaturesTests {
         every { omFile.getClasses() } returns listOf(omClass, omCollaborator)
 
         val classInfo = ClassInfo(omClass, "packagename", omFile, ideShits)
-        objectMotherCreator = ObjectMotherCreator(fileCreator, KotlinObjectMotherTemplate(fakerGenerator))
+        objectMotherCreator = ObjectMotherCreator(fileCreator, KotlinObjectMotherTemplate(fakeValuesGenerator))
 
-        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "kt", fakerGenerator)
+        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "kt", fakeValuesGenerator)
 
         verify(exactly = 1) { fileCreator.buildFile(any(), any(), eq(simpleA), any()) }
         verify(exactly = 1) { fileCreator.buildFile(any(), any(), eq(simpleB), any()) }
@@ -117,9 +116,9 @@ class KotlinFeaturesTests {
         every { omFile.getClasses() } returns listOf(omClass)
 
         val classInfo = ClassInfo(omClass, "packagename", omFile, ideShits)
-        objectMotherCreator = ObjectMotherCreator(fileCreator, KotlinObjectMotherTemplate(fakerGenerator))
+        objectMotherCreator = ObjectMotherCreator(fileCreator, KotlinObjectMotherTemplate(fakeValuesGenerator))
 
-        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "kt", fakerGenerator)
+        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "kt", fakeValuesGenerator)
 
         verify(exactly = 1) { fileCreator.buildFile(any(), any(), eq(parametrized), any()) }
     }

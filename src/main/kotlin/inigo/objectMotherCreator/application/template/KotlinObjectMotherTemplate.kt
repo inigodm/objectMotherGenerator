@@ -3,15 +3,15 @@ package inigo.objectMotherCreator.application.template
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.infoholders.MethodInfo
 import inigo.objectMotherCreator.application.infoholders.ParametersInfo
-import inigo.objectMotherCreator.application.values.FakerGenerator
-import inigo.objectMotherCreator.model.ClassCode
-import inigo.objectMotherCreator.model.KotlinClassCode
+import inigo.objectMotherCreator.application.values.FakeValuesGenerator
+import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
+import inigo.objectMotherCreator.model.infogenerated.KotlinMotherClassGeneratedData
 
-class KotlinObjectMotherTemplate(var fakerGenerator: FakerGenerator): ObjectMotherTemplate {
+class KotlinObjectMotherTemplate(var fakeValuesGenerator: FakeValuesGenerator): ObjectMotherTemplate {
 
     override fun createObjectMotherSourceCode(clazz: ClassInfo) : String {
-        fakerGenerator.reset()
-        val classCode = KotlinClassCode()
+        fakeValuesGenerator.reset()
+        val classCode = KotlinMotherClassGeneratedData()
         classCode.packageCode = buildPackage(clazz.packageStr)
         classCode.addAllImports(buildImports(clazz.constructors))
         classCode.code = buildClass(clazz.clazz!!.getName().toString(), clazz.constructors, classCode)
@@ -33,25 +33,25 @@ class KotlinObjectMotherTemplate(var fakerGenerator: FakerGenerator): ObjectMoth
         return result
     }
 
-    fun buildClass(className: String, constructors: List<MethodInfo>, classCode: ClassCode): String {
+    fun buildClass(className: String, constructors: List<MethodInfo>, motherClassGeneratedData: MotherClassGeneratedData): String {
         var res = """
 class ${className}ObjectMother{
     companion object {
 """.trim()
         if (constructors.isNotEmpty()) {
             var i = 0
-            constructors.forEach { res += buildMotherConstructor(className, it, i++, classCode) }
+            constructors.forEach { res += buildMotherConstructor(className, it, i++, motherClassGeneratedData) }
         } else {
             res += buildMotherConstructor(className)
         }
         return "$res\n\t}\n}"
     }
 
-    private fun buildMotherConstructor(className: String, methodInfo: MethodInfo, index: Int, classCode: ClassCode): Any? {
+    private fun buildMotherConstructor(className: String, methodInfo: MethodInfo, index: Int, motherClassGeneratedData: MotherClassGeneratedData): Any? {
         return """
     fun random$className${if(index > 0) index else ""}(): $className {
         val faker = Faker()
-        return $className(${buildArgumentsData(methodInfo.args, classCode)})
+        return $className(${buildArgumentsData(methodInfo.args, motherClassGeneratedData)})
     }"""
     }
 
@@ -62,9 +62,9 @@ class ${className}ObjectMother{
     }"""
     }
 
-    private fun buildArgumentsData(params: MutableList<ParametersInfo>, classCode: ClassCode): String {
+    private fun buildArgumentsData(params: MutableList<ParametersInfo>, motherClassGeneratedData: MotherClassGeneratedData): String {
         return params.map { "\n" +
-                "\t\t\t\t${fakerGenerator.createDefaultValueFor(it.name, it.clazzInfo, classCode)}" }.joinToString { it }
+                "\t\t\t\t${fakeValuesGenerator.createDefaultValueFor(it.name, it.clazzInfo, motherClassGeneratedData)}" }.joinToString { it }
     }
 }
 

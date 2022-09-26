@@ -8,8 +8,8 @@ import inigo.objectMotherCreator.model.infoExtractor.om.OMClass
 import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
 import inigo.objectMotherCreator.infraestructure.IdeaJavaFileCreator
 import inigo.objectMotherCreator.application.ObjectMotherCreator
-import inigo.objectMotherCreator.application.values.FakerGenerator
-import inigo.objectMotherCreator.application.values.JavaFakerGenerator
+import inigo.objectMotherCreator.application.values.FakeValuesGenerator
+import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -37,7 +37,7 @@ class ObjectMotherCreatorTest {
     @MockK
     lateinit var e: AnActionEvent
     @SpyK
-    var fakerValuesGenerator: FakerGenerator = JavaFakerGenerator()
+    var fakerValuesGenerator: FakeValuesGenerator = JavaFakeValuesGenerator()
     @BeforeEach
     fun setup() {
         MockKAnnotations.init(this)

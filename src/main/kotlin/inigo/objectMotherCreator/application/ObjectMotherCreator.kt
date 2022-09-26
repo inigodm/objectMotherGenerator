@@ -2,7 +2,7 @@ package inigo.objectMotherCreator.application
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.template.ObjectMotherTemplate
-import inigo.objectMotherCreator.application.values.FakerGenerator
+import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
 
 class ObjectMotherCreator(var fileCreator: JavaFileCreator, var template: ObjectMotherTemplate) {
@@ -12,7 +12,7 @@ class ObjectMotherCreator(var fileCreator: JavaFileCreator, var template: Object
         classInfo: ClassInfo,
         baseDir: OMDirectory,
         extension: String,
-        fakerValuesGenerator: FakerGenerator
+        fakerValuesGenerator: FakeValuesGenerator
     ) {
         fakerValuesGenerator.neededObjectMotherClasses.clear()
         val classesToTreat = mutableListOf(classInfo)

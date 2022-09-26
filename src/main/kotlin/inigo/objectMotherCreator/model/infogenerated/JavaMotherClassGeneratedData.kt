@@ -1,6 +1,6 @@
-package inigo.objectMotherCreator.model
+package inigo.objectMotherCreator.model.infogenerated
 
-class JavaClassCode(packageCode: String = "", imports: MutableSet<String> = mutableSetOf(), code: String = "") : ClassCode(packageCode, imports, code){
+class JavaMotherClassGeneratedData(packageCode: String = "", imports: MutableSet<String> = mutableSetOf(), code: String = "") : MotherClassGeneratedData(packageCode, imports, code){
 
     override fun toSource() : String {
         var importsSource = imports.joinToString(";\n")

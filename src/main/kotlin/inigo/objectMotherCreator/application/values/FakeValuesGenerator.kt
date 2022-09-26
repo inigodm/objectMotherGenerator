@@ -1,20 +1,21 @@
 package inigo.objectMotherCreator.application.values
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
-import inigo.objectMotherCreator.model.ClassCode
+import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 
-abstract class FakerGenerator(val neededObjectMotherClasses: MutableList<ClassInfo> = mutableListOf()) {
+abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<ClassInfo> = mutableListOf()) {
 
     abstract fun reset()
-    abstract fun randomMap(name: String, classCode: ClassCode): String
-    abstract fun randomList(classCanonicalName: String, classCode: ClassCode): String
+    abstract fun randomMap(name: String, classCode: MotherClassGeneratedData): String
+    abstract fun randomList(classCanonicalName: String, motherClassGeneratedData: MotherClassGeneratedData): String
     abstract fun randomOtherTypes(classInfo: ClassInfo?, name: String) : String
+
     companion object {
-        fun build(type: String) : FakerGenerator {
+        fun build(type: String) : FakeValuesGenerator {
             return if (type.toLowerCase() == "kt") {
-                KotlinFakerGenerator()
+                KotlinFakeValuesGenerator()
             } else {
-                JavaFakerGenerator()
+                JavaFakeValuesGenerator()
             }
         }
     }
@@ -71,19 +72,19 @@ abstract class FakerGenerator(val neededObjectMotherClasses: MutableList<ClassIn
         return "faker.bool().bool()"
     }
 
-    fun createDefaultValueFor(name: String, classInfo: ClassInfo?, classCode: ClassCode): String {
+    fun createDefaultValueFor(name: String, classInfo: ClassInfo?, motherClassGeneratedData: MotherClassGeneratedData): String {
         return when {
             name == "UUID" -> {
-                classCode.addImport("import java.util.UUID")
+                motherClassGeneratedData.addImport("import java.util.UUID")
                 "UUID.randomUUID()"
             }
             name == "Instant" -> {
-                classCode.addImport("import java.time.Instant")
+                motherClassGeneratedData.addImport("import java.time.Instant")
                 "Instant.now()"
             }
             name == "Timestamp" -> {
-                classCode.addImport("import java.sql.Timestamp")
-                classCode.addImport("import java.time.Instant")
+                motherClassGeneratedData.addImport("import java.sql.Timestamp")
+                motherClassGeneratedData.addImport("import java.time.Instant")
                 "Timestamp.from(Instant.now())"
             }
             name == "String" -> {
@@ -108,12 +109,12 @@ abstract class FakerGenerator(val neededObjectMotherClasses: MutableList<ClassIn
                 randomBoolean()
             }
             name.matches("^[\\s\\S]*Map[<]{0,1}[\\S\\s]*[>]{0,1}\$".toRegex()) -> {
-                classCode.addImport("import java.util.Map")
-                randomMap(name, classCode);
+                motherClassGeneratedData.addImport("import java.util.Map")
+                randomMap(name, motherClassGeneratedData);
             }
             name.matches("^[\\s\\S]*List[<]{0,1}[\\S]*[>]{0,1}\$".toRegex()) -> {
-                classCode.addImport("import java.util.List")
-                randomList(name, classCode);
+                motherClassGeneratedData.addImport("import java.util.List")
+                randomList(name, motherClassGeneratedData);
             }
             else -> {
                 randomOtherTypes(classInfo, name)
@@ -121,8 +122,8 @@ abstract class FakerGenerator(val neededObjectMotherClasses: MutableList<ClassIn
         }
     }
 
-    fun createDefaultValueForTypedClass(clazz: String?, classCode: ClassCode): String{
+    fun createDefaultValueForTypedClass(clazz: String?, motherClassGeneratedData: MotherClassGeneratedData): String{
         if (clazz == null)  return randomString()
-        return createDefaultValueFor(clazz, null, classCode)
+        return createDefaultValueFor(clazz, null, motherClassGeneratedData)
     }
 }

@@ -1,6 +1,6 @@
-package inigo.objectMotherCreator.model
+package inigo.objectMotherCreator.model.infogenerated
 
-class KotlinClassCode(packageCode: String = "", imports: MutableSet<String> = mutableSetOf(), code: String = "") : ClassCode(packageCode, imports, code){
+class KotlinMotherClassGeneratedData(packageCode: String = "", imports: MutableSet<String> = mutableSetOf(), code: String = "") : MotherClassGeneratedData(packageCode, imports, code){
     override fun toSource() : String {
         val importsSource = imports.joinToString("\n")
         return packageCode  + importsSource + "\n\n" + code
