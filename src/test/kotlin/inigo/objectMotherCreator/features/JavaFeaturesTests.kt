@@ -4,73 +4,77 @@ import inigo.objectMotherCreator.application.JavaFileCreator
 import inigo.objectMotherCreator.application.ObjectMotherCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
+import inigo.objectMotherCreator.application.template.KotlinObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
+import inigo.objectMotherCreator.application.values.KotlinFakeValuesGenerator
 import inigo.objectMotherCreator.infraestructure.IdeaShits
 import inigo.objectMotherCreator.model.infoExtractor.om.*
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
+import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.sql.Timestamp
+import java.time.Instant
+import java.util.*
 
 class JavaFeaturesTests {
 
     lateinit var objectMotherCreator: ObjectMotherCreator
-    @MockK lateinit var omFile : OMFile
-    @MockK lateinit var omDir : OMDirectory
-    @MockK lateinit var omClass : OMClass
-    @MockK lateinit var omCollaborator : OMClass
-    @MockK lateinit var omConstructor: OMMethod
-    @MockK lateinit var omConstructor2: OMMethod
-    @MockK lateinit var omParameter1: OMParameter
-    @MockK lateinit var omParameter2: OMParameter
-    @MockK lateinit var omParameter3: OMParameter
-    @MockK lateinit var ideShits : IdeaShits
-    @MockK lateinit var fileCreator: JavaFileCreator
-    @SpyK var fakeValuesGenerator: FakeValuesGenerator = JavaFakeValuesGenerator()
+
+    @MockK
+    lateinit var omFile: OMFile
+
+    @MockK
+    lateinit var omDir: OMDirectory
+
+    @MockK
+    lateinit var ideShits: IdeaShits
+
+    @MockK
+    lateinit var fileCreator: JavaFileCreator
+
+    @SpyK
+    var fakeValuesGenerator: FakeValuesGenerator = JavaFakeValuesGenerator()
 
     @BeforeEach
     fun setup() {
         MockKAnnotations.init(this)
         every { fileCreator.buildFile(any(), any(), any(), any()) } returns Unit
+        every { ideShits.findClass("java.lang.String") } returns null
+        every { ideShits.findClass("java.util.List") } returns null
+        every { ideShits.findClass("java.util.Map") } returns null
+        every { ideShits.findClass("java.util.UUID") } returns null
+        every { ideShits.findClass("java.time.Instant") } returns null
+        every { ideShits.findClass("java.sql.Timestamp") } returns null
         every { fileCreator.createdFileName() } returns "createdObjectMother"
         every { fakeValuesGenerator.randomString() } returns "faker.howIMetYourMother().highFive()"
     }
 
     @Test
     fun `should create a object mother for a class`() {
-        every { omParameter3.getClassCanonicalName() } returns java.lang.String::class.java.canonicalName
-        every { omParameter3.getNameOrVoid() } returns "String"
-        every { omConstructor2.getName() } returns "B"
-        every { omConstructor2.getParameters() } returns listOf(omParameter3)
-        every { omCollaborator.getName() } returns "B"
-        every { omCollaborator.getPackageName() } returns "packagename"
-        every { omCollaborator.isPublic() } returns false
-        every { omCollaborator.getAllConstructors() } returns listOf(omConstructor2)
-        every { omCollaborator.getQualifiedName() } returns "packagename.B"
-        every { omParameter2.getClassCanonicalName() } returns "packagename.B"
-        every { omParameter2.getNameOrVoid() } returns "B"
-        every { omParameter1.getClassCanonicalName() } returns java.lang.String::class.java.canonicalName
-        every { omParameter1.getNameOrVoid() } returns "String"
-        every { omConstructor.getParameters() } returns listOf(omParameter1, omParameter2)
-        every { omConstructor.getName() } returns "A"
-        every { ideShits.findClass("java.lang.String") } returns null
+        val omParameterA = createParam("List<String>", java.util.List::class.java.canonicalName)
+        val omParameterB = createParam("UUID", UUID::class.java.canonicalName)
+        val omParameterC = createParam("Instant", Instant::class.java.canonicalName)
+        val omParameterD = createParam("Timestamp", Timestamp::class.java.canonicalName)
+        val omParameter3 = createStringParam()
+        val omConstructor2 = createConstructor("B", omParameter3, omParameterA, omParameterB, omParameterC, omParameterD)
+        val omCollaborator = createClass( "B", "packagename", false, omConstructor2)
+        val omParameter2 = createParam("B", "packagename.B")
+        val omParameter1 = createStringParam()
+        val omConstructor = createConstructor("A", omParameter1, omParameter2)
         every { ideShits.findClass("packagename.B") } returns omCollaborator
-        every { omClass.getName() } returns "A"
-        every { omClass.getPackageName() } returns "packagename"
-        every { omClass.isPublic() } returns true
-        every { omClass.getAllConstructors() } returns listOf(omConstructor)
-        every { omClass.getQualifiedName() } returns "${omClass.getPackageName()}.${omClass.getName()}"
+        val omClass = createClass( "A", "packageName", true, omConstructor)
         every { omFile.getPackageNameOrVoid() } returns "packagename"
         every { omFile.getClasses() } returns listOf(omClass, omCollaborator)
-
         val classInfo = ClassInfo(omClass, "packagename", omFile, ideShits)
         objectMotherCreator = ObjectMotherCreator(fileCreator, JavaObjectMotherTemplate(fakeValuesGenerator))
 
-        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "java", fakeValuesGenerator)
+        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "kt", fakeValuesGenerator)
 
         verify(exactly = 1) { fileCreator.buildFile(any(), any(), eq(simpleA), any()) }
         verify(exactly = 1) { fileCreator.buildFile(any(), any(), eq(simpleB), any()) }
@@ -78,25 +82,49 @@ class JavaFeaturesTests {
 
     @Test
     fun `should create a object mother for a class with parameters`() {
-        every { omParameter1.getClassCanonicalName() } returns java.util.Map::class.java.canonicalName
-        every { omParameter1.getNameOrVoid() } returns "Map<String, Integer>"
-        every { omConstructor.getParameters() } returns listOf(omParameter1)
-        every { omConstructor.getName() } returns "A"
-        every { ideShits.findClass("java.util.Map") } returns null
-        every { omClass.getName() } returns "A"
-        every { omClass.getPackageName() } returns "packagename"
-        every { omClass.isPublic() } returns true
-        every { omClass.getAllConstructors() } returns listOf(omConstructor)
-        every { omClass.getQualifiedName() } returns "${omClass.getPackageName()}.${omClass.getName()}"
+        val omParameter1 = createParam("Map<String, Integer>", java.util.Map::class.java.canonicalName)
+        val omConstructor = createConstructor("A", omParameter1)
+        val omClass = createClass("A", "packagename", true, omConstructor)
         every { omFile.getPackageNameOrVoid() } returns "packagename"
         every { omFile.getClasses() } returns listOf(omClass)
-
         val classInfo = ClassInfo(omClass, "packagename", omFile, ideShits)
         objectMotherCreator = ObjectMotherCreator(fileCreator, JavaObjectMotherTemplate(fakeValuesGenerator))
 
-        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "java", fakeValuesGenerator)
+        objectMotherCreator.createObjectMotherFor(classInfo, omDir, "kt", fakeValuesGenerator)
 
         verify(exactly = 1) { fileCreator.buildFile(any(), any(), eq(parametrized), any()) }
+    }
+
+
+    fun createParam(type: String, canonicalName: String): OMParameter {
+        val param: OMParameter = mockk(relaxed = true)
+        every { param.getClassCanonicalName() } returns canonicalName
+        every { param.getNameOrVoid() } returns type
+        return param
+    }
+
+    fun createStringParam() : OMParameter {
+        return createParam("String", java.lang.String::class.java.canonicalName)
+    }
+
+    fun createConstructor(className: String, vararg params: OMParameter) : OMMethod {
+        val omMethod : OMMethod = mockk(relaxed = true)
+        every { omMethod.getName() } returns className
+        every { omMethod.getParameters() } returns params.asList()
+        return omMethod
+    }
+
+    fun createClass(className: String,
+                    packageName: String,
+                    isPublic: Boolean = true,
+                    vararg constructors: OMMethod): OMClass {
+        val omClass: OMClass = mockk(relaxed = true)
+        every { omClass.getName() } returns className
+        every { omClass.getPackageName() } returns packageName
+        every { omClass.isPublic() } returns isPublic
+        every { omClass.getAllConstructors() } returns constructors.asList()
+        every { omClass.getQualifiedName() } returns packageName + "." + className
+        return omClass
     }
 }
 
@@ -120,13 +148,23 @@ public class AObjectMother{
 val simpleB = """package packagename;
 
 import com.github.javafaker.Faker;
+import java.util.List;
+import java.util.UUID;
+import java.time.Instant;
+import java.sql.Timestamp;
 
 public class BObjectMother{
 
     public static B randomB(){
         Faker faker = new Faker();
         return new B(
-				faker.howIMetYourMother().highFive());
+				faker.howIMetYourMother().highFive(), 
+				List.of(
+            faker.howIMetYourMother().highFive(),
+            faker.howIMetYourMother().highFive()), 
+				UUID.randomUUID(), 
+				Instant.now(), 
+				Timestamp.from(Instant.now()));
     }
 }""".trimIndent()
 

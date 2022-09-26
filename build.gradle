@@ -11,7 +11,7 @@ plugins {
 '''id 'io.gitlab.arturbosch.detekt' version '1.17.1'''
 
 group 'org.example'
-version '1.4.1.0'
+version '1.4.2.0'
 
 sourceCompatibility = 1.8
 
@@ -60,7 +60,9 @@ patchPluginXml {
     sinceBuild = '193'
     untilBuild = '293.*'
     changeNotes = """
-        Added Instant and UUID's static constructors to template
-        Fix some bugs found with creating OM for kotlin (wrong Companion imports)
+        Added Boolean and Timestamp static constructors to template.
+        Fix some bugs.
+        Bug refactor.
+        Added tests in kotlin side.
     """
 }

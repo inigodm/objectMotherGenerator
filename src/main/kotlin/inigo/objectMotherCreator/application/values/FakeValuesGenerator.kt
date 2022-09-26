@@ -6,7 +6,7 @@ import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<ClassInfo> = mutableListOf()) {
 
     abstract fun reset()
-    abstract fun randomMap(name: String, classCode: MotherClassGeneratedData): String
+    abstract fun randomMap(name: String, motherClassGeneratedData: MotherClassGeneratedData): String
     abstract fun randomList(classCanonicalName: String, motherClassGeneratedData: MotherClassGeneratedData): String
     abstract fun randomOtherTypes(classInfo: ClassInfo?, name: String) : String
 
@@ -109,12 +109,10 @@ abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<Cl
                 randomBoolean()
             }
             name.matches("^[\\s\\S]*Map[<]{0,1}[\\S\\s]*[>]{0,1}\$".toRegex()) -> {
-                motherClassGeneratedData.addImport("import java.util.Map")
-                randomMap(name, motherClassGeneratedData);
+                randomMap(name, motherClassGeneratedData)
             }
             name.matches("^[\\s\\S]*List[<]{0,1}[\\S]*[>]{0,1}\$".toRegex()) -> {
-                motherClassGeneratedData.addImport("import java.util.List")
-                randomList(name, motherClassGeneratedData);
+                randomList(name, motherClassGeneratedData)
             }
             else -> {
                 randomOtherTypes(classInfo, name)

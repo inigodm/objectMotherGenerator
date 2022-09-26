@@ -1,6 +1,5 @@
 package inigo.objectMotherCreator.application.values
 
-import inigo.objectMotherCreator.application.TypedClass
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 

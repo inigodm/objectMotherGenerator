@@ -2,6 +2,7 @@ package inigo.objectMotherCreator.application
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import inigo.objectMotherCreator.application.values.TypedClass
 import org.junit.jupiter.api.Test
 
 internal class OMParameterTest{

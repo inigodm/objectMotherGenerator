@@ -1,4 +1,4 @@
-package inigo.objectMotherCreator.application
+package inigo.objectMotherCreator.application.values
 
 
 data class TypedClass(var className: String, var types: List<TypedClass> = mutableListOf()) {
