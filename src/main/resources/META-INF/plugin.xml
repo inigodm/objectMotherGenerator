@@ -53,9 +53,23 @@
     <idea-version since-build="201" until-build="293.*"/>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <applicationConfigurable
+                parentId="tools"
+                instance="inigo.objectMotherCreator.infraestructure.IntellijConfiguration"
+                id="inigo.objectMotherCreator.infraestructure.IntellijConfiguration"
+                displayName="Object Mother Creator"/>
+        <!--applicationService
+                serviceImplementation="inigo.objectMotherCreator.infraestructure.IntellijPluginService"
+                serviceInterface="inigo.objectMotherCreator.infraestructure.IntellijPluginService"
+                overrides="false"
+        /-->
     </extensions>
-
+    <!--application-components>
+        <component>
+            <implementation-class>inigo.objectMotherCreator.infraestructure.IntellijPluginService</implementation-class>
+            <interface-class>inigo.objectMotherCreator.infraestructure.IntellijPluginService</interface-class>
+        </component>
+    </application-components-->
     <actions>
 
         <action id="ObjectMotherCreation.Editor"
