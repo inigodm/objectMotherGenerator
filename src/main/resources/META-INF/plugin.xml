@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>inigo.objectmothercreator</id>
     <name>Object mother creator</name>
-    <version>1.4.1.0</version>
+    <version>1.4.2.0</version>
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
     <depends>com.intellij.java</depends>
     <depends>org.intellij.groovy</depends>
@@ -36,7 +36,7 @@
         1.0.1.2 - Increased support until 203.*
         1.1.0 - Autodetect test source directory if exists and unique
         1.1.0.1 - Remove support until label and refactor
-        1.1.0.2 - Fix multiple contructors format and the generation of random integer
+        1.1.0.2 - Fix multiple constructors format and the generation of random integer
         1.2.0.0 - Add groovy support
         1.2.0.1 - Fix documentation
         1.2.0.2 - Add support until 211.*
@@ -46,6 +46,7 @@
         1.3.0.2 - Code refactors
         1.4.0.0 - Add Kotlin support
         1.4.1.0 - Identify UUID and Instant, fix errors
+        1.4.2.0 - Identify Boolean and Timestamp, refactor to improve agility adding more types
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->

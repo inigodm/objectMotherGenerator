@@ -1,17 +1,10 @@
 package inigo.objectMotherCreator.infraestructure
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiDirectory
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
-import inigo.objectMotherCreator.application.values.FakerGenerator
 import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
-import inigo.objectMotherCreator.model.infoExtractor.omjava.OMJavaMethod
 import io.mockk.*
-import org.jetbrains.concurrency.any
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
