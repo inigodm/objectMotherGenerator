@@ -8,6 +8,7 @@ import inigo.objectMotherCreator.application.template.KotlinObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
 import inigo.objectMotherCreator.application.values.KotlinFakeValuesGenerator
+import inigo.objectMotherCreator.givenStandartStateOptions
 import inigo.objectMotherCreator.infraestructure.IdeaShits
 import inigo.objectMotherCreator.model.infoExtractor.om.*
 import io.mockk.MockKAnnotations
@@ -57,6 +58,7 @@ class JavaFeaturesTests {
 
     @Test
     fun `should create a object mother for a class`() {
+        givenStandartStateOptions()
         val omParameterA = createParam("List<String>", java.util.List::class.java.canonicalName)
         val omParameterB = createParam("UUID", UUID::class.java.canonicalName)
         val omParameterC = createParam("Instant", Instant::class.java.canonicalName)
@@ -82,6 +84,7 @@ class JavaFeaturesTests {
 
     @Test
     fun `should create a object mother for a class with parameters`() {
+        givenStandartStateOptions()
         val omParameter1 = createParam("Map<String, Integer>", java.util.Map::class.java.canonicalName)
         val omConstructor = createConstructor("A", omParameter1)
         val omClass = createClass("A", "packagename", true, omConstructor)
