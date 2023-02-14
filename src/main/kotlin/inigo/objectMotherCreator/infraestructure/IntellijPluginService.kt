@@ -8,7 +8,7 @@ import com.intellij.openapi.components.*
 ])
 @Service
 class IntellijPluginService: PersistentStateComponent<PluginState> {
-    var pluginState = PluginState("com.github.javafaker.Faker")
+    private var pluginState = PluginState("com.github.javafaker.Faker", "random")
 
     companion object {
         fun getAppInstance(): IntellijPluginService {

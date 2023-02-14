@@ -5,6 +5,7 @@ import fixedMethodInfo
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.template.KotlinObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.KotlinFakeValuesGenerator
+import inigo.objectMotherCreator.givenStandartStateOptions
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 import inigo.objectMotherCreator.model.infogenerated.KotlinMotherClassGeneratedData
 import io.mockk.MockKAnnotations
@@ -26,6 +27,7 @@ class KotlinObjectMotherTemplateTest {
 
     @Test
     fun `build package line`() {
+        givenStandartStateOptions()
         val sut = KotlinObjectMotherTemplate(KotlinFakeValuesGenerator())
 
         assertEquals(sut.buildPackage("packagename").trim(), "package packagename")
@@ -33,7 +35,7 @@ class KotlinObjectMotherTemplateTest {
 
     @Test
     fun `build import line for faker if other classes ar in diferent package`() {
-
+        givenStandartStateOptions()
         val sut = KotlinObjectMotherTemplate(KotlinFakeValuesGenerator())
         val res = sut.buildImports(listOf(fixedMethodInfo()))
 
@@ -42,6 +44,7 @@ class KotlinObjectMotherTemplateTest {
 
     @Test
     fun `build class code with default constructor if no constructors`() {
+        givenStandartStateOptions()
         val sut = KotlinObjectMotherTemplate(KotlinFakeValuesGenerator())
 
         val res = sut.buildClass("className", listOf(), motherClassGeneratedData)
@@ -57,6 +60,7 @@ class KotlinObjectMotherTemplateTest {
 
     @Test
     fun `build class code using existing first constructor if any constructors exist`() {
+        givenStandartStateOptions()
         val sut = KotlinObjectMotherTemplate(KotlinFakeValuesGenerator())
 
         val res = sut.buildClass("className", listOf(fixedMethodInfo()), motherClassGeneratedData)
@@ -74,6 +78,7 @@ class KotlinObjectMotherTemplateTest {
 
     @Test
     fun `build class code using existing first constructor if any constructors exists`() {
+        givenStandartStateOptions()
         assertThatWorksWithType("int", "faker.number().randomDigit()")
         assertThatWorksWithType("Integer", "faker.number().randomDigit()")
         assertThatWorksWithType("long", "faker.number().randomNumber()")
@@ -137,6 +142,7 @@ class KotlinObjectMotherTemplateTest {
 
     @Test
     fun `have to return needed object classes`() {
+        givenStandartStateOptions()
         val sut = KotlinObjectMotherTemplate(fakeValuesGenerator)
 
         sut.buildClass("className", listOf(fixedMethodInfo()), motherClassGeneratedData)
@@ -146,6 +152,7 @@ class KotlinObjectMotherTemplateTest {
 
     @Test
     fun `should build objectmother when asked to`() {
+        givenStandartStateOptions()
         val sut = KotlinObjectMotherTemplate(fakeValuesGenerator)
 
         val res = sut.createObjectMotherSourceCode(fixedClassInfo())
