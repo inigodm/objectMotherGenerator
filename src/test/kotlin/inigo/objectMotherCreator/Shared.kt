@@ -8,7 +8,8 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 
     fun givenStandartStateOptions() {
-        mockkStatic(ServiceManager::class)mockkStatic(IntellijPluginService::class)
+        mockkStatic(ServiceManager::class)
+        mockkStatic(IntellijPluginService::class)
 
         val service: IntellijPluginService = mockk()
         val state = PluginState("com.github.javafaker.Faker", "random")

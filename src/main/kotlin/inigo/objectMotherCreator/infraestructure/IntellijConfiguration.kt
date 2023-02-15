@@ -22,14 +22,14 @@ class IntellijConfiguration: Configurable {
     private fun buildFakerClassnameComponent(): JPanel {
         return textFieldWithLabel(
             "Faker imported class",
-            IntellijPluginService.getAppInstance().state.fakerClassname,
+            IntellijPluginService.getInstance().state.getFakerClassName(),
             fakerTextField)
     }
 
     private fun buildMethodPrefixComponent(): JPanel {
         return textFieldWithLabel(
             "Prefix of builder functions",
-            IntellijPluginService.getAppInstance().state.methodsPrefix,
+            IntellijPluginService.getInstance().state.getPrefixes(),
             methodPrefixTextField)
     }
 
@@ -43,12 +43,12 @@ class IntellijConfiguration: Configurable {
     }
 
     override fun isModified(): Boolean {
-        return fakerTextField.text != IntellijPluginService.getAppInstance().state.fakerClassname ||
-        methodPrefixTextField.text != IntellijPluginService.getAppInstance().state.methodsPrefix
+        return fakerTextField.text != IntellijPluginService.getInstance().state.getFakerClassName() ||
+        methodPrefixTextField.text != IntellijPluginService.getInstance().state.getPrefixes()
     }
 
     override fun apply() {
-        IntellijPluginService.getAppInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text))
+        IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text))
     }
 
     override fun getDisplayName(): String {

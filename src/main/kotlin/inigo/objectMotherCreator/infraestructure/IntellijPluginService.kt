@@ -2,8 +2,9 @@ package inigo.objectMotherCreator.infraestructure
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.*
+import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name="objectmothercreatorconfig", storages = [
+@State(name="inigo.objectMotherCreator.infraestructure.PluginState", storages = [
     Storage("objectmothercreatorconfig.xml", roamingType = RoamingType.DISABLED)
 ])
 @Service
@@ -11,7 +12,7 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
     private var pluginState = PluginState("com.github.javafaker.Faker", "random")
 
     companion object {
-        fun getAppInstance(): IntellijPluginService {
+        fun getInstance(): IntellijPluginService {
             return ServiceManager.getService(IntellijPluginService::class.java)
         }
     }
@@ -19,7 +20,12 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
         return pluginState;
     }
 
+    fun getPluginState() = pluginState
+    fun setPluginState(state: PluginState) {
+        this.pluginState = state
+    }
+
     override fun loadState(state: PluginState) {
-        this.pluginState = state;
+        this.pluginState = state
     }
 }

@@ -32,7 +32,7 @@ class JavaFakeValuesGenerator: FakeValuesGenerator() {
         name: String
     ) = if (classInfo != null) {
         neededObjectMotherClasses.add(classInfo)
-        "${IntellijPluginService.getAppInstance().state.methodsPrefix}${classInfo.clazz!!.getName()}()"
+        "${IntellijPluginService.getInstance().state.getPrefixes()}${classInfo.clazz!!.getName()}()"
     } else {
         "new ${name}()"
     }
