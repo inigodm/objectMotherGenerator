@@ -2,7 +2,7 @@ package inigo.objectMotherCreator.application.template
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
-import inigo.objectMotherCreator.infraestructure.IntellijPluginService
+import inigo.objectMotherCreator.infraestructure.config.IntellijPluginService
 
 abstract class ObjectMotherTemplate {
     companion object {

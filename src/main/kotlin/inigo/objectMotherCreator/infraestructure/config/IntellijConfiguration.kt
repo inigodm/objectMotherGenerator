@@ -1,4 +1,4 @@
-package inigo.objectMotherCreator.infraestructure;
+package inigo.objectMotherCreator.infraestructure.config;
 
 import com.intellij.openapi.options.Configurable
 import org.jdesktop.swingx.VerticalLayout

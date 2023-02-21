@@ -1,10 +1,9 @@
-package inigo.objectMotherCreator.infraestructure
+package inigo.objectMotherCreator.infraestructure.config
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.*
-import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name="inigo.objectMotherCreator.infraestructure.PluginState", storages = [
+@State(name="inigo.objectMotherCreator.infraestructure.config.PluginState", storages = [
     Storage("objectmothercreatorconfig.xml", roamingType = RoamingType.DISABLED)
 ])
 @Service

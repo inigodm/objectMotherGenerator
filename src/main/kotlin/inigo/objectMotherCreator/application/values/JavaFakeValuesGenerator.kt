@@ -1,7 +1,7 @@
 package inigo.objectMotherCreator.application.values
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
-import inigo.objectMotherCreator.infraestructure.IntellijPluginService
+import inigo.objectMotherCreator.infraestructure.config.IntellijPluginService
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 
 class JavaFakeValuesGenerator: FakeValuesGenerator() {

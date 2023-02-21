@@ -1,6 +1,5 @@
 package inigo.objectMotherCreator.features
 
-import com.intellij.openapi.components.ServiceManager
 import inigo.objectMotherCreator.application.JavaFileCreator
 import inigo.objectMotherCreator.application.ObjectMotherCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
@@ -9,8 +8,6 @@ import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.values.KotlinFakeValuesGenerator
 import inigo.objectMotherCreator.givenStandartStateOptions
 import inigo.objectMotherCreator.infraestructure.IdeaShits
-import inigo.objectMotherCreator.infraestructure.IntellijPluginService
-import inigo.objectMotherCreator.infraestructure.PluginState
 import inigo.objectMotherCreator.model.infoExtractor.om.*
 import io.mockk.*
 import io.mockk.impl.annotations.MockK

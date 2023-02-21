@@ -1,4 +1,4 @@
-package inigo.objectMotherCreator.infraestructure
+package inigo.objectMotherCreator.infraestructure.config
 
 class PluginState(private var fakerClassname: String = "com.github.javafaker.Faker", private var prefixes: String = "random") {
     fun getFakerClassName() = fakerClassname
