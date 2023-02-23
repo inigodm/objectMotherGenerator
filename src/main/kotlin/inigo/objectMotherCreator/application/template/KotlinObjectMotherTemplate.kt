@@ -7,7 +7,7 @@ import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 import inigo.objectMotherCreator.model.infogenerated.KotlinMotherClassGeneratedData
 
-class KotlinObjectMotherTemplate(var fakeValuesGenerator: FakeValuesGenerator): ObjectMotherTemplate {
+class KotlinObjectMotherTemplate(var fakeValuesGenerator: FakeValuesGenerator): ObjectMotherTemplate() {
 
     override fun createObjectMotherSourceCode(clazz: ClassInfo) : String {
         fakeValuesGenerator.reset()
@@ -24,11 +24,11 @@ class KotlinObjectMotherTemplate(var fakeValuesGenerator: FakeValuesGenerator): 
 
     fun buildImports(neededConstructors: List<MethodInfo>): List<String> {
         val result = mutableListOf<String>()
-        result.add("import com.github.javafaker.Faker")
+        result.add("import ${getFakerCanonicalClassname()}")
         if (neededConstructors.isNotEmpty()) {
             neededConstructors[0].args.filter { (it.clazzInfo?.clazz?.getName() ?: "") != "" }
                 .forEach {
-                    result.add("import ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.Companion.random${it.clazzInfo?.clazz?.getName()}") }
+                    result.add("import ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.Companion.${getMethodPrefix()}${it.clazzInfo?.clazz?.getName()}") }
         }
         return result
     }
@@ -49,15 +49,15 @@ class ${className}ObjectMother{
 
     private fun buildMotherConstructor(className: String, methodInfo: MethodInfo, index: Int, motherClassGeneratedData: MotherClassGeneratedData): Any? {
         return """
-    fun random$className${if(index > 0) index else ""}(): $className {
-        val faker = Faker()
+    fun ${getMethodPrefix()}$className${if(index > 0) index else ""}(): $className {
+        val faker = ${getFakerClassName()}()
         return $className(${buildArgumentsData(methodInfo.args, motherClassGeneratedData)})
     }"""
     }
 
     private fun buildMotherConstructor(className: String): Any? {
         return """
-    fun random$className():  $className{
+    fun ${getMethodPrefix()}$className():  $className{
         return $className()
     }"""
     }

@@ -1,6 +1,7 @@
 package inigo.objectMotherCreator.application.values
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
+import inigo.objectMotherCreator.infraestructure.config.IntellijPluginService
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 
 class JavaFakeValuesGenerator: FakeValuesGenerator() {
@@ -31,7 +32,7 @@ class JavaFakeValuesGenerator: FakeValuesGenerator() {
         name: String
     ) = if (classInfo != null) {
         neededObjectMotherClasses.add(classInfo)
-        "random${classInfo.clazz!!.getName()}()"
+        "${IntellijPluginService.getInstance().state.getPrefixes()}${classInfo.clazz!!.getName()}()"
     } else {
         "new ${name}()"
     }

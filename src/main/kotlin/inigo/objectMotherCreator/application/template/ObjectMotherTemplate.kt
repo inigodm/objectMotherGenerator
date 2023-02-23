@@ -2,8 +2,9 @@ package inigo.objectMotherCreator.application.template
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
+import inigo.objectMotherCreator.infraestructure.config.IntellijPluginService
 
-interface ObjectMotherTemplate {
+abstract class ObjectMotherTemplate {
     companion object {
         fun buildObjectMotherTemplate(extension: String, fakeValuesGenerator: FakeValuesGenerator): ObjectMotherTemplate {
             return when (extension) {
@@ -14,5 +15,15 @@ interface ObjectMotherTemplate {
             }
         }
     }
-    fun createObjectMotherSourceCode(clazz: ClassInfo): String
+
+    val ideaState = IntellijPluginService.getInstance().state;
+    abstract fun createObjectMotherSourceCode(clazz: ClassInfo): String
+
+    fun getFakerCanonicalClassname() : String {
+        return ideaState.getFakerClassName()
+    }
+
+    fun getMethodPrefix() : String = ideaState.getPrefixes()
+
+    fun getFakerClassName() : String = ideaState.getFakerClassName().substringAfterLast(".")
 }

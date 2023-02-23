@@ -9,7 +9,8 @@ import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 import inigo.objectMotherCreator.model.infogenerated.JavaMotherClassGeneratedData
 
 
-class JavaObjectMotherTemplate(var fakeValuesGenerator: FakeValuesGenerator = JavaFakeValuesGenerator()): ObjectMotherTemplate {
+class JavaObjectMotherTemplate(var fakeValuesGenerator: FakeValuesGenerator = JavaFakeValuesGenerator()):
+    ObjectMotherTemplate() {
 
     override fun createObjectMotherSourceCode(clazz: ClassInfo) : String {
         fakeValuesGenerator.reset()
@@ -26,11 +27,11 @@ class JavaObjectMotherTemplate(var fakeValuesGenerator: FakeValuesGenerator = Ja
 
     fun buildImports(neededConstructors: List<MethodInfo>): List<String> {
         val result = mutableListOf<String>()
-        result.add("import com.github.javafaker.Faker")
+        result.add("import ${getFakerCanonicalClassname()}")
         if (neededConstructors.isNotEmpty()) {
             neededConstructors[0].args.filter { (it.clazzInfo?.clazz?.getName() ?: "") != "" }
                 .forEach {
-                    result.add("import static ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.random${it.clazzInfo?.clazz?.getName()}") }
+                    result.add("import static ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.${getMethodPrefix()}${it.clazzInfo?.clazz?.getName()}") }
         }
         return result
     }
@@ -48,14 +49,14 @@ class JavaObjectMotherTemplate(var fakeValuesGenerator: FakeValuesGenerator = Ja
 
     private fun buildMotherConstructor(className: String, methodInfo: MethodInfo, index: Int, motherClassGeneratedData: MotherClassGeneratedData): Any? {
         return """
-    public static $className random$className${if(index > 0) index else ""}(){
-        Faker faker = new Faker();
+    public static $className ${getMethodPrefix()}$className${if(index > 0) index else ""}(){
+        ${getFakerClassName()} faker = new ${getFakerClassName()}();
         return new $className(${buildArgumentsData(methodInfo.args, motherClassGeneratedData)});
     }"""
     }
 
     private fun buildMotherConstructor(className: String): Any? {
-        return """  public static $className random$className(){
+        return """  public static $className ${getMethodPrefix()}$className(){
         return new $className();
     }"""
     }

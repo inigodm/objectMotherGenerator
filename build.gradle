@@ -2,16 +2,13 @@ plugins {
     id 'java'
     id 'idea'
     id 'groovy'
-    id 'org.jetbrains.intellij' version '1.7.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.7.0'
-    //id 'org.jlleitschuh.gradle.ktlint' version '10.0.0'
-    id 'info.solidsoft.pitest' version '1.7.4'
+    id 'org.jetbrains.intellij' version '1.13.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
+    id 'info.solidsoft.pitest' version '1.9.11'
 }
 
-'''id 'io.gitlab.arturbosch.detekt' version '1.17.1'''
-
 group 'org.example'
-version '1.4.2.0'
+version '1.5.0.0'
 
 sourceCompatibility = 1.8
 
@@ -34,13 +31,13 @@ pitest {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.0'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
-    testImplementation group: 'io.mockk', name: 'mockk', version: '1.12.4'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.2'
+    testImplementation group: 'io.mockk', name: 'mockk', version: '1.13.4'
     testImplementation 'com.willowtreeapps.assertk:assertk-jvm:0.25'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.4'
-    testImplementation group: 'org.mockito.kotlin', name: 'mockito-kotlin', version: '4.0.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.9.11'
+    testImplementation group: 'org.mockito.kotlin', name: 'mockito-kotlin', version: '4.1.0'
 }
 
 
@@ -60,9 +57,6 @@ patchPluginXml {
     sinceBuild = '193'
     untilBuild = '293.*'
     changeNotes = """
-        Added Boolean and Timestamp static constructors to template.
-        Fix some bugs.
-        Bug refactor.
-        Added tests in kotlin side.
+        Added a config page in Settings... -> Tools
     """
 }

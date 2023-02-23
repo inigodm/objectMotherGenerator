@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>inigo.objectmothercreator</id>
     <name>Object mother creator</name>
-    <version>1.4.2.0</version>
+    <version>1.5.0.0</version>
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
     <depends>com.intellij.java</depends>
     <depends>org.intellij.groovy</depends>
@@ -9,13 +9,14 @@
     <description><![CDATA[
       Creates object mothers for selected class on right clicking over it.
       <br><br><b>Supports Kotlin, Java and Groovy classes</b>
+      There is some configuration capabilities at configuration page.
 
-      To use it, select the file containing the class or over the editor tab of the opened file, right click -> Create object mother for current class
+      Select the file containing the class or over the editor tab of the opened file, right click -> Create object mother for current class
 
       <br><br>Source code can be found <a href="https://github.com/inigodm/objectMotherGenerator">HERE</a>
       <br><br> PR and issues are welcome
 <br><br>
-      <b>IMPORTANT: Generated code uses, to generate random Strings, Javafaker library (<a href="https://github.com/DiUS/java-faker">in github</a>)</b>
+      <b>Generated code uses by default, to generate random Strings, Javafaker library (<a href="https://github.com/DiUS/java-faker">in github</a>)</b>
 <br><br>
       You can add it (it generates random data for your tests, very usefully) to your project using maven or gradle, as example;
 <br><br>
@@ -23,11 +24,7 @@
         testImplementation "com.github.javafaker:javafaker:1.0.2"<br>
       }<br>
 <br>
-      Anyway, if you don't want to use javafaker library, this plugin will do the TEDIOUS work of creating the packages, the ObjectMother.java files, and
-      a 'randomClassName' static methods with required parameters, and you only would have to change those parameters.
-      <br><br>
-      <a href="https://martinfowler.com/bliki/ObjectMother.html">https://martinfowler.com/bliki/ObjectMother.html</a>
-      <br><br>
+      Or use a custom one by configuring it in the config page (I will improve the customization, trust me).
 
 ]]></description>
 
@@ -47,22 +44,28 @@
         1.4.0.0 - Add Kotlin support
         1.4.1.0 - Identify UUID and Instant, fix errors
         1.4.2.0 - Identify Boolean and Timestamp, refactor to improve agility adding more types
+        1.5.0.0 - Add a config page to customize Faker library
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="201" until-build="293.*"/>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
+        <applicationConfigurable
+                parentId="tools"
+                instance="inigo.objectMotherCreator.infraestructure.config.IntellijConfiguration"
+                id="inigo.objectMotherCreator.infraestructure.config.IntellijConfiguration"
+                displayName="Object Mother Creator"/>
+        <applicationService
+                serviceImplementation="inigo.objectMotherCreator.infraestructure.config.IntellijPluginService"/>
     </extensions>
-
     <actions>
 
         <action id="ObjectMotherCreation.Editor"
                 class="inigo.objectMotherCreator.infraestructure.actions.ObjectCreateOnCaretSelectedAction"
                 text="Create Object Mother for Current Class"
                 description="BuildObjectMother">
-             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 
         <action id="ObjectCreateFileSeletedAction.Editor"
