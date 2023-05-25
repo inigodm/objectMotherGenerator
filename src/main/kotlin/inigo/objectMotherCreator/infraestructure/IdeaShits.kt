@@ -30,8 +30,13 @@ class IdeaShits(val e: AnActionEvent) {
         return OMVirtualFile(e.getData(PlatformDataKeys.VIRTUAL_FILE))
     }
 
-    fun isCaretInFileType(extension: String) =
-        e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals(extension, ignoreCase = true)
+    fun isCaretInFileType(extension: String): Boolean {
+        return try {
+            e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals(extension, ignoreCase = true)
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     fun setMenuItemEnabled(enabled: Boolean) {
         e.presentation.isEnabledAndVisible = enabled
