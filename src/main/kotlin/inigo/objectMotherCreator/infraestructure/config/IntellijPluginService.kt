@@ -8,13 +8,15 @@ import com.intellij.openapi.components.*
 ])
 @Service
 class IntellijPluginService: PersistentStateComponent<PluginState> {
-    private var pluginState = PluginState("com.github.javafaker.Faker", "random")
-
     companion object {
+        val DEFAULT_STATE = PluginState("com.github.javafaker.Faker", "random")
         fun getInstance(): IntellijPluginService {
             return ServiceManager.getService(IntellijPluginService::class.java)
         }
     }
+
+    private var pluginState = DEFAULT_STATE
+
     override fun getState(): PluginState {
         return pluginState;
     }
@@ -26,5 +28,9 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
 
     override fun loadState(state: PluginState) {
         this.pluginState = state
+    }
+
+    fun reset() {
+        this.pluginState = DEFAULT_STATE
     }
 }

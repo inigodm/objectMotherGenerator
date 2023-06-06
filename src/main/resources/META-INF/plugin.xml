@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>inigo.objectmothercreator</id>
     <name>Object mother creator</name>
-    <version>1.5.0.0</version>
+    <version>1.5.0.1</version>
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
     <depends>com.intellij.java</depends>
     <depends>org.intellij.groovy</depends>
@@ -45,6 +45,7 @@
         1.4.1.0 - Identify UUID and Instant, fix errors
         1.4.2.0 - Identify Boolean and Timestamp, refactor to improve agility adding more types
         1.5.0.0 - Add a config page to customize Faker library
+        1.5.0.1 - Minor fix to calm down APA
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->

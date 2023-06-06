@@ -3,6 +3,7 @@ package inigo.objectMotherCreator.infraestructure.config;
 import com.intellij.openapi.options.Configurable
 import org.jdesktop.swingx.VerticalLayout
 import java.awt.FlowLayout
+import java.awt.event.ActionListener
 import javax.swing.*
 
 
@@ -15,6 +16,12 @@ class IntellijConfiguration: Configurable {
         main.layout = VerticalLayout()
         main.add(buildFakerClassnameComponent())
         main.add(buildMethodPrefixComponent())
+        main.add(buildButton( "", "Default", ActionListener { e ->
+            run {
+                fakerTextField.text = IntellijPluginService.DEFAULT_STATE.getFakerClassName()
+                methodPrefixTextField.text = IntellijPluginService.DEFAULT_STATE.getPrefixes()
+            }
+        }))
         reset()
         return main
     }
@@ -39,6 +46,16 @@ class IntellijConfiguration: Configurable {
         val label = JLabel(labelText)
         pack.add(label)
         pack.add(textField)
+        return pack
+    }
+
+    private fun buildButton(labelText : String, buttonText: String, function: ActionListener): JPanel {
+        val pack = JPanel(FlowLayout(FlowLayout.LEADING))
+        val button = JButton(buttonText)
+        button.addActionListener(function)
+        val label = JLabel(labelText)
+        pack.add(label)
+        pack.add(button)
         return pack
     }
 

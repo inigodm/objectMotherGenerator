@@ -34,6 +34,7 @@ class IdeaShits(val e: AnActionEvent) {
         return try {
             e.getData(CommonDataKeys.PSI_FILE)!!.language.displayName.equals(extension, ignoreCase = true)
         } catch (e: Exception) {
+            println("Cannot find PSI_FILE")
             false
         }
     }
