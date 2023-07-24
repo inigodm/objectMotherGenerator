@@ -72,7 +72,27 @@ abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<Cl
         return "faker.bool().bool()"
     }
 
+    data class ClassMapping(val imports : List<String> = listOf(), val generator: String, val className: String)
     fun createDefaultValueFor(name: String, classInfo: ClassInfo?, motherClassGeneratedData: MotherClassGeneratedData): String {
+        val lista = listOf(
+            ClassMapping(listOf("import java.util.UUID"),"UUID.randomUUID()", "UUID"),
+            ClassMapping(listOf("import java.time.Instant"),"Instant.now()", "Instant"),
+            ClassMapping(listOf("import java.sql.Timestamp","import java.time.Instant"),
+                "Timestamp.from(Instant.now())","Timestamp"),
+            ClassMapping(generator = randomString(), className = "String"),
+            ClassMapping(generator = randomInteger(), className = "String"),
+            ClassMapping(generator = randomInteger(), className = "Integer"),
+            ClassMapping(generator = randomLong(), className = "long"),
+            ClassMapping(generator = randomLong(), className = "Long"),
+            ClassMapping(generator = randomBoolean(), className = "Boolean"),
+            ClassMapping(generator = randomBoolean(), className = "boolean"),
+        )
+
+        val mappedClasses = mutableMapOf<String, ClassMapping>()
+        lista.forEach { mappedClasses[it.className] = it }
+
+
+
         return when {
             name == "UUID" -> {
                 motherClassGeneratedData.addImport("import java.util.UUID")
