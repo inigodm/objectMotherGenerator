@@ -1,13 +1,17 @@
 package inigo.objectMotherCreator.infraestructure.config;
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.intellij.openapi.options.Configurable
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
 import org.jdesktop.swingx.VerticalLayout
 import org.yaml.snakeyaml.Yaml
+import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.awt.event.ActionListener
 import java.io.InputStream
+import java.io.OutputStream
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
 
@@ -15,20 +19,9 @@ import javax.swing.table.DefaultTableModel
 class IntellijConfiguration: Configurable {
     private val fakerTextField: JTextField = JTextField()
     private val methodPrefixTextField: JTextField = JTextField()
-
+    private var mappings : Map<String, String> = mutableMapOf()
     override fun createComponent(): JComponent {
         val main = JPanel()
-        // Cargar el archivo YAML desde la carpeta resources
-        val inputStream: InputStream = IntellijConfiguration::class.java.getResourceAsStream("/application.yaml")!!
-        val yaml = Yaml()
-
-        // Analizar el contenido del archivo YAML
-        val data = mutableListOf<Array<Any>>()
-        val yamlData = yaml.load(inputStream) as LinkedHashMap<String, Any>
-        for (entry in yamlData) {
-            //val row = arrayOf(entry["columna1"], entry["columna2"])
-            //data.add(row)
-        }
 
         main.layout = VerticalLayout()
         main.add(buildFakerClassnameComponent())
@@ -37,12 +30,20 @@ class IntellijConfiguration: Configurable {
             run {
                 fakerTextField.text = IntellijPluginService.DEFAULT_STATE.getFakerClassName()
                 methodPrefixTextField.text = IntellijPluginService.DEFAULT_STATE.getPrefixes()
+                mappings = IntellijPluginService.DEFAULT_STATE.getMappings()
             }
         }))
-        main.add(buildTable(arrayOf(arrayOf("uno", "dos")), arrayOf("h1", "h2")))
+        main.add(buildTable(loadMappingsFrom(IntellijPluginService.getInstance().state.getMappings()), arrayOf("Class", "Code to generate random object")), BorderLayout.CENTER)
         reset()
         return main
     }
+
+    private fun loadMappingsFrom(map: Map<String, String>): Array<Array<String>> {
+        val data = mutableListOf<Array<String>>()
+        map.keys.forEach { data.add(arrayOf(it, map.get(it)!!)) }
+        return data.toTypedArray()
+    }
+
 
     private fun buildFakerClassnameComponent(): JPanel {
         return textFieldWithLabel(
@@ -78,28 +79,24 @@ class IntellijConfiguration: Configurable {
     }
 
     private fun buildTable(data: Array<Array<String>>, columnNames: Array<String>): JPanel {
-        val pack = JPanel(FlowLayout(FlowLayout.LEADING))
+        val pack = JPanel(BorderLayout())
         val tableModel = DefaultTableModel(data, columnNames)
         val table = JBTable(tableModel)
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-        table.getColumnModel().getColumn(0).setPreferredWidth(100)
-        table.getColumnModel().getColumn(1).setPreferredWidth(100)
-
-        // Agregar la tabla a un JScrollPane para permitir el desplazamiento
-
-        // Agregar la tabla a un JScrollPane para permitir el desplazamiento
-        val scrollPane = JBScrollPane(table)
-        pack.add(scrollPane)
+        table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
+        table.columnModel.getColumn(0).setPreferredWidth(100)
+        table.columnModel.getColumn(1).setPreferredWidth(100)
+        pack.add(JBScrollPane(table), BorderLayout.CENTER)
         return pack
     }
 
     override fun isModified(): Boolean {
         return fakerTextField.text != IntellijPluginService.getInstance().state.getFakerClassName() ||
-        methodPrefixTextField.text != IntellijPluginService.getInstance().state.getPrefixes()
+        methodPrefixTextField.text != IntellijPluginService.getInstance().state.getPrefixes() ||
+                mappings.equals(IntellijPluginService.getInstance().state.getMappings())
     }
 
     override fun apply() {
-        IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text))
+        IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text, mappings))
     }
 
     override fun getDisplayName(): String {

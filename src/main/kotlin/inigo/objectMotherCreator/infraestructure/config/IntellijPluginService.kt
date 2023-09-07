@@ -9,7 +9,7 @@ import com.intellij.openapi.components.*
 @Service
 class IntellijPluginService: PersistentStateComponent<PluginState> {
     companion object {
-        val DEFAULT_STATE = PluginState("com.github.javafaker.Faker", "random")
+        val DEFAULT_STATE = PluginState("com.github.javafaker.Faker", "random", mapOf("java.sql.Timestamp" to "Timestamp.from(Instant.now())"))
         fun getInstance(): IntellijPluginService {
             return ServiceManager.getService(IntellijPluginService::class.java)
         }
