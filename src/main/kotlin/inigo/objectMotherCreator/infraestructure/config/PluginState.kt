@@ -1,11 +1,14 @@
 package inigo.objectMotherCreator.infraestructure.config
 
-class PluginState(private var fakerClassname: String = "com.github.javafaker.Faker", private var prefixes: String = "random",
-    private var mappings: Map<String, String>) {
+import java.util.*
+
+class PluginState(private var fakerClassname: String = "com.github.javafaker.Faker",
+                  private var prefixes: String = "random",
+                  private var mappings: Vector<Vector<String>>) {
     fun getFakerClassName() = fakerClassname
     fun getPrefixes() = prefixes
     fun getMappings() = mappings
-    fun setMappings(mapping: Map<String, String>) {
+    fun setMappings(mapping: Vector<Vector<String>>) {
         this.mappings = mapping
     }
 

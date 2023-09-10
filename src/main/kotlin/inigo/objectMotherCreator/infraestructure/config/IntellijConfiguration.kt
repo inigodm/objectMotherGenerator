@@ -1,17 +1,14 @@
 package inigo.objectMotherCreator.infraestructure.config;
 
-import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.intellij.openapi.options.Configurable
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
 import org.jdesktop.swingx.VerticalLayout
-import org.yaml.snakeyaml.Yaml
 import java.awt.BorderLayout
 import java.awt.FlowLayout
+import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
-import java.io.InputStream
-import java.io.OutputStream
+import java.util.*
 import javax.swing.*
 import javax.swing.table.DefaultTableModel
 
@@ -19,31 +16,42 @@ import javax.swing.table.DefaultTableModel
 class IntellijConfiguration: Configurable {
     private val fakerTextField: JTextField = JTextField()
     private val methodPrefixTextField: JTextField = JTextField()
-    private var mappings : Map<String, String> = mutableMapOf()
+    private lateinit var mappings : Vector<Vector<String>>
+    private lateinit var table: JBTable
     override fun createComponent(): JComponent {
         val main = JPanel()
 
         main.layout = VerticalLayout()
         main.add(buildFakerClassnameComponent())
         main.add(buildMethodPrefixComponent())
-        main.add(buildButton( "", "Default", ActionListener { e ->
-            run {
-                fakerTextField.text = IntellijPluginService.DEFAULT_STATE.getFakerClassName()
-                methodPrefixTextField.text = IntellijPluginService.DEFAULT_STATE.getPrefixes()
-                mappings = IntellijPluginService.DEFAULT_STATE.getMappings()
-            }
-        }))
-        main.add(buildTable(loadMappingsFrom(IntellijPluginService.getInstance().state.getMappings()), arrayOf("Class", "Code to generate random object")), BorderLayout.CENTER)
+        main.add(buildButton( "", "Default", defaultValues()))
+        main.add(buildTable(Vector(listOf("Class", "Code to generate random object"))))
+        main.add(buildButton("Add new mapping", "+", insertRow()))
         reset()
         return main
     }
 
-    private fun loadMappingsFrom(map: Map<String, String>): Array<Array<String>> {
-        val data = mutableListOf<Array<String>>()
-        map.keys.forEach { data.add(arrayOf(it, map.get(it)!!)) }
-        return data.toTypedArray()
+    private fun insertRow(): (e: ActionEvent) -> Unit = {
+        run {
+            val model = (table.model as DefaultTableModel)
+            val data = model.dataVector
+            if (data.size > 0) {
+                val k = data[data.size - 1] as Vector<String>
+                val v = data[data.size - 1] as Vector<String>
+                if (v[0].isNotEmpty() || k[1].isNotEmpty()) {
+                    model.insertRow(model.rowCount, arrayOf("1", "2"))
+                }
+            }
+        }
     }
 
+    private fun defaultValues(): (e: ActionEvent) -> Unit = {
+        run {
+            fakerTextField.text = IntellijPluginService.DEFAULT_STATE.getFakerClassName()
+            methodPrefixTextField.text = IntellijPluginService.DEFAULT_STATE.getPrefixes()
+            mappings = IntellijPluginService.DEFAULT_STATE.getMappings()
+        }
+    }
 
     private fun buildFakerClassnameComponent(): JPanel {
         return textFieldWithLabel(
@@ -78,21 +86,23 @@ class IntellijConfiguration: Configurable {
         return pack
     }
 
-    private fun buildTable(data: Array<Array<String>>, columnNames: Array<String>): JPanel {
+    private fun buildTable(columnNames: Vector<String>): JPanel {
+        mappings = IntellijPluginService.getInstance().state.getMappings()
         val pack = JPanel(BorderLayout())
-        val tableModel = DefaultTableModel(data, columnNames)
-        val table = JBTable(tableModel)
+        val tableModel = DefaultTableModel(mappings, columnNames)
+        table = JBTable(tableModel)
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         table.columnModel.getColumn(0).setPreferredWidth(100)
         table.columnModel.getColumn(1).setPreferredWidth(100)
+        table.setFillsViewportHeight(true)
         pack.add(JBScrollPane(table), BorderLayout.CENTER)
         return pack
     }
 
     override fun isModified(): Boolean {
         return fakerTextField.text != IntellijPluginService.getInstance().state.getFakerClassName() ||
-        methodPrefixTextField.text != IntellijPluginService.getInstance().state.getPrefixes() ||
-                mappings.equals(IntellijPluginService.getInstance().state.getMappings())
+        methodPrefixTextField.text != IntellijPluginService.getInstance().state.getPrefixes()
+                || mappings.equals(IntellijPluginService.getInstance().state.getMappings())
     }
 
     override fun apply() {
@@ -103,3 +113,4 @@ class IntellijConfiguration: Configurable {
         return "Object Mother Creator"
     }
 }
+

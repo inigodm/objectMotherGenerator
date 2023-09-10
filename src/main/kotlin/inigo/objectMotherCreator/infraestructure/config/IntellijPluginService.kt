@@ -2,6 +2,7 @@ package inigo.objectMotherCreator.infraestructure.config
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.*
+import java.util.*
 
 @State(name="inigo.objectMotherCreator.infraestructure.config.PluginState", storages = [
     Storage("objectmothercreatorconfig.xml", roamingType = RoamingType.DISABLED)
@@ -9,7 +10,17 @@ import com.intellij.openapi.components.*
 @Service
 class IntellijPluginService: PersistentStateComponent<PluginState> {
     companion object {
-        val DEFAULT_STATE = PluginState("com.github.javafaker.Faker", "random", mapOf("java.sql.Timestamp" to "Timestamp.from(Instant.now())"))
+
+        val DEFAULT_STATE = defaultState()
+        fun defaultState() : PluginState {
+            val s = Vector<String>()
+            val v = Vector<Vector<String>>()
+            s.add("")
+            s.add("")
+            v.add(s)
+            return PluginState("com.github.javafaker.Faker", "random", v)
+        }
+
         fun getInstance(): IntellijPluginService {
             return ServiceManager.getService(IntellijPluginService::class.java)
         }
