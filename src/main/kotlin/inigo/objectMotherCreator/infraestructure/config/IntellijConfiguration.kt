@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel
 class IntellijConfiguration: Configurable {
     private val fakerTextField: JTextField = JTextField()
     private val methodPrefixTextField: JTextField = JTextField()
-    private lateinit var mappings : List<List<String>>
+    private lateinit var mappings : Collection<Collection<String>>
     private lateinit var table: JBTable
     override fun createComponent(): JComponent {
         val main = JPanel()
