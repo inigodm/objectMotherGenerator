@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel
 class IntellijConfiguration: Configurable {
     private val fakerTextField: JTextField = JTextField()
     private val methodPrefixTextField: JTextField = JTextField()
-    private lateinit var mappings : Vector<Vector<String>>
+    private lateinit var mappings : List<List<String>>
     private lateinit var table: JBTable
     override fun createComponent(): JComponent {
         val main = JPanel()
@@ -87,9 +87,8 @@ class IntellijConfiguration: Configurable {
     }
 
     private fun buildTable(columnNames: Vector<String>): JPanel {
-        mappings = IntellijPluginService.getInstance().state.getMappings()
         val pack = JPanel(BorderLayout())
-        val tableModel = DefaultTableModel(mappings, columnNames)
+        val tableModel = DefaultTableModel(obtainMappings(), columnNames)
         table = JBTable(tableModel)
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         table.columnModel.getColumn(0).setPreferredWidth(100)
@@ -99,6 +98,10 @@ class IntellijConfiguration: Configurable {
         return pack
     }
 
+    fun obtainMappings(): Vector<Vector<String>> {
+        mappings = IntellijPluginService.getInstance().state.getMappings()
+        return Vector(mappings.map { Vector(it) }.toList())
+    }
     override fun isModified(): Boolean {
         return fakerTextField.text != IntellijPluginService.getInstance().state.getFakerClassName() ||
         methodPrefixTextField.text != IntellijPluginService.getInstance().state.getPrefixes()

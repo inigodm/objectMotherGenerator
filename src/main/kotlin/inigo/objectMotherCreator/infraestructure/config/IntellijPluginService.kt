@@ -13,10 +13,11 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
 
         val DEFAULT_STATE = defaultState()
         fun defaultState() : PluginState {
-            val s = Vector<String>()
-            val v = Vector<Vector<String>>()
-            s.add("")
-            s.add("")
+            val s = mutableListOf<String>()
+            val v = mutableListOf<List<String>>()
+            s.add("2")
+            s.add("33")
+            s.add("44")
             v.add(s)
             return PluginState("com.github.javafaker.Faker", "random", v)
         }
