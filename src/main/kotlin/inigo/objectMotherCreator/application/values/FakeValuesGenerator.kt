@@ -72,62 +72,41 @@ abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<Cl
         return "faker.bool().bool()"
     }
 
-    data class ClassMapping(val imports : List<String> = listOf(), val generator: String, val className: String)
+    data class ClassMapping(val imports : List<String> = listOf(), val generator: String, val className: String) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ClassMapping) return false
+            if (className != other.className) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return className.hashCode()
+        }
+    }
     fun createDefaultValueFor(name: String, classInfo: ClassInfo?, motherClassGeneratedData: MotherClassGeneratedData): String {
-        val lista = listOf(
+        val set = setOf(
             ClassMapping(listOf("import java.util.UUID"),"UUID.randomUUID()", "UUID"),
             ClassMapping(listOf("import java.time.Instant"),"Instant.now()", "Instant"),
             ClassMapping(listOf("import java.sql.Timestamp","import java.time.Instant"),
                 "Timestamp.from(Instant.now())","Timestamp"),
             ClassMapping(generator = randomString(), className = "String"),
-            ClassMapping(generator = randomInteger(), className = "String"),
+            ClassMapping(generator = randomInteger(), className = "Int"),
             ClassMapping(generator = randomInteger(), className = "Integer"),
+            ClassMapping(generator = randomInteger(), className = "int"),
             ClassMapping(generator = randomLong(), className = "long"),
             ClassMapping(generator = randomLong(), className = "Long"),
             ClassMapping(generator = randomBoolean(), className = "Boolean"),
             ClassMapping(generator = randomBoolean(), className = "boolean"),
         )
 
-        val mappedClasses = mutableMapOf<String, ClassMapping>()
-        lista.forEach { mappedClasses[it.className] = it }
-
-
+        val mapping = set.filter { it.className.equals(name) }.firstOrNull()
+        if (mapping != null) {
+            mapping.imports.forEach{ motherClassGeneratedData.addImport(it) }
+            return mapping.generator
+        }
 
         return when {
-            name == "UUID" -> {
-                motherClassGeneratedData.addImport("import java.util.UUID")
-                "UUID.randomUUID()"
-            }
-            name == "Instant" -> {
-                motherClassGeneratedData.addImport("import java.time.Instant")
-                "Instant.now()"
-            }
-            name == "Timestamp" -> {
-                motherClassGeneratedData.addImport("import java.sql.Timestamp")
-                motherClassGeneratedData.addImport("import java.time.Instant")
-                "Timestamp.from(Instant.now())"
-            }
-            name == "String" -> {
-                randomString()
-            }
-            name == "int" -> {
-                randomInteger()
-            }
-            name == "Integer" -> {
-                randomInteger()
-            }
-            name == "long" -> {
-                randomLong()
-            }
-            name == "Long" -> {
-                randomLong()
-            }
-            name == "Boolean" -> {
-                randomBoolean()
-            }
-            name == "boolean" -> {
-                randomBoolean()
-            }
             name.matches("^[\\s\\S]*Map[<]{0,1}[\\S\\s]*[>]{0,1}\$".toRegex()) -> {
                 randomMap(name, motherClassGeneratedData)
             }

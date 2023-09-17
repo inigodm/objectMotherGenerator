@@ -12,7 +12,7 @@ import io.mockk.mockkStatic
         mockkStatic(IntellijPluginService::class)
 
         val service: IntellijPluginService = mockk()
-        val state = PluginState("com.github.javafaker.Faker", "random")
+        val state = PluginState("com.github.javafaker.Faker", "random", emptyList())
         every { ServiceManager.getService(IntellijPluginService::class.java) } returns service
         every { service.state } returns state
     }
