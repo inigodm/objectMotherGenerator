@@ -25,7 +25,7 @@ class IntellijConfiguration: Configurable {
         main.add(buildFakerClassnameComponent())
         main.add(buildMethodPrefixComponent())
         main.add(buildButton( "", "Default", defaultValues()))
-        main.add(buildTable(Vector(listOf("Class", "Code to generate random object"))))
+        main.add(buildTable(Vector(listOf("Class", "Comma separated imports", "Code to generate random object"))))
         main.add(buildButton("Add new mapping", "+", insertRow()))
         reset()
         return main
@@ -93,6 +93,7 @@ class IntellijConfiguration: Configurable {
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         table.columnModel.getColumn(0).setPreferredWidth(100)
         table.columnModel.getColumn(1).setPreferredWidth(100)
+        table.columnModel.getColumn(2).setPreferredWidth(100)
         table.setFillsViewportHeight(true)
         pack.add(JBScrollPane(table), BorderLayout.CENTER)
         return pack
