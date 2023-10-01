@@ -39,8 +39,8 @@ class KotlinObjectMotherTemplateTest {
         val sut = KotlinObjectMotherTemplate(KotlinFakeValuesGenerator())
         val res = sut.buildImports(listOf(fixedMethodInfo()))
 
-        assertEquals(res, listOf("import com.github.javafaker.Faker",
-            "import qualified.clazzNameObjectMother.Companion.randomclazzName"))}
+        assertEquals(res, listOf("com.github.javafaker.Faker",
+            "qualified.clazzNameObjectMother.Companion.randomclazzName"))}
 
     @Test
     fun `build class code with default constructor if no constructors`() {

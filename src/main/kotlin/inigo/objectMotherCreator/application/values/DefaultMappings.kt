@@ -55,6 +55,10 @@ class DefaultMappings {
         ClassMapping(generator = randomBoolean(), className = "boolean")
     )
 
+    fun searchMappingFor(className : String) : ClassMapping? {
+        return mappings.filter { it.className.equals(className) }.firstOrNull()
+    }
+
     fun randomString(): String {
         return strings.random()
     }

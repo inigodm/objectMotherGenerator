@@ -16,6 +16,8 @@ class ClassMapping(val imports : List<String> = listOf(), val generator: List<St
             return listOf(className, imports.joinToString(separator = ", "), generator.joinToString(separator = ", "))
         }
 
+        fun randomValue() : String = generator.random()
+
         companion object {
             fun fromList(row: Collection<String>) : ClassMapping {
                 return ClassMapping(

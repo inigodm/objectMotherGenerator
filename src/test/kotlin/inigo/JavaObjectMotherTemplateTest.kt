@@ -42,8 +42,8 @@ class JavaObjectMotherTemplateTest {
 
         assertEquals(
             res, listOf(
-                "import com.github.javafaker.Faker",
-                "import static qualified.clazzNameObjectMother.randomclazzName"
+                "com.github.javafaker.Faker",
+                "static qualified.clazzNameObjectMother.randomclazzName"
             )
         )
     }

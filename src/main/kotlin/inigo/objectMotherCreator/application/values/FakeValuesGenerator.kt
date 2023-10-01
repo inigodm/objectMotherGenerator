@@ -11,8 +11,10 @@ abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<Cl
     abstract fun randomList(classCanonicalName: String, motherClassGeneratedData: MotherClassGeneratedData): String
     abstract fun randomOtherTypes(classInfo: ClassInfo?, name: String) : String
 
+    val MAP_PATTERN = "^[\\s\\S]*Map[<]{0,1}[\\S\\s]*[>]{0,1}\$".toRegex()
+    val LIST_PATTERM = "^[\\s\\S]*List[<]{0,1}[\\S]*[>]{0,1}\$".toRegex()
+
     companion object {
-        //TODO aqui esta el problema del test
         @JvmStatic
         fun build(type: String): FakeValuesGenerator {
             return if (type.toLowerCase() == "kt") {
@@ -23,22 +25,16 @@ abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<Cl
         }
     }
     fun createDefaultValueFor(name: String, classInfo: ClassInfo?, motherClassGeneratedData: MotherClassGeneratedData): String {
-        val mapping = defaults.mappings.filter { it.className.equals(name) }.firstOrNull()
+        val mapping = defaults.searchMappingFor(name)
         if (mapping != null) {
-            mapping.imports.forEach{ motherClassGeneratedData.addImport("import $it") }
-            return mapping.generator.random()
+            motherClassGeneratedData.addAllImports(mapping.imports)
+            return mapping.randomValue()
         }
-
+        //TODO change this: should be a normal mapping
         return when {
-            name.matches("^[\\s\\S]*Map[<]{0,1}[\\S\\s]*[>]{0,1}\$".toRegex()) -> {
-                randomMap(name, motherClassGeneratedData)
-            }
-            name.matches("^[\\s\\S]*List[<]{0,1}[\\S]*[>]{0,1}\$".toRegex()) -> {
-                randomList(name, motherClassGeneratedData)
-            }
-            else -> {
-                randomOtherTypes(classInfo, name)
-            }
+            name.matches(MAP_PATTERN) -> randomMap(name, motherClassGeneratedData)
+            name.matches(LIST_PATTERM) -> randomList(name, motherClassGeneratedData)
+            else -> randomOtherTypes(classInfo, name)
         }
     }
 

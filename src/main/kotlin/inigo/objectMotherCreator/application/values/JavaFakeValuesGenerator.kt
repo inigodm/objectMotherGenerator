@@ -10,7 +10,7 @@ class JavaFakeValuesGenerator(defaults: DefaultMappings = DefaultMappings()) : F
     }
 
     override fun randomMap(name: String, motherClassGeneratedData: MotherClassGeneratedData): String {
-        motherClassGeneratedData.addImport("import java.util.Map")
+        motherClassGeneratedData.addImport("java.util.Map")
         val types = TypedClass.findTypesFrom(name)
         return """Map.of(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className, motherClassGeneratedData)}, 
             ${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(1)?.className, motherClassGeneratedData)},
@@ -19,7 +19,7 @@ class JavaFakeValuesGenerator(defaults: DefaultMappings = DefaultMappings()) : F
     }
 
     override fun randomList(classCanonicalName: String, motherClassGeneratedData: MotherClassGeneratedData): String {
-        motherClassGeneratedData.addImport("import java.util.List")
+        motherClassGeneratedData.addImport("java.util.List")
         val types = TypedClass.findTypesFrom(classCanonicalName)
         val type = types.getOrNull(0)?.types?.getOrNull(0)?.className
         return """List.of(

@@ -3,7 +3,7 @@ package inigo.objectMotherCreator.model.infogenerated
 class JavaMotherClassGeneratedData(packageCode: String = "", imports: MutableSet<String> = mutableSetOf(), code: String = "") : MotherClassGeneratedData(packageCode, imports, code){
 
     override fun toSource() : String {
-        var importsSource = imports.joinToString(";\n")
+        var importsSource = imports.map { "import $it" }.joinToString(";\n")
         if (!importsSource.endsWith(";\n")){
             importsSource += ";\n"
         } else {
