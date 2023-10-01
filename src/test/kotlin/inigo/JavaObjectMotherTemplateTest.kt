@@ -5,7 +5,6 @@ import fixedMethodInfo
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
-import inigo.objectMotherCreator.application.values.KotlinFakeValuesGenerator
 import inigo.objectMotherCreator.givenStandartStateOptions
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 import inigo.objectMotherCreator.model.infogenerated.JavaMotherClassGeneratedData
@@ -125,7 +124,7 @@ class JavaObjectMotherTemplateTest {
                 "faker.rickAndMorty().character()",
                 "faker.slackEmoji().activity()",
                 "faker.superhero().name()",
-                "faker.yoda().quote()").contains(KotlinFakeValuesGenerator().strings[0]) }
+                "faker.yoda().quote()").contains(JavaFakeValuesGenerator().defaults.randomString()) }
     }
 
     private fun assertThatWorksWithType(type: String, expectedGenerator: String) {

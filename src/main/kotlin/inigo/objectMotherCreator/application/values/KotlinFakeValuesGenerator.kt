@@ -3,7 +3,7 @@ package inigo.objectMotherCreator.application.values
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 
-class KotlinFakeValuesGenerator(): FakeValuesGenerator() {
+class KotlinFakeValuesGenerator(defaults: DefaultMappings = DefaultMappings()) : FakeValuesGenerator(defaults = defaults) {
     override fun reset() {
         neededObjectMotherClasses.clear()
     }

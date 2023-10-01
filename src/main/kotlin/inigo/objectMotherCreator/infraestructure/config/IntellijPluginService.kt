@@ -3,6 +3,7 @@ package inigo.objectMotherCreator.infraestructure.config
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.*
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
+import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
 
 @State(name="inigo.objectMotherCreator.infraestructure.config.PluginState", storages = [
     Storage("objectmothercreatorconfig.xml", roamingType = RoamingType.DISABLED)
@@ -15,7 +16,7 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
 
         fun defaultState() : PluginState {
             val v = mutableListOf<Collection<String>>()
-            FakeValuesGenerator.mappings.forEach {
+            JavaFakeValuesGenerator().defaults.mappings.forEach {
                 v.add(it.toCollection())
             }
             return PluginState("com.github.javafaker.Faker", "random", v)

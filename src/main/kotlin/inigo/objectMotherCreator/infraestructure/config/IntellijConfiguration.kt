@@ -94,7 +94,7 @@ class IntellijConfiguration: Configurable {
         table.columnModel.getColumn(0).setPreferredWidth(100)
         table.columnModel.getColumn(1).setPreferredWidth(100)
         table.columnModel.getColumn(2).setPreferredWidth(100)
-        table.setFillsViewportHeight(true)
+        table.fillsViewportHeight = true
         pack.add(JBScrollPane(table), BorderLayout.CENTER)
         return pack
     }

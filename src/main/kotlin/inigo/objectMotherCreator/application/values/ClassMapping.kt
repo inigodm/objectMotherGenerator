@@ -1,6 +1,6 @@
 package inigo.objectMotherCreator.application.values
 
-class ClassMapping(val imports : List<String> = listOf(), val generator: String, val className: String) {
+class ClassMapping(val imports : List<String> = listOf(), val generator: List<String>, val className: String) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other !is ClassMapping) return false
@@ -13,14 +13,14 @@ class ClassMapping(val imports : List<String> = listOf(), val generator: String,
         }
 
         fun toCollection() : Collection<String> {
-            return listOf(className, imports.joinToString(separator = ", "), generator)
+            return listOf(className, imports.joinToString(separator = ", "), generator.joinToString(separator = ", "))
         }
 
         companion object {
             fun fromList(row: Collection<String>) : ClassMapping {
                 return ClassMapping(
                     (row as List)[0].split(","),
-                    row[1],
+                    row[1].split(","),
                     row[2]
                 )
             }

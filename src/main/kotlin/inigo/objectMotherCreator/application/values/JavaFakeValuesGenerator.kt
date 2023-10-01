@@ -4,7 +4,7 @@ import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.infraestructure.config.IntellijPluginService
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 
-class JavaFakeValuesGenerator: FakeValuesGenerator() {
+class JavaFakeValuesGenerator(defaults: DefaultMappings = DefaultMappings()) : FakeValuesGenerator(defaults = defaults) {
     override fun reset() {
         neededObjectMotherClasses.clear()
     }
