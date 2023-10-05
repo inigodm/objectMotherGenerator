@@ -10,13 +10,14 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.util.*
 import javax.swing.*
+import javax.swing.event.ListSelectionListener
 import javax.swing.table.DefaultTableModel
 
 
 class IntellijConfiguration: Configurable {
     private val fakerTextField: JTextField = JTextField()
     private val methodPrefixTextField: JTextField = JTextField()
-    private lateinit var mappings : Collection<Collection<String>>
+    private lateinit var mappings : MutableList<Collection<String>>
     private lateinit var table: JBTable
     override fun createComponent(): JComponent {
         val main = JPanel()
@@ -47,23 +48,23 @@ class IntellijConfiguration: Configurable {
 
     private fun defaultValues(): (e: ActionEvent) -> Unit = {
         run {
-            fakerTextField.text = IntellijPluginService.DEFAULT_STATE.getFakerClassName()
-            methodPrefixTextField.text = IntellijPluginService.DEFAULT_STATE.getPrefixes()
-            mappings = IntellijPluginService.DEFAULT_STATE.getMappings()
+            fakerTextField.text = IntellijPluginService.DEFAULT_STATE.fakerClassname
+            methodPrefixTextField.text = IntellijPluginService.DEFAULT_STATE.prefixes
+            mappings = IntellijPluginService.DEFAULT_STATE.mappings
         }
     }
 
     private fun buildFakerClassnameComponent(): JPanel {
         return textFieldWithLabel(
             "Faker imported class",
-            IntellijPluginService.getInstance().state.getFakerClassName(),
+            IntellijPluginService.getInstance().state.fakerClassname,
             fakerTextField)
     }
 
     private fun buildMethodPrefixComponent(): JPanel {
         return textFieldWithLabel(
             "Prefix of builder functions",
-            IntellijPluginService.getInstance().state.getPrefixes(),
+            IntellijPluginService.getInstance().state.prefixes,
             methodPrefixTextField)
     }
 
@@ -88,25 +89,37 @@ class IntellijConfiguration: Configurable {
 
     private fun buildTable(columnNames: Vector<String>): JPanel {
         val pack = JPanel(BorderLayout())
-        val tableModel = DefaultTableModel(obtainMappings(), columnNames)
+        val tableModel = TableModelSpezial(obtainMappings(), columnNames)
         table = JBTable(tableModel)
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         table.columnModel.getColumn(0).setPreferredWidth(100)
         table.columnModel.getColumn(1).setPreferredWidth(100)
         table.columnModel.getColumn(2).setPreferredWidth(100)
         table.fillsViewportHeight = true
+        var lsl = ListSelectionListener { e ->
+            println("changing" + e.source)
+            val lsm = e.source as ListSelectionModel
+            if (!lsm.valueIsAdjusting) {
+                println("Selection changed")
+                tableModel.dataVector.map { println(it) }
+            }
+            tableModel.dataVector.map { println(it) }
+
+        }
+        table.selectionModel.addListSelectionListener(lsl);
+        table.columnModel.selectionModel.addListSelectionListener(lsl);
         pack.add(JBScrollPane(table), BorderLayout.CENTER)
         return pack
     }
 
     fun obtainMappings(): Vector<Vector<String>> {
-        mappings = IntellijPluginService.getInstance().state.getMappings()
+        mappings = IntellijPluginService.getInstance().state.mappings
         return Vector(mappings.map { Vector(it) }.toList())
     }
     override fun isModified(): Boolean {
-        return fakerTextField.text != IntellijPluginService.getInstance().state.getFakerClassName() ||
-        methodPrefixTextField.text != IntellijPluginService.getInstance().state.getPrefixes()
-                || mappings.equals(IntellijPluginService.getInstance().state.getMappings())
+        return fakerTextField.text != IntellijPluginService.getInstance().state.fakerClassname ||
+        methodPrefixTextField.text != IntellijPluginService.getInstance().state.prefixes
+                || mappings.equals(IntellijPluginService.getInstance().state.mappings)
     }
 
     override fun apply() {

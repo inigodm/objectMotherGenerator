@@ -20,10 +20,10 @@ abstract class ObjectMotherTemplate {
     abstract fun createObjectMotherSourceCode(clazz: ClassInfo): String
 
     fun getFakerCanonicalClassname() : String {
-        return ideaState.getFakerClassName()
+        return ideaState.fakerClassname
     }
 
-    fun getMethodPrefix() : String = ideaState.getPrefixes()
+    fun getMethodPrefix() : String = ideaState.prefixes
 
-    fun getFakerClassName() : String = ideaState.getFakerClassName().substringAfterLast(".")
+    fun getFakerClassName() : String = ideaState.fakerClassname.substringAfterLast(".")
 }

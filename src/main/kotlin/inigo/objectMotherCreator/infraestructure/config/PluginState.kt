@@ -1,26 +1,17 @@
 package inigo.objectMotherCreator.infraestructure.config
 
-import java.util.*
+import com.intellij.util.xmlb.annotations.OptionTag
 
-class PluginState(private var fakerClassname: String,
-                  private var prefixes: String,
-                  private var mappings: Collection<Collection<String>>
-) {
-    fun getFakerClassName() = fakerClassname
-    fun getPrefixes() = prefixes
-    fun getMappings() : Collection<Collection<String>> {
-        return mappings
+class PluginState() {
+    lateinit var fakerClassname: String
+    lateinit var prefixes: String
+    @OptionTag(converter = MappingConverter::class)
+    lateinit var mappings: MutableList<Collection<String>>
+    constructor(fakerClassname: String,
+                prefixes: String,
+                mappings: MutableList<Collection<String>>) : this() {
+        this.fakerClassname = fakerClassname
+        this.prefixes = prefixes
+        this.mappings = mappings
     }
-    fun setMappings(mapping: Collection<Collection<String>>) {
-        this.mappings = mapping
-    }
-
-    fun setFakerClassName(clazz: String){
-      this.fakerClassname = clazz
-    }
-
-    fun setPrefixes(prefix: String) {
-        this.prefixes = prefix
-    }
-
 }
