@@ -3,6 +3,7 @@ package inigo.objectMotherCreator.infraestructure.config
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.*
 import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
+import java.util.*
 
 @State(name="inigo.objectMotherCreator.infraestructure.config.PluginState", storages = [
     Storage("objectmothercreatorconfig.xml", roamingType = RoamingType.DISABLED)
@@ -11,12 +12,10 @@ import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
 class IntellijPluginService: PersistentStateComponent<PluginState> {
     companion object {
 
-        val DEFAULT_STATE = defaultState()
-
         fun defaultState() : PluginState {
-            val v : MutableList<Collection<String>> = mutableListOf<Collection<String>>()
+            val v : Vector<Vector<String>> = Vector()
             JavaFakeValuesGenerator().defaults.mappings.forEach {
-                v.add(it.toCollection())
+                v.add(Vector(it.toCollection()))
             }
             return PluginState("com.github.javafaker.Faker", "random", v)
         }
@@ -26,7 +25,7 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
         }
     }
 
-    private var pluginState = DEFAULT_STATE
+    private var pluginState = defaultState()
 
     override fun getState(): PluginState {
         return pluginState;
@@ -42,6 +41,14 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
     }
 
     fun reset() {
-        this.pluginState = DEFAULT_STATE
+        this.pluginState = defaultState()
     }
+    fun getGeneratorFor(type: String) : String {
+        return this.pluginState.mappings.filter { it[0] == type }.first().random()
+    }
+
+    fun getImportsFor(type: String) : String {
+        return this.pluginState.mappings.filter { it[0] == type }.first().random()
+    }
+
 }

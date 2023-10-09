@@ -1,6 +1,6 @@
 package inigo.objectMotherCreator.application.values
 
-class DefaultMappings {
+class DefaultMappings: Mappings {
 
     var strings = listOf(
         "faker.ancient().god()",
@@ -46,32 +46,20 @@ class DefaultMappings {
             listOf("Timestamp.from(Instant.now())"), "Timestamp"
         ),
         ClassMapping(generator = strings, className = "String"),
-        ClassMapping(generator = randomInteger(), className = "Int"),
-        ClassMapping(generator = randomInteger(), className = "Integer"),
-        ClassMapping(generator = randomInteger(), className = "int"),
-        ClassMapping(generator = randomLong(), className = "long"),
-        ClassMapping(generator = randomLong(), className = "Long"),
-        ClassMapping(generator = randomBoolean(), className = "Boolean"),
-        ClassMapping(generator = randomBoolean(), className = "boolean")
+        ClassMapping(generator = listOf("faker.number().randomDigit()"), className = "Int"),
+        ClassMapping(generator = listOf("faker.number().randomDigit()"), className = "Integer"),
+        ClassMapping(generator = listOf("faker.number().randomDigit()"), className = "int"),
+        ClassMapping(generator = listOf("faker.number().randomNumber()"), className = "long"),
+        ClassMapping(generator = listOf("faker.number().randomNumber()"), className = "Long"),
+        ClassMapping(generator = listOf("faker.bool().bool()"), className = "Boolean"),
+        ClassMapping(generator = listOf("faker.bool().bool()"), className = "boolean")
     )
 
     fun searchMappingFor(className : String) : ClassMapping? {
         return mappings.filter { it.className.equals(className) }.firstOrNull()
     }
 
-    fun randomString(): String {
-        return strings.random()
-    }
-
-    fun randomInteger(): List<String> {
-        return listOf("faker.number().randomDigit()")
-    }
-
-    fun randomLong(): List<String> {
-        return listOf("faker.number().randomNumber()")
-    }
-
-    fun randomBoolean(): List<String> {
-        return listOf("faker.bool().bool()")
+    override fun random(type: String): String {
+        return mappings.filter { it.className == type }.first().generator.random()
     }
 }

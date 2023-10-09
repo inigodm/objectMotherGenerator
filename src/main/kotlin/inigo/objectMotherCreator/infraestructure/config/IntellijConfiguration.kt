@@ -10,16 +10,15 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.util.*
 import javax.swing.*
-import javax.swing.event.CellEditorListener
-import javax.swing.event.ChangeEvent
 import javax.swing.table.DefaultTableModel
 
 
 class IntellijConfiguration: Configurable {
     private val fakerTextField: JTextField = JTextField()
     private val methodPrefixTextField: JTextField = JTextField()
-    private lateinit var mappings : MutableList<Collection<String>>
+    private lateinit var tableVector : Vector<Vector<String>>
     private lateinit var table: JBTable
+    private lateinit var tableModel: TableModelSpecial
     override fun createComponent(): JComponent {
         val main = JPanel()
 
@@ -49,9 +48,10 @@ class IntellijConfiguration: Configurable {
 
     private fun defaultValues(): (e: ActionEvent) -> Unit = {
         run {
-            fakerTextField.text = IntellijPluginService.DEFAULT_STATE.fakerClassname
-            methodPrefixTextField.text = IntellijPluginService.DEFAULT_STATE.prefixes
-            mappings = IntellijPluginService.DEFAULT_STATE.mappings
+            val defaultState = IntellijPluginService.defaultState()
+            fakerTextField.text = defaultState.fakerClassname
+            methodPrefixTextField.text = defaultState.prefixes
+            tableVector = defaultState.mappings
         }
     }
 
@@ -90,7 +90,8 @@ class IntellijConfiguration: Configurable {
 
     private fun buildTable(columnNames: Vector<String>): JPanel {
         val pack = JPanel(BorderLayout())
-        val tableModel = TableModelSpecial(obtainMappings(), columnNames)
+        tableVector = IntellijPluginService.getInstance().state.mappings
+        tableModel = TableModelSpecial(tableVector, columnNames)
         val listSelection = tableModel.listSelectionListenerCreator()
         table = JBTable(tableModel)
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
@@ -101,32 +102,17 @@ class IntellijConfiguration: Configurable {
         table.selectionModel.addListSelectionListener(listSelection);
         table.columnModel.selectionModel.addListSelectionListener(listSelection);
         pack.add(JBScrollPane(table), BorderLayout.CENTER)
-        val cellEditor = DefaultCellEditor(JTextField())
-        cellEditor.addCellEditorListener(object : CellEditorListener {
-            override fun editingStopped(e: ChangeEvent) {
-                // Change the table model when editing is stopped
-                //table.setModel(null)
-            }
-
-            override fun editingCanceled(e: ChangeEvent) {
-                // Handle editing cancellation if needed
-            }
-        })
         return pack
     }
 
-    fun obtainMappings(): Vector<Vector<String>> {
-        mappings = IntellijPluginService.getInstance().state.mappings
-        return Vector(mappings.map { Vector(it) }.toList())
-    }
     override fun isModified(): Boolean {
         return fakerTextField.text != IntellijPluginService.getInstance().state.fakerClassname ||
         methodPrefixTextField.text != IntellijPluginService.getInstance().state.prefixes
-                || mappings.equals(IntellijPluginService.getInstance().state.mappings)
+                || tableVector.equals(IntellijPluginService.getInstance().state.mappings)
     }
 
     override fun apply() {
-        IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text, mappings))
+        IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text, tableVector))
     }
 
     override fun getDisplayName(): String {

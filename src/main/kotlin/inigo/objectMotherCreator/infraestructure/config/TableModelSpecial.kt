@@ -1,5 +1,6 @@
 package inigo.objectMotherCreator.infraestructure.config
 
+import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
 import java.util.*
 import javax.swing.ListSelectionModel
 import javax.swing.event.ListSelectionEvent
@@ -15,12 +16,18 @@ class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String
         return super.getValueAt(row, column)
     }
     override fun setValueAt(aValue: Any, rowIndex: Int, columnIndex: Int) {
-        println(aValue)
-        println(rowIndex)
-        println(columnIndex)
         (dataVector as Vector<Vector<String>>)[rowIndex][columnIndex] = "$aValue"
-
+        println("in row: $rowIndex and column: $columnIndex we have value: $aValue")
+        println("in dataVector row: $rowIndex and column: $columnIndex we have value: ${(dataVector as Vector<Vector<String>>)[rowIndex][columnIndex]}")
         // fireTableCellUpdated(rowIndex, columnIndex);  
+    }
+
+    fun toCollection() : MutableList<Collection<String>> {
+        val res : MutableList<Collection<String>> = mutableListOf()
+        (dataVector as Vector<Vector<String>>).forEach {
+            res.add(it.toList())
+        }
+        return res;
     }
 
     fun listSelectionListenerCreator(): ListSelectionListenerSpecial {
