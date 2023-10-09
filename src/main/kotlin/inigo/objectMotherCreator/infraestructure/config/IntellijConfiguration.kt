@@ -10,7 +10,8 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.util.*
 import javax.swing.*
-import javax.swing.event.ListSelectionListener
+import javax.swing.event.CellEditorListener
+import javax.swing.event.ChangeEvent
 import javax.swing.table.DefaultTableModel
 
 
@@ -89,26 +90,28 @@ class IntellijConfiguration: Configurable {
 
     private fun buildTable(columnNames: Vector<String>): JPanel {
         val pack = JPanel(BorderLayout())
-        val tableModel = TableModelSpezial(obtainMappings(), columnNames)
+        val tableModel = TableModelSpecial(obtainMappings(), columnNames)
+        val listSelection = tableModel.listSelectionListenerCreator()
         table = JBTable(tableModel)
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         table.columnModel.getColumn(0).setPreferredWidth(100)
         table.columnModel.getColumn(1).setPreferredWidth(100)
         table.columnModel.getColumn(2).setPreferredWidth(100)
         table.fillsViewportHeight = true
-        var lsl = ListSelectionListener { e ->
-            println("changing" + e.source)
-            val lsm = e.source as ListSelectionModel
-            if (!lsm.valueIsAdjusting) {
-                println("Selection changed")
-                tableModel.dataVector.map { println(it) }
-            }
-            tableModel.dataVector.map { println(it) }
-
-        }
-        table.selectionModel.addListSelectionListener(lsl);
-        table.columnModel.selectionModel.addListSelectionListener(lsl);
+        table.selectionModel.addListSelectionListener(listSelection);
+        table.columnModel.selectionModel.addListSelectionListener(listSelection);
         pack.add(JBScrollPane(table), BorderLayout.CENTER)
+        val cellEditor = DefaultCellEditor(JTextField())
+        cellEditor.addCellEditorListener(object : CellEditorListener {
+            override fun editingStopped(e: ChangeEvent) {
+                // Change the table model when editing is stopped
+                //table.setModel(null)
+            }
+
+            override fun editingCanceled(e: ChangeEvent) {
+                // Handle editing cancellation if needed
+            }
+        })
         return pack
     }
 
