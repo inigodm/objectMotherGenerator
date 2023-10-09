@@ -124,7 +124,7 @@ class JavaObjectMotherTemplateTest {
                 "faker.rickAndMorty().character()",
                 "faker.slackEmoji().activity()",
                 "faker.superhero().name()",
-                "faker.yoda().quote()").contains(JavaFakeValuesGenerator().defaults.randomString()) }
+                "faker.yoda().quote()").contains(JavaFakeValuesGenerator().defaults.random("String")) }
     }
 
     private fun assertThatWorksWithType(type: String, expectedGenerator: String) {

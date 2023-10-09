@@ -5,6 +5,8 @@ import inigo.objectMotherCreator.application.ObjectMotherCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.template.KotlinObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.*
+import inigo.objectMotherCreator.application.values.mappings.ClassMapping
+import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
 import inigo.objectMotherCreator.givenStandartStateOptions
 import inigo.objectMotherCreator.infraestructure.IdeaShits
 import inigo.objectMotherCreator.model.infoExtractor.om.*

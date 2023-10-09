@@ -3,6 +3,7 @@ package inigo.objectMotherCreator.infraestructure.config
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.*
 import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
+import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
 import java.util.*
 
 @State(name="inigo.objectMotherCreator.infraestructure.config.PluginState", storages = [
@@ -14,7 +15,7 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
 
         fun defaultState() : PluginState {
             val v : Vector<Vector<String>> = Vector()
-            JavaFakeValuesGenerator().defaults.mappings.forEach {
+            DefaultMappings().mappings.forEach {
                 v.add(Vector(it.toCollection()))
             }
             return PluginState("com.github.javafaker.Faker", "random", v)
@@ -47,8 +48,8 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
         return this.pluginState.mappings.filter { it[0] == type }.first().random()
     }
 
-    fun getImportsFor(type: String) : String {
-        return this.pluginState.mappings.filter { it[0] == type }.first().random()
+    fun getImportsFor(type: String) : Vector<String>? {
+        return this.pluginState.mappings.filter { it[0] == type }.first()
     }
 
 }

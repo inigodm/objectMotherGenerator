@@ -1,10 +1,12 @@
 package inigo.objectMotherCreator.application.values
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
+import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
+import inigo.objectMotherCreator.application.values.mappings.Mappings
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 
 abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<ClassInfo> = mutableListOf(),
-    val defaults: DefaultMappings = DefaultMappings()
+    val defaults: Mappings = DefaultMappings()
 ) {
     abstract fun reset()
     abstract fun randomMap(name: String, motherClassGeneratedData: MotherClassGeneratedData): String
@@ -25,10 +27,10 @@ abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<Cl
         }
     }
     fun createDefaultValueFor(name: String, classInfo: ClassInfo?, motherClassGeneratedData: MotherClassGeneratedData): String {
-        val mapping = defaults.searchMappingFor(name)
-        if (mapping != null) {
-            motherClassGeneratedData.addAllImports(mapping.imports)
-            return mapping.randomValue()
+        val value = defaults.random(name)
+        if (value.isNotEmpty()) {
+            motherClassGeneratedData.addAllImports(defaults.importsFor(name))
+            return value
         }
         //TODO change this: should be a normal mapping
         return when {

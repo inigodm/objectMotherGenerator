@@ -1,4 +1,6 @@
-package inigo.objectMotherCreator.application.values
+package inigo.objectMotherCreator.application.values.mappings
+
+import java.util.*
 
 class DefaultMappings: Mappings {
 
@@ -60,6 +62,10 @@ class DefaultMappings: Mappings {
     }
 
     override fun random(type: String): String {
-        return mappings.filter { it.className == type }.first().generator.random()
+        return mappings.filter { it.className == type }.firstOrNull()?.generator?.random() ?: ""
+    }
+
+    override fun importsFor(name: String): Vector<String> {
+        return Vector(mappings.filter { it.className == name }.firstOrNull()?.imports ?: Vector())
     }
 }

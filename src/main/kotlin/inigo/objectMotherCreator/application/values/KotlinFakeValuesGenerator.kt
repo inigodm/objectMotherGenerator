@@ -1,6 +1,7 @@
 package inigo.objectMotherCreator.application.values
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
+import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 
 class KotlinFakeValuesGenerator(defaults: DefaultMappings = DefaultMappings()) : FakeValuesGenerator(defaults = defaults) {

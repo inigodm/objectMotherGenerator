@@ -6,13 +6,14 @@ import inigo.objectMotherCreator.infraestructure.config.PluginState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import java.util.*
 
-    fun givenStandartStateOptions() {
+fun givenStandartStateOptions() {
         mockkStatic(ServiceManager::class)
         mockkStatic(IntellijPluginService::class)
 
         val service: IntellijPluginService = mockk()
-        val state = PluginState("com.github.javafaker.Faker", "random", emptyList())
+        val state = PluginState("com.github.javafaker.Faker", "random", Vector())
         every { ServiceManager.getService(IntellijPluginService::class.java) } returns service
         every { service.state } returns state
     }

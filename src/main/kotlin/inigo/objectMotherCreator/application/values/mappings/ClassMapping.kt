@@ -1,4 +1,4 @@
-package inigo.objectMotherCreator.application.values
+package inigo.objectMotherCreator.application.values.mappings
 
 class ClassMapping(val imports : List<String> = listOf(), val generator: List<String>, val className: String) {
         override fun equals(other: Any?): Boolean {
