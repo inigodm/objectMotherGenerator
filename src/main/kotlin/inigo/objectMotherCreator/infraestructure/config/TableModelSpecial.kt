@@ -22,14 +22,6 @@ class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String
         // fireTableCellUpdated(rowIndex, columnIndex);  
     }
 
-    fun toCollection() : MutableList<Collection<String>> {
-        val res : MutableList<Collection<String>> = mutableListOf()
-        (dataVector as Vector<Vector<String>>).forEach {
-            res.add(it.toList())
-        }
-        return res;
-    }
-
     fun listSelectionListenerCreator(): ListSelectionListenerSpecial {
         return ListSelectionListenerSpecial(this)
     }

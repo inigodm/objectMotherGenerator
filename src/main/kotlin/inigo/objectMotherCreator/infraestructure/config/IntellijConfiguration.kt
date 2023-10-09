@@ -25,9 +25,9 @@ class IntellijConfiguration: Configurable {
         main.layout = VerticalLayout()
         main.add(buildFakerClassnameComponent())
         main.add(buildMethodPrefixComponent())
-        main.add(buildButton( "", "Default", defaultValues()))
         main.add(buildTable(Vector(listOf("Class", "Comma separated imports", "Code to generate random object"))))
         main.add(buildButton("Add new mapping", "+", insertRow()))
+        main.add(buildButton( "", "Default", defaultValues()))
         reset()
         return main
     }
@@ -58,14 +58,14 @@ class IntellijConfiguration: Configurable {
     private fun buildFakerClassnameComponent(): JPanel {
         return textFieldWithLabel(
             "Faker imported class",
-            IntellijPluginService.getInstance().state.fakerClassname,
+            IntellijPluginService.getInstance().getFakerClassName(),
             fakerTextField)
     }
 
     private fun buildMethodPrefixComponent(): JPanel {
         return textFieldWithLabel(
             "Prefix of builder functions",
-            IntellijPluginService.getInstance().state.prefixes,
+            IntellijPluginService.getInstance().getPrefixes(),
             methodPrefixTextField)
     }
 
@@ -90,7 +90,7 @@ class IntellijConfiguration: Configurable {
 
     private fun buildTable(columnNames: Vector<String>): JPanel {
         val pack = JPanel(BorderLayout())
-        tableVector = IntellijPluginService.getInstance().state.mappings
+        tableVector = IntellijPluginService.getInstance().getMappings()
         tableModel = TableModelSpecial(tableVector, columnNames)
         val listSelection = tableModel.listSelectionListenerCreator()
         table = JBTable(tableModel)
@@ -106,9 +106,9 @@ class IntellijConfiguration: Configurable {
     }
 
     override fun isModified(): Boolean {
-        return fakerTextField.text != IntellijPluginService.getInstance().state.fakerClassname ||
-        methodPrefixTextField.text != IntellijPluginService.getInstance().state.prefixes
-                || tableVector.equals(IntellijPluginService.getInstance().state.mappings)
+        return fakerTextField.text != IntellijPluginService.getInstance().getFakerClassName() ||
+        methodPrefixTextField.text != IntellijPluginService.getInstance().getPrefixes()
+                || tableVector.equals(IntellijPluginService.getInstance().getMappings())
     }
 
     override fun apply() {

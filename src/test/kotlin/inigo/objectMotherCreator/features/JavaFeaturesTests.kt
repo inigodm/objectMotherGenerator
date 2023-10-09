@@ -8,8 +8,11 @@ import inigo.objectMotherCreator.application.values.mappings.ClassMapping
 import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
+import inigo.objectMotherCreator.application.values.mappings.ConfigMappings
+import inigo.objectMotherCreator.application.values.mappings.Mappings
 import inigo.objectMotherCreator.givenStandartStateOptions
 import inigo.objectMotherCreator.infraestructure.IdeaShits
+import inigo.objectMotherCreator.infraestructure.config.IntellijPluginService
 import inigo.objectMotherCreator.model.infoExtractor.om.*
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -38,16 +41,17 @@ class JavaFeaturesTests {
     lateinit var fileCreator: JavaFileCreator
 
     @SpyK
-    var defaults: DefaultMappings = spyk(DefaultMappings())
+    var defaults: Mappings = spyk(ConfigMappings())
 
     @MockK
     lateinit var fakeValuesGenerator: FakeValuesGenerator
 
+    @MockK(relaxed = true)
+    lateinit var service: IntellijPluginService
     @BeforeEach
     fun setup() {
         MockKAnnotations.init(this)
         mockkObject(FakeValuesGenerator.Companion)
-        defaults.mappings = setOf(ClassMapping(generator = listOf ("faker.howIMetYourMother().highFive()"), className = "String")) + defaults.mappings
         fakeValuesGenerator = JavaFakeValuesGenerator(defaults)
         every { fileCreator.buildFile(any(), any(), any(), any()) } returns Unit
         every { ideShits.findClass("java.lang.String") } returns null
@@ -57,6 +61,8 @@ class JavaFeaturesTests {
         every { ideShits.findClass("java.time.Instant") } returns null
         every { ideShits.findClass("java.sql.Timestamp") } returns null
         every { fileCreator.createdFileName() } returns "createdObjectMother"
+        givenStandartStateOptions(service)
+
     }
 
     @AfterEach
@@ -66,7 +72,6 @@ class JavaFeaturesTests {
 
     @Test
     fun `should create a object mother for a class`() {
-        givenStandartStateOptions()
         val omParameterA = createParam("List<String>", java.util.List::class.java.canonicalName)
         val omParameterB = createParam("UUID", UUID::class.java.canonicalName)
         val omParameterC = createParam("Instant", Instant::class.java.canonicalName)
@@ -92,7 +97,6 @@ class JavaFeaturesTests {
 
     @Test
     fun `should create a object mother for a class with parameters`() {
-        givenStandartStateOptions()
         val omParameter1 = createParam("Map<String, Integer>", java.util.Map::class.java.canonicalName)
         val omConstructor = createConstructor("A", omParameter1)
         val omClass = createClass("A", "packagename", true, omConstructor)

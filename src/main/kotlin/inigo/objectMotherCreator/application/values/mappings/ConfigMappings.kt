@@ -9,7 +9,7 @@ class ConfigMappings : Mappings {
     }
 
     override fun importsFor(name: String): Vector<String> {
-        return IntellijPluginService.getInstance().getImportsFor(name) ?: Vector()
+        return IntellijPluginService.getInstance().getImportsFor(name)
     }
 
 }

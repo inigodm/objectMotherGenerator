@@ -1,12 +1,13 @@
 package inigo.objectMotherCreator.application.values
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
+import inigo.objectMotherCreator.application.values.mappings.ConfigMappings
 import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
 import inigo.objectMotherCreator.application.values.mappings.Mappings
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 
 abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<ClassInfo> = mutableListOf(),
-    val defaults: Mappings = DefaultMappings()
+    val defaults: Mappings = ConfigMappings()
 ) {
     abstract fun reset()
     abstract fun randomMap(name: String, motherClassGeneratedData: MotherClassGeneratedData): String

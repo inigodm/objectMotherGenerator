@@ -45,11 +45,22 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
         this.pluginState = defaultState()
     }
     fun getGeneratorFor(type: String) : String {
-        return this.pluginState.mappings.filter { it[0] == type }.first().random()
+        return this.pluginState.mappings.filter { it[0] == type }.firstOrNull()?.get(2)?.split(",")?.random() ?: ""
     }
 
-    fun getImportsFor(type: String) : Vector<String>? {
-        return this.pluginState.mappings.filter { it[0] == type }.first()
+    fun getImportsFor(type: String) : Vector<String> {
+        return Vector(this.pluginState.mappings.filter { it[0] == type }.firstOrNull { it.get(1).isNotEmpty() }?.get(1)?.split(",") ?: emptyList())
     }
 
+    fun getFakerClassName(): String {
+        return this.pluginState.fakerClassname
+    }
+
+    fun getPrefixes(): String {
+        return this.pluginState.prefixes
+    }
+
+    fun getMappings(): Vector<Vector<String>> {
+        return this.pluginState.mappings
+    }
 }
