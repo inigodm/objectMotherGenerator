@@ -22,6 +22,18 @@ fun givenStandartStateOptions(service: IntellijPluginService) {
         every { service.getImportsFor("String") } returns Vector()
         every { service.getGeneratorFor("Integer") } returns "faker.number().randomDigit()"
         every { service.getImportsFor("Integer") } returns Vector()
+        every { service.getGeneratorFor("int") } returns "faker.number().randomDigit()"
+        every { service.getGeneratorFor("int") } returns "faker.number().randomDigit()"
+        every { service.getImportsFor("Int") } returns Vector()
+        every { service.getImportsFor("Int") } returns Vector()
+        every { service.getGeneratorFor("long") } returns "faker.number().randomNumber()"
+        every { service.getGeneratorFor("Long") } returns "faker.number().randomNumber()"
+        every { service.getImportsFor("Long") } returns Vector()
+        every { service.getImportsFor("long") } returns Vector()
+        every { service.getGeneratorFor("Boolean") } returns "faker.bool().bool()"
+        every { service.getGeneratorFor("boolean") } returns "faker.bool().bool()"
+        every { service.getImportsFor("Boolean") } returns Vector()
+        every { service.getImportsFor("boolean") } returns Vector()
         every { service.getGeneratorFor("UUID") } returns "UUID.randomUUID()"
         every { service.getImportsFor("UUID") } returns Vector(listOf("java.util.UUID"))
         every { service.getGeneratorFor("Instant") } returns "Instant.now()"
