@@ -2,6 +2,7 @@ package inigo.objectMotherCreator.infraestructure.config;
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.ui.components.JBScrollPane
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.table.JBTable
 import org.jdesktop.swingx.VerticalLayout
 import java.awt.BorderLayout
@@ -27,20 +28,19 @@ class IntellijConfiguration: Configurable {
         main.add(buildMethodPrefixComponent())
         main.add(buildTable(Vector(listOf("Class", "Comma separated imports", "Code to generate random object"))))
         main.add(buildButton("Add new mapping", "+", insertRow()))
-        main.add(buildButton( "", "Default", defaultValues()))
+        main.add(buildButton( "", "Default values", defaultValues()))
         reset()
         return main
     }
 
     private fun insertRow(): (e: ActionEvent) -> Unit = {
         run {
-            val model = (table.model as DefaultTableModel)
-            val data = model.dataVector
-            if (data.size > 0) {
-                val k = data[data.size - 1] as Vector<String>
-                val v = data[data.size - 1] as Vector<String>
+            if (tableVector.size > 0) {
+                val k = tableVector[tableVector.size - 1] as Vector<String>
+                val v = tableVector[tableVector.size - 1] as Vector<String>
                 if (v[0].isNotEmpty() || k[1].isNotEmpty()) {
-                    model.insertRow(model.rowCount, arrayOf("1", "2"))
+                    tableModel.insertRow(tableModel.rowCount, arrayOf("1", "2"))
+                    tableModel.fireTableDataChanged();
                 }
             }
         }
@@ -51,7 +51,9 @@ class IntellijConfiguration: Configurable {
             val defaultState = IntellijPluginService.defaultState()
             fakerTextField.text = defaultState.fakerClassname
             methodPrefixTextField.text = defaultState.prefixes
-            tableVector = defaultState.mappings
+            tableVector.removeAllElements()
+            tableVector.addAll(defaultState.mappings)
+            tableModel.fireTableDataChanged();
         }
     }
 
@@ -89,7 +91,8 @@ class IntellijConfiguration: Configurable {
     }
 
     private fun buildTable(columnNames: Vector<String>): JPanel {
-        val pack = JPanel(BorderLayout())
+        val borderLayout = BorderLayout()
+        val pack = JPanel(borderLayout)
         tableVector = IntellijPluginService.getInstance().getMappings()
         tableModel = TableModelSpecial(tableVector, columnNames)
         val listSelection = tableModel.listSelectionListenerCreator()
@@ -100,6 +103,11 @@ class IntellijConfiguration: Configurable {
         table.columnModel.getColumn(2).setPreferredWidth(100)
         table.fillsViewportHeight = true
         table.selectionModel.addListSelectionListener(listSelection);
+        table.toolTipText = "Mappings can be added to the table. There only have to be added the name of the class that " +
+                "is wanted to be mapped to a generator text in the objectmother and the text which should be write to generate" +
+                " an object of that class (generato text). If you want to create the object in many diferente ways and use one of them randomly" +
+                " you can put them all comma-separated and one will be chosen randomly. Additionally you should" +
+                " add the needed imports for the generator and for the class, comma-separated"
         table.columnModel.selectionModel.addListSelectionListener(listSelection);
         pack.add(JBScrollPane(table), BorderLayout.CENTER)
         return pack
@@ -112,6 +120,7 @@ class IntellijConfiguration: Configurable {
     }
 
     override fun apply() {
+        tableModel.cleanVoids()
         IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text, tableVector))
     }
 
