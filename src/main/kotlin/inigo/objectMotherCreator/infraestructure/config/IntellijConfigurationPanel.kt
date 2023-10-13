@@ -17,7 +17,9 @@ class IntellijConfigurationPanel: Configurable {
     private val fakerTextField: JTextField = JTextField()
     private val methodPrefixTextField: JTextField = JTextField()
     private lateinit var table: JBTable
-    private lateinit var tableModel: TableModelSpecial
+    private val columnNames = Vector(listOf("Class", "Comma separated imports", "Code to generate random object"))
+    private var tableModel: TableModelSpecial = TableModelSpecial(IntellijPluginService.getInstance().getMappings(), columnNames)
+
     override fun createComponent(): JComponent {
         val main = JPanel()
         main.layout = BorderLayout()
@@ -25,12 +27,11 @@ class IntellijConfigurationPanel: Configurable {
         top.add(buildFakerClassnameComponent())
         top.add(buildMethodPrefixComponent())
         main.add(top, BorderLayout.NORTH)
-        main.add(buildTable(Vector(listOf("Class", "Comma separated imports", "Code to generate random object"))), BorderLayout.CENTER)
+        main.add(buildTable(columnNames), BorderLayout.CENTER)
         val bottom = JPanel(VerticalLayout())
         bottom.add(buildButton("Add new mapping", "+", tableModel.insertRow()))
         bottom.add(buildButton( "", "Default values", defaultValues()))
         main.add(bottom, BorderLayout.SOUTH)
-        reset()
         return main
     }
 
@@ -81,18 +82,17 @@ class IntellijConfigurationPanel: Configurable {
     private fun buildTable(columnNames: Vector<String>): JPanel {
         val borderLayout = BorderLayout()
         val pack = JPanel(borderLayout)
-        tableModel = TableModelSpecial(IntellijPluginService.getInstance().getMappings(), columnNames)
         table = JBTable(tableModel)
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         table.columnModel.getColumn(0).setPreferredWidth(100)
         table.columnModel.getColumn(1).setPreferredWidth(100)
         table.columnModel.getColumn(2).setPreferredWidth(100)
         table.fillsViewportHeight = true
-        table.toolTipText = "Mappings can be added to the table. There only have to be added the name of the class that " +
+        table.toolTipText = "Only has to be added the name of the class, without package, that " +
                 "is wanted to be mapped to a generator text in the objectmother and the text which should be write to generate" +
-                " an object of that class (generato text). If you want to create the object in many diferente ways and use one of them randomly" +
+                " an object of that class (generator text). \n\nIf you want to have random generators for the same class" +
                 " you can put them all comma-separated and one will be chosen randomly. Additionally you should" +
-                " add the needed imports for the generator and for the class, comma-separated"
+                " add the needed imports for the generator and for the class, add them comma-separated"
         pack.add(JBScrollPane(table), BorderLayout.CENTER)
         return pack
     }
@@ -107,6 +107,18 @@ class IntellijConfigurationPanel: Configurable {
     override fun apply() {
         tableModel.cleanVoids()
         IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text, tableModel.dataVector as Vector<Vector<String>>))
+    }
+
+    override fun cancel() {
+        reset()
+    }
+
+    override fun reset() {
+        tableModel.resetDataVector(IntellijPluginService.getInstance().getMappings())
+        tableModel.fireTableDataChanged()
+        fakerTextField.text = IntellijPluginService.getInstance().getFakerClassName()
+        methodPrefixTextField.text = IntellijPluginService.getInstance().getPrefixes()
+        super.reset()
     }
 
     override fun getDisplayName(): String {
@@ -164,6 +176,11 @@ class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String
                 }
             }
         }
+    }
+
+    fun resetDataVector(data: Vector<Vector<String>>) {
+        dataVector.clear()
+        dataVector.addAll(data)
     }
 }
 

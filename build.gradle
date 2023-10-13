@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'org.example'
-version '1.5.0.0'
+version '1.6.0.0'
 
 sourceCompatibility = 11
 
@@ -58,6 +58,6 @@ patchPluginXml {
     sinceBuild = '193'
     untilBuild = '293.*'
     changeNotes = """
-        Added a config page in Settings... -> Tools
+        Now user are able to define their own mappings in the config page -> Tools
     """
 }

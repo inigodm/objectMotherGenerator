@@ -4,7 +4,7 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.*
 import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
 import inigo.objectMotherCreator.infraestructure.config.persistence.PluginState
-import java.util.*
+import java.util.Vector
 
 @State(name="inigo.objectMotherCreator.infraestructure.config.persistence.PluginState", storages = [
     Storage("objectmothercreatorconfig.xml", roamingType = RoamingType.DISABLED)
@@ -53,6 +53,8 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
     }
 
     fun getMappings(): Vector<Vector<String>> {
-        return pluginState.mappings
+        val vector = Vector<Vector<String>> ()
+        vector.addAll(pluginState.mappings)
+        return vector
     }
 }

@@ -1,9 +1,0 @@
-java-faker:
-  import: com.github.javafaker.Faker
-generated:
-  method:
-    prefix: random
-  mapping:
-    Timestamp:
-      imports: import java.sql.Timestamp,import java.time.Instant
-      code: Timestamp.from(Instant.now())
