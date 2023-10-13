@@ -1,4 +1,4 @@
-package inigo.objectMotherCreator.infraestructure.config
+package inigo.objectMotherCreator.infraestructure.config.persistence
 
 import com.intellij.util.xmlb.annotations.OptionTag
 import java.util.Vector
@@ -14,5 +14,8 @@ class PluginState() {
         this.fakerClassname = fakerClassname
         this.prefixes = prefixes
         this.mappings = mappings
+    }
+    fun getMappingForType(type: String): List<Vector<String>> {
+        return mappings.filter { it[0] == type }
     }
 }

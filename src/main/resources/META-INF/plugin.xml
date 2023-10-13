@@ -54,8 +54,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable
                 parentId="tools"
-                instance="inigo.objectMotherCreator.infraestructure.config.IntellijConfiguration"
-                id="inigo.objectMotherCreator.infraestructure.config.IntellijConfiguration"
+                instance="inigo.objectMotherCreator.infraestructure.config.IntellijConfigurationPanel"
+                id="inigo.objectMotherCreator.infraestructure.config.IntellijConfigurationPanel"
                 displayName="Object Mother Creator"/>
         <applicationService
                 serviceImplementation="inigo.objectMotherCreator.infraestructure.config.IntellijPluginService"/>

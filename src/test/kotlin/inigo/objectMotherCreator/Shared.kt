@@ -2,9 +2,8 @@ package inigo.objectMotherCreator
 
 import com.intellij.openapi.components.ServiceManager
 import inigo.objectMotherCreator.infraestructure.config.IntellijPluginService
-import inigo.objectMotherCreator.infraestructure.config.PluginState
+import inigo.objectMotherCreator.infraestructure.config.persistence.PluginState
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import java.util.*

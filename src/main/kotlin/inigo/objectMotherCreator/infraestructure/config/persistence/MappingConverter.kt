@@ -1,4 +1,4 @@
-package inigo.objectMotherCreator.infraestructure.config
+package inigo.objectMotherCreator.infraestructure.config.persistence
 
 import com.google.gson.Gson
 import com.intellij.util.xmlb.Converter

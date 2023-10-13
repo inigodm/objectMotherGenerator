@@ -2,11 +2,11 @@ package inigo.objectMotherCreator.infraestructure.config
 
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.*
-import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
 import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
+import inigo.objectMotherCreator.infraestructure.config.persistence.PluginState
 import java.util.*
 
-@State(name="inigo.objectMotherCreator.infraestructure.config.PluginState", storages = [
+@State(name="inigo.objectMotherCreator.infraestructure.config.persistence.PluginState", storages = [
     Storage("objectmothercreatorconfig.xml", roamingType = RoamingType.DISABLED)
 ])
 @Service
@@ -32,35 +32,27 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
         return pluginState;
     }
 
-    fun getPluginState() = pluginState
-    fun setPluginState(state: PluginState) {
-        this.pluginState = state
-    }
-
     override fun loadState(state: PluginState) {
         this.pluginState = state
     }
 
-    fun reset() {
-        this.pluginState = defaultState()
-    }
     fun getGeneratorFor(type: String) : String {
-        return this.pluginState.mappings.filter { it[0] == type }.firstOrNull()?.get(2)?.split(",")?.random() ?: ""
+        return pluginState.getMappingForType(type).firstOrNull()?.get(2)?.split(",")?.random() ?: ""
     }
 
     fun getImportsFor(type: String) : Vector<String> {
-        return Vector(this.pluginState.mappings.filter { it[0] == type }.firstOrNull { it.get(1).isNotEmpty() }?.get(1)?.split(",") ?: emptyList())
+        return Vector(pluginState.getMappingForType(type).firstOrNull { it.get(1).isNotEmpty() }?.get(1)?.split(",") ?: emptyList())
     }
 
     fun getFakerClassName(): String {
-        return this.pluginState.fakerClassname
+        return pluginState.fakerClassname
     }
 
     fun getPrefixes(): String {
-        return this.pluginState.prefixes
+        return pluginState.prefixes
     }
 
     fun getMappings(): Vector<Vector<String>> {
-        return this.pluginState.mappings
+        return pluginState.mappings
     }
 }

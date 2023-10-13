@@ -3,6 +3,7 @@ package inigo.objectMotherCreator.infraestructure.config;
 import com.intellij.openapi.options.Configurable
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
+import inigo.objectMotherCreator.infraestructure.config.persistence.PluginState
 import org.jdesktop.swingx.VerticalLayout
 import java.awt.BorderLayout
 import java.awt.FlowLayout
@@ -10,11 +11,11 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.util.*
 import javax.swing.*
+import javax.swing.table.DefaultTableModel
 
-class IntellijConfiguration: Configurable {
+class IntellijConfigurationPanel: Configurable {
     private val fakerTextField: JTextField = JTextField()
     private val methodPrefixTextField: JTextField = JTextField()
-    private lateinit var tableVector : Vector<Vector<String>>
     private lateinit var table: JBTable
     private lateinit var tableModel: TableModelSpecial
     override fun createComponent(): JComponent {
@@ -26,24 +27,11 @@ class IntellijConfiguration: Configurable {
         main.add(top, BorderLayout.NORTH)
         main.add(buildTable(Vector(listOf("Class", "Comma separated imports", "Code to generate random object"))), BorderLayout.CENTER)
         val bottom = JPanel(VerticalLayout())
-        bottom.add(buildButton("Add new mapping", "+", insertRow()))
+        bottom.add(buildButton("Add new mapping", "+", tableModel.insertRow()))
         bottom.add(buildButton( "", "Default values", defaultValues()))
         main.add(bottom, BorderLayout.SOUTH)
         reset()
         return main
-    }
-
-    private fun insertRow(): (e: ActionEvent) -> Unit = {
-        run {
-            if (tableVector.size > 0) {
-                val k = tableVector[tableVector.size - 1] as Vector<String>
-                val v = tableVector[tableVector.size - 1] as Vector<String>
-                if (v[0].isNotEmpty() || k[1].isNotEmpty()) {
-                    tableModel.insertRow(tableModel.rowCount, arrayOf("", "", ""))
-                    tableModel.fireTableDataChanged();
-                }
-            }
-        }
     }
 
     private fun defaultValues(): (e: ActionEvent) -> Unit = {
@@ -51,8 +39,8 @@ class IntellijConfiguration: Configurable {
             val defaultState = IntellijPluginService.defaultState()
             fakerTextField.text = defaultState.fakerClassname
             methodPrefixTextField.text = defaultState.prefixes
-            tableVector.removeAllElements()
-            tableVector.addAll(defaultState.mappings)
+            tableModel.removeAllElements()
+            tableModel.addAll(defaultState.mappings)
             tableModel.fireTableDataChanged();
         }
     }
@@ -93,8 +81,7 @@ class IntellijConfiguration: Configurable {
     private fun buildTable(columnNames: Vector<String>): JPanel {
         val borderLayout = BorderLayout()
         val pack = JPanel(borderLayout)
-        tableVector = IntellijPluginService.getInstance().getMappings()
-        tableModel = TableModelSpecial(tableVector, columnNames)
+        tableModel = TableModelSpecial(IntellijPluginService.getInstance().getMappings(), columnNames)
         table = JBTable(tableModel)
         table.autoResizeMode = JTable.AUTO_RESIZE_ALL_COLUMNS
         table.columnModel.getColumn(0).setPreferredWidth(100)
@@ -113,12 +100,13 @@ class IntellijConfiguration: Configurable {
     override fun isModified(): Boolean {
         return fakerTextField.text != IntellijPluginService.getInstance().getFakerClassName() ||
         methodPrefixTextField.text != IntellijPluginService.getInstance().getPrefixes()
-                || tableVector.equals(IntellijPluginService.getInstance().getMappings())
+                || tableModel.dataEqualsTo(IntellijPluginService.getInstance().getMappings())
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun apply() {
         tableModel.cleanVoids()
-        IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text, tableVector))
+        IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text, tableModel.dataVector as Vector<Vector<String>>))
     }
 
     override fun getDisplayName(): String {
@@ -126,3 +114,63 @@ class IntellijConfiguration: Configurable {
     }
 }
 
+
+class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String>) : DefaultTableModel(data, columnNames) {
+
+    override fun isCellEditable(rowIndex: Int, columnIndex: Int): Boolean {
+        return true
+    }
+
+    override fun setValueAt(aValue: Any, rowIndex: Int, columnIndex: Int) {
+        (dataVector as Vector<Vector<String>>)[rowIndex][columnIndex] = "$aValue"
+        fireTableCellUpdated(rowIndex, columnIndex)
+    }
+
+    fun cleanVoids() {
+        var i = 0
+        val toRemove = mutableListOf<Int>()
+        for (vector in (dataVector as Vector<Vector<String>>)) {
+            if (!vector.any { !it.isNullOrEmpty() }) {
+                toRemove.addFirst(i)
+            }
+            i++
+        }
+        if (!toRemove.isEmpty()) {
+            toRemove.forEach { dataVector.removeAt(it) }
+            fireTableDataChanged()
+        }
+    }
+
+    fun removeAllElements() {
+        dataVector.removeAllElements()
+    }
+
+    fun addAll(mappings: Vector<Vector<String>>) {
+        dataVector.addAll(mappings)
+    }
+
+    fun dataEqualsTo(mappings: Vector<Vector<String>>): Boolean {
+        return dataVector.equals(mappings)
+    }
+
+    fun insertRow(): (e: ActionEvent) -> Unit = {
+        run {
+            val tableVector = dataVector as Vector<Vector<String>>
+            if (tableVector.size > 0) {
+                val v = tableVector.getLast()
+                if (v[0].isNotEmpty() || v[1].isNotEmpty()) {
+                    insertRow(rowCount, arrayOf("", "", ""))
+                    fireTableDataChanged();
+                }
+            }
+        }
+    }
+}
+
+fun <E> MutableList<E>.addFirst(e: E) {
+    this.add(0, e)
+}
+
+fun <E> MutableList<E>.getLast(): E {
+    return this[this.size - 1]
+}
