@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import java.util.*
 import javax.swing.*
+import javax.swing.event.TableModelListener
 import javax.swing.table.DefaultTableModel
 
 class IntellijConfigurationPanel: Configurable {
@@ -21,6 +22,7 @@ class IntellijConfigurationPanel: Configurable {
     private var tableModel: TableModelSpecial = TableModelSpecial(IntellijPluginService.getInstance().getMappings(), columnNames)
 
     override fun createComponent(): JComponent {
+        println("New pane")
         val main = JPanel()
         main.layout = BorderLayout()
         val top = JPanel(VerticalLayout())
@@ -98,14 +100,20 @@ class IntellijConfigurationPanel: Configurable {
     }
 
     override fun isModified(): Boolean {
-        return fakerTextField.text != IntellijPluginService.getInstance().getFakerClassName() ||
+        if (tableModel.dataVector.size >= 11) {
+            println("<--${tableModel.dataVector[10]} \n -->${IntellijPluginService.getInstance().getMappings()[10]}")
+        }
+        println("is modified: ${!tableModel.dataEqualsTo(IntellijPluginService.getInstance().getMappings())}")
+        val b = fakerTextField.text != IntellijPluginService.getInstance().getFakerClassName() ||
         methodPrefixTextField.text != IntellijPluginService.getInstance().getPrefixes()
-                || tableModel.dataEqualsTo(IntellijPluginService.getInstance().getMappings())
+                || !tableModel.dataEqualsTo(IntellijPluginService.getInstance().getMappings())
+        return b
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun apply() {
         tableModel.cleanVoids()
+        println("applying changes")
         IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text, tableModel.dataVector as Vector<Vector<String>>))
     }
 
@@ -114,6 +122,7 @@ class IntellijConfigurationPanel: Configurable {
     }
 
     override fun reset() {
+        println("reset")
         tableModel.resetDataVector(IntellijPluginService.getInstance().getMappings())
         tableModel.fireTableDataChanged()
         fakerTextField.text = IntellijPluginService.getInstance().getFakerClassName()
@@ -131,11 +140,6 @@ class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String
 
     override fun isCellEditable(rowIndex: Int, columnIndex: Int): Boolean {
         return true
-    }
-
-    override fun setValueAt(aValue: Any, rowIndex: Int, columnIndex: Int) {
-        (dataVector as Vector<Vector<String>>)[rowIndex][columnIndex] = "$aValue"
-        fireTableCellUpdated(rowIndex, columnIndex)
     }
 
     fun cleanVoids() {
@@ -162,7 +166,23 @@ class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String
     }
 
     fun dataEqualsTo(mappings: Vector<Vector<String>>): Boolean {
-        return dataVector.equals(mappings)
+        if (mappings.size != dataVector.size) {
+            return false
+        }
+
+        var i = 0
+        var j = 0
+        for (vector: Vector<String> in mappings) {
+            for (string: String in vector) {
+                if (!string.equals((dataVector as Vector<Vector<String>>)[i][j]))  {
+                    return false
+                }
+                j++
+            }
+            j = 0
+            i++
+        }
+        return true
     }
 
     fun insertRow(): (e: ActionEvent) -> Unit = {
@@ -178,6 +198,10 @@ class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String
         }
     }
 
+    override fun addTableModelListener(l: TableModelListener?) {
+        super.addTableModelListener(l)
+    }
+
     fun resetDataVector(data: Vector<Vector<String>>) {
         dataVector.clear()
         dataVector.addAll(data)
@@ -191,3 +215,5 @@ fun <E> MutableList<E>.addFirst(e: E) {
 fun <E> MutableList<E>.getLast(): E {
     return this[this.size - 1]
 }
+infix fun <T> Collection<T>.sameContentWith(collection: Collection<T>?)
+        = collection?.let { this.size == it.size && this.containsAll(it) }

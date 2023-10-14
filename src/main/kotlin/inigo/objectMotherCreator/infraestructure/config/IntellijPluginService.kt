@@ -16,7 +16,7 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
         fun defaultState() : PluginState {
             val v : Vector<Vector<String>> = Vector()
             DefaultMappings().mappings.forEach {
-                v.add(Vector(it.toCollection()))
+                v.add(Vector(it))
             }
             return PluginState("com.github.javafaker.Faker", "random", v)
         }

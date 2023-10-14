@@ -41,31 +41,24 @@ class DefaultMappings: Mappings {
     )
 
     var mappings = setOf(
-        ClassMapping(listOf("java.util.UUID"), listOf("UUID.randomUUID()"), "UUID"),
-        ClassMapping(listOf("java.time.Instant"), listOf("Instant.now()"), "Instant"),
-        ClassMapping(
-            listOf("java.sql.Timestamp", "java.time.Instant"),
-            listOf("Timestamp.from(Instant.now())"), "Timestamp"
-        ),
-        ClassMapping(generator = strings, className = "String"),
-        ClassMapping(generator = listOf("faker.number().randomDigit()"), className = "Int"),
-        ClassMapping(generator = listOf("faker.number().randomDigit()"), className = "Integer"),
-        ClassMapping(generator = listOf("faker.number().randomDigit()"), className = "int"),
-        ClassMapping(generator = listOf("faker.number().randomNumber()"), className = "long"),
-        ClassMapping(generator = listOf("faker.number().randomNumber()"), className = "Long"),
-        ClassMapping(generator = listOf("faker.bool().bool()"), className = "Boolean"),
-        ClassMapping(generator = listOf("faker.bool().bool()"), className = "boolean")
+        listOf("UUID", "java.util.UUID", "UUID.randomUUID()"),
+        listOf("Timestamp", "java.sql.Timestamp, java.time.Instant","Timestamp.from(Instant.now())"),
+        listOf("Instant", "java.time.Instant", "Instant.now()"),
+        listOf("String", "", strings.joinToString { ", " }),
+        listOf("Int", "", "faker.number().randomDigit()"),
+        listOf("Integer", "", "faker.number().randomDigit()"),
+        listOf("int", "", "faker.number().randomDigit()"),
+        listOf("long", "", "faker.number().randomNumber()"),
+        listOf("Long", "", "faker.number().randomNumber()"),
+        listOf("Boolean", "", "faker.bool().bool()"),
+        listOf("boolean", "", "faker.bool().bool()")
     )
 
-    fun searchMappingFor(className : String) : ClassMapping? {
-        return mappings.filter { it.className.equals(className) }.firstOrNull()
-    }
-
     override fun random(type: String): String {
-        return mappings.filter { it.className == type }.firstOrNull()?.generator?.random() ?: ""
+        return mappings.filter { it[0] == type }.firstOrNull()?.get(2)?.split(", ")?.random() ?: ""
     }
 
     override fun importsFor(name: String): Vector<String> {
-        return Vector(mappings.filter { it.className == name }.firstOrNull()?.imports ?: Vector())
+        return Vector(mappings.filter { it[0] == name }.firstOrNull()?.get(1)?.split(", ") ?: Vector())
     }
 }
