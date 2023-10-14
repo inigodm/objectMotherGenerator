@@ -26,6 +26,47 @@ dependencies {
 ```
 
 If you don't want to use javafaker library, you can configure what to use in setting page.
+
+From 1.6.0.0 mappings are esxposed and custom mappings can be added, meaning that if when founding or having any class that is not mapped you can add it.
+
+As example.
+
+```
+package my.package
+
+class MyClass {
+    ...
+    public static from(String something)
+    ...
+}
+```
+
+And you use it in another one:
+```
+class Other {
+    ....
+    public Other(MyClass myClass)
+    ....
+}
+```
+You can add in configuration:
+
+Class: Myclass
+Comma separated imports: my.package
+Code to generate random object: MyClass.from(faker.ancient().titan())
+
+And it will generate de Objectmother:
+
+```
+class OtherObjectMother {
+    public Other randomOther() {
+        Faker faker = new Faekr();
+        return new Other(Myclas.from(faker.ancient().titan()));
+    }
+}
+```
+
+
 Anyway: Although not configuring it this plugin will do the TEDIOUS work of creating, recursively, the packages, the ObjectMother.java files, and a 'randomClassName' static methods with required parameters, and you only would have to change those parameters.
 
 https://martinfowler.com/bliki/ObjectMother.html
@@ -50,7 +91,7 @@ Last changes include:
 1.4.2.0 - Identify Boolean and Timestamp, refactor to improve agility adding more types
 1.5.0.0 - Add a config page to customize Faker library
 1.5.0.1 - Add default button to get back to default values and fix an annoying bug
-
+1.6.0.0 - Add custom mappings in config page
 ```
 
 ## What's next?
