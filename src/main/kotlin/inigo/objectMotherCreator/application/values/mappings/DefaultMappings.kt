@@ -44,7 +44,7 @@ class DefaultMappings: Mappings {
         listOf("UUID", "java.util.UUID", "UUID.randomUUID()"),
         listOf("Timestamp", "java.sql.Timestamp, java.time.Instant","Timestamp.from(Instant.now())"),
         listOf("Instant", "java.time.Instant", "Instant.now()"),
-        listOf("String", "", strings.joinToString { ", " }),
+        listOf("String", "", strings.joinToString(",")),
         listOf("Int", "", "faker.number().randomDigit()"),
         listOf("Integer", "", "faker.number().randomDigit()"),
         listOf("int", "", "faker.number().randomDigit()"),
