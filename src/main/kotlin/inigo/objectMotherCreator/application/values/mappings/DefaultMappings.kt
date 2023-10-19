@@ -1,10 +1,13 @@
 package inigo.objectMotherCreator.application.values.mappings
 
+import inigo.objectMotherCreator.application.values.mappings.Mappings.Companion.CLASSNAME
+import inigo.objectMotherCreator.application.values.mappings.Mappings.Companion.GENERATORS
+import inigo.objectMotherCreator.application.values.mappings.Mappings.Companion.IMPORTS
 import java.util.*
 
 class DefaultMappings: Mappings {
 
-    var strings = listOf(
+    var strings = Vector(listOf(
         "faker.ancient().god()",
         "faker.ancient().primordial()",
         "faker.ancient().titan()",
@@ -37,7 +40,7 @@ class DefaultMappings: Mappings {
         "faker.rickAndMorty().character()",
         "faker.slackEmoji().activity()",
         "faker.superhero().name()",
-        "faker.yoda().quote()"
+        "faker.yoda().quote()")
     )
 
     var mappings = setOf(
@@ -55,10 +58,10 @@ class DefaultMappings: Mappings {
     )
 
     override fun random(type: String): String {
-        return mappings.filter { it[0] == type }.firstOrNull()?.get(2)?.split(", ")?.random() ?: ""
+        return mappings.filter { it[CLASSNAME] == type }.firstOrNull()?.get(GENERATORS)?.split(",")?.random()?.trim() ?: ""
     }
 
     override fun importsFor(name: String): Vector<String> {
-        return Vector(mappings.filter { it[0] == name }.firstOrNull()?.get(1)?.split(", ") ?: Vector())
+        return Vector(mappings.filter { it[CLASSNAME] == name }.firstOrNull()?.get(IMPORTS)?.split(",") ?: Vector())
     }
 }

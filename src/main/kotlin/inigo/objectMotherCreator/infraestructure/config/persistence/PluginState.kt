@@ -4,6 +4,7 @@ import com.intellij.util.xmlb.annotations.OptionTag
 import java.util.Vector
 
 class PluginState() {
+
     lateinit var fakerClassname: String
     lateinit var prefixes: String
     @OptionTag(converter = MappingConverter::class)
