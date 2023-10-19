@@ -41,6 +41,11 @@ abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<Cl
         }
     }
 
+    fun createDefaultValueForTypedClass(clazz: TypedClass?, motherClassGeneratedData: MotherClassGeneratedData): String{
+        if (clazz == null)  return defaults.random("String")
+        return createDefaultValueFor(clazz.className, null, motherClassGeneratedData)
+    }
+
     fun createDefaultValueForTypedClass(clazz: String?, motherClassGeneratedData: MotherClassGeneratedData): String{
         if (clazz == null)  return defaults.random("String")
         return createDefaultValueFor(clazz, null, motherClassGeneratedData)

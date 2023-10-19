@@ -13,6 +13,8 @@ class JavaFakeValuesGenerator(defaults: Mappings = ConfigMappings()) : FakeValue
     }
 
     override fun randomMap(name: String, motherClassGeneratedData: MotherClassGeneratedData): String {
+        //TODO createDefaultValueForTypedClass tiene que recibir TypedClasess en lugar de classnames
+        //TODO o pasar el primer parametro como classname parametrizado
         motherClassGeneratedData.addImport("java.util.Map")
         val types = TypedClass.findTypesFrom(name)
         return """Map.of(${createDefaultValueForTypedClass(types.getOrNull(0)?.types?.getOrNull(0)?.className, motherClassGeneratedData)}, 

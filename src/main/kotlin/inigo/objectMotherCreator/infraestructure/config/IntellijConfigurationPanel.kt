@@ -3,6 +3,8 @@ package inigo.objectMotherCreator.infraestructure.config;
 import com.intellij.openapi.options.Configurable
 import com.intellij.ui.components.JBScrollPane
 import com.intellij.ui.table.JBTable
+import inigo.objectMotherCreator.application.values.mappings.Mappings.Companion.CLASSNAME
+import inigo.objectMotherCreator.application.values.mappings.Mappings.Companion.IMPORTS
 import inigo.objectMotherCreator.infraestructure.config.persistence.PluginState
 import org.jdesktop.swingx.VerticalLayout
 import java.awt.BorderLayout
@@ -19,10 +21,9 @@ class IntellijConfigurationPanel: Configurable {
     private val methodPrefixTextField: JTextField = JTextField()
     private lateinit var table: JBTable
     private val columnNames = Vector(listOf("Class", "Comma separated imports", "Code to generate random object"))
-    private var tableModel: TableModelSpecial = TableModelSpecial(IntellijPluginService.getInstance().getMappings(), columnNames)
+    private var tableModel: TableModelSpecial = TableModelSpecial(IntellijPluginService.getInstance().getMappingsCopy(), columnNames)
 
     override fun createComponent(): JComponent {
-        println("New pane")
         val main = JPanel()
         main.layout = BorderLayout()
         val top = JPanel(VerticalLayout())
@@ -100,20 +101,14 @@ class IntellijConfigurationPanel: Configurable {
     }
 
     override fun isModified(): Boolean {
-        if (tableModel.dataVector.size >= 11) {
-            println("<--${tableModel.dataVector[10]} \n -->${IntellijPluginService.getInstance().getMappings()[10]}")
-        }
-        println("is modified: ${!tableModel.dataEqualsTo(IntellijPluginService.getInstance().getMappings())}")
-        val b = fakerTextField.text != IntellijPluginService.getInstance().getFakerClassName() ||
+        return fakerTextField.text != IntellijPluginService.getInstance().getFakerClassName() ||
         methodPrefixTextField.text != IntellijPluginService.getInstance().getPrefixes()
-                || !tableModel.dataEqualsTo(IntellijPluginService.getInstance().getMappings())
-        return b
+                || tableModel.dataEqualsTo(IntellijPluginService.getInstance().getMappings())
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun apply() {
         tableModel.cleanVoids()
-        println("applying changes")
         IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text, tableModel.dataVector as Vector<Vector<String>>))
     }
 
@@ -122,8 +117,7 @@ class IntellijConfigurationPanel: Configurable {
     }
 
     override fun reset() {
-        println("reset")
-        tableModel.resetDataVector(IntellijPluginService.getInstance().getMappings())
+        tableModel.resetDataVector(IntellijPluginService.getInstance().getMappingsCopy())
         tableModel.fireTableDataChanged()
         fakerTextField.text = IntellijPluginService.getInstance().getFakerClassName()
         methodPrefixTextField.text = IntellijPluginService.getInstance().getPrefixes()
@@ -170,17 +164,10 @@ class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String
             return false
         }
 
-        var i = 0
-        var j = 0
-        for (vector: Vector<String> in mappings) {
-            for (string: String in vector) {
-                if (!string.equals((dataVector as Vector<Vector<String>>)[i][j]))  {
-                    return false
-                }
-                j++
+        for (i in mappings.indices) {
+            if (!mappings[i].sameContentWith(dataVector[i] as Vector<*>)) {
+                return false
             }
-            j = 0
-            i++
         }
         return true
     }
@@ -190,7 +177,7 @@ class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String
             val tableVector = dataVector as Vector<Vector<String>>
             if (tableVector.size > 0) {
                 val v = tableVector.getLast()
-                if (v[0].isNotEmpty() || v[1].isNotEmpty()) {
+                if (v[CLASSNAME].isNotEmpty() || v[IMPORTS].isNotEmpty()) {
                     insertRow(rowCount, arrayOf("", "", ""))
                     fireTableDataChanged();
                 }
@@ -216,4 +203,4 @@ fun <E> MutableList<E>.getLast(): E {
     return this[this.size - 1]
 }
 infix fun <T> Collection<T>.sameContentWith(collection: Collection<T>?)
-        = collection?.let { this.size == it.size && this.containsAll(it) }
+        = collection?.let { this.size == it.size && this.containsAll(it) } ?: false

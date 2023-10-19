@@ -95,7 +95,7 @@ class JavaFeaturesTests {
 
     @Test
     fun `should create a object mother for a class with parameters`() {
-        val omParameter1 = createParam("Map<String, Integer>", java.util.Map::class.java.canonicalName)
+        val omParameter1 = createParam("Map<String, Map<String, Integer>>", java.util.Map::class.java.canonicalName)
         val omConstructor = createConstructor("A", omParameter1)
         val omClass = createClass("A", "packagename", true, omConstructor)
         every { omFile.getPackageNameOrVoid() } returns "packagename"
