@@ -3,6 +3,8 @@ package inigo.objectMotherCreator.infraestructure.config
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.*
 import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
+import inigo.objectMotherCreator.application.values.mappings.Mappings.Companion.GENERATORS
+import inigo.objectMotherCreator.application.values.mappings.Mappings.Companion.IMPORTS
 import inigo.objectMotherCreator.infraestructure.config.persistence.PluginState
 import java.util.Vector
 
@@ -37,11 +39,11 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
     }
 
     fun getGeneratorFor(type: String) : String {
-        return pluginState.getMappingForType(type).firstOrNull()?.get(2)?.split(",")?.random() ?: ""
+        return pluginState.getMappingForType(type).firstOrNull()?.get(GENERATORS)?.split(",")?.random()?.trim() ?: ""
     }
 
     fun getImportsFor(type: String) : Vector<String> {
-        return Vector(pluginState.getMappingForType(type).firstOrNull { it.get(1).isNotEmpty() }?.get(1)?.split(",") ?: emptyList())
+        return Vector(pluginState.getMappingForType(type).firstOrNull { it.get(IMPORTS).isNotEmpty() }?.get(IMPORTS)?.split(",") ?: emptyList())
     }
 
     fun getFakerClassName(): String {
@@ -52,9 +54,17 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
         return pluginState.prefixes
     }
 
-    fun getMappings(): Vector<Vector<String>> {
+    fun getMappingsCopy(): Vector<Vector<String>> {
         val vector = Vector<Vector<String>> ()
-        vector.addAll(pluginState.mappings)
+        pluginState.mappings.forEach {
+            val aux = Vector<String>()
+            aux.addAll(it)
+            vector.add(aux)
+        }
         return vector
+    }
+
+    fun getMappings(): Vector<Vector<String>> {
+        return pluginState.mappings
     }
 }

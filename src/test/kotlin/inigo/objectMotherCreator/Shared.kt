@@ -41,5 +41,5 @@ fun givenStandartStateOptions(service: IntellijPluginService) {
         every { service.getImportsFor("Timestamp") } returns Vector(listOf("java.sql.Timestamp", "java.time.Instant"))
         every { service.getPrefixes() } returns "random"
         every { service.getFakerClassName() } returns "com.github.javafaker.Faker"
-        every { service.getMappings() } returns Vector()
+        every { service.getMappingsCopy() } returns Vector()
     }
