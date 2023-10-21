@@ -2,7 +2,6 @@ package inigo.objectMotherCreator.application.values
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.values.mappings.ConfigMappings
-import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
 import inigo.objectMotherCreator.application.values.mappings.Mappings
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 
@@ -39,11 +38,6 @@ abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<Cl
             name.matches(LIST_PATTERM) -> randomList(name, motherClassGeneratedData)
             else -> randomOtherTypes(classInfo, name)
         }
-    }
-
-    fun createDefaultValueForTypedClass(clazz: TypedClass?, motherClassGeneratedData: MotherClassGeneratedData): String{
-        if (clazz == null)  return defaults.random("String")
-        return createDefaultValueFor(clazz.className, null, motherClassGeneratedData)
     }
 
     fun createDefaultValueForTypedClass(clazz: String?, motherClassGeneratedData: MotherClassGeneratedData): String{

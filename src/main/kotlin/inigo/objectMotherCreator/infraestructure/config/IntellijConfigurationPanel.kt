@@ -10,11 +10,11 @@ import org.jdesktop.swingx.VerticalLayout
 import java.awt.BorderLayout
 import java.awt.FlowLayout
 import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
 import java.util.*
 import javax.swing.*
 import javax.swing.event.TableModelListener
 import javax.swing.table.DefaultTableModel
+
 
 class IntellijConfigurationPanel: Configurable {
     private val fakerTextField: JTextField = JTextField()
@@ -32,8 +32,7 @@ class IntellijConfigurationPanel: Configurable {
         main.add(top, BorderLayout.NORTH)
         main.add(buildTable(columnNames), BorderLayout.CENTER)
         val bottom = JPanel(VerticalLayout())
-        bottom.add(buildButton("Add new mapping", "+", tableModel.insertRow()))
-        bottom.add(buildButton( "", "Default values", defaultValues()))
+        bottom.add(buildTableButtons("+", tableModel.insertRow(), "-", tableModel.removeSelectedRow(), "Default values", defaultValues()))
         main.add(bottom, BorderLayout.SOUTH)
         return main
     }
@@ -72,15 +71,27 @@ class IntellijConfigurationPanel: Configurable {
         return pack
     }
 
-    private fun buildButton(labelText : String, buttonText: String, function: ActionListener): JPanel {
+    private fun buildTableButtons(
+        addText: String,
+        addFunction: (e: ActionEvent) -> Unit,
+        removeText: String,
+        removeFunction: (e: ActionEvent) -> Unit,
+        defaultText: String,
+        defaultFunction: (e: ActionEvent) -> Unit
+    ): JPanel {
         val pack = JPanel(FlowLayout(FlowLayout.LEADING))
-        val button = JButton(buttonText)
-        button.addActionListener(function)
-        val label = JLabel(labelText)
-        pack.add(label)
-        pack.add(button)
+        addButton(addText, addFunction, pack)
+        addButton(removeText, removeFunction, pack)
+        addButton(defaultText, defaultFunction, pack)
         return pack
     }
+
+    fun addButton(text: String, function: (e: ActionEvent) -> Unit, panel : JPanel) {
+        val button = JButton(text)
+        button.addActionListener(function)
+        panel.add(button)
+    }
+
 
     private fun buildTable(columnNames: Vector<String>): JPanel {
         val borderLayout = BorderLayout()
@@ -97,6 +108,11 @@ class IntellijConfigurationPanel: Configurable {
                 " you can put them all comma-separated and one will be chosen randomly. Additionally you should" +
                 " add the needed imports for the generator and for the class, add them comma-separated"
         pack.add(JBScrollPane(table), BorderLayout.CENTER)
+        table.selectionModel.addListSelectionListener { e ->
+            if (!e.valueIsAdjusting) {
+                tableModel.selectedRow = table.selectedRow
+            }
+        }
         return pack
     }
 
@@ -131,7 +147,7 @@ class IntellijConfigurationPanel: Configurable {
 
 
 class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String>) : DefaultTableModel(data, columnNames) {
-
+    var selectedRow: Int = -1
     override fun isCellEditable(rowIndex: Int, columnIndex: Int): Boolean {
         return true
     }
@@ -192,6 +208,14 @@ class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String
     fun resetDataVector(data: Vector<Vector<String>>) {
         dataVector.clear()
         dataVector.addAll(data)
+    }
+
+    fun removeSelectedRow(): (e: ActionEvent) -> Unit = {
+        run {
+            if (this.selectedRow > -1) {
+                removeRow(this.selectedRow)
+            }
+        }
     }
 }
 
