@@ -12,7 +12,7 @@ import java.awt.FlowLayout
 import java.awt.event.ActionEvent
 import java.util.*
 import javax.swing.*
-import javax.swing.event.TableModelListener
+import javax.swing.event.*
 import javax.swing.table.DefaultTableModel
 
 
@@ -20,8 +20,9 @@ class IntellijConfigurationPanel: Configurable {
     private val fakerTextField: JTextField = JTextField()
     private val methodPrefixTextField: JTextField = JTextField()
     private lateinit var table: JBTable
-    private val columnNames = Vector(listOf("Class", "Comma separated imports", "Code to generate random object"))
+    private val columnNames = Vector(listOf("Class", "Comma separated needed imports", "Code to generate random object"))
     private var tableModel: TableModelSpecial = TableModelSpecial(IntellijPluginService.getInstance().getMappingsCopy(), columnNames)
+    private var isModified: Boolean = false
 
     override fun createComponent(): JComponent {
         val main = JPanel()
@@ -30,7 +31,7 @@ class IntellijConfigurationPanel: Configurable {
         top.add(buildFakerClassnameComponent())
         top.add(buildMethodPrefixComponent())
         main.add(top, BorderLayout.NORTH)
-        main.add(buildTable(columnNames), BorderLayout.CENTER)
+        main.add(buildTable(), BorderLayout.CENTER)
         val bottom = JPanel(VerticalLayout())
         bottom.add(buildTableButtons("+", tableModel.insertRow(), "-", tableModel.removeSelectedRow(), "Default values", defaultValues()))
         main.add(bottom, BorderLayout.SOUTH)
@@ -65,6 +66,19 @@ class IntellijConfigurationPanel: Configurable {
     private fun textFieldWithLabel(labelText : String, initialValue: String, textField: JTextField): JPanel {
         val pack = JPanel(FlowLayout(FlowLayout.LEADING))
         textField.text = initialValue
+        textField.document.addDocumentListener(object : DocumentListener {
+            override fun insertUpdate(e: DocumentEvent) {
+                isModified = true
+            }
+
+            override fun removeUpdate(e: DocumentEvent) {
+                isModified = true
+            }
+
+            override fun changedUpdate(e: DocumentEvent) {
+                // Plain text components do not fire these events
+            }
+        })
         val label = JLabel(labelText)
         pack.add(label)
         pack.add(textField)
@@ -93,7 +107,7 @@ class IntellijConfigurationPanel: Configurable {
     }
 
 
-    private fun buildTable(columnNames: Vector<String>): JPanel {
+    private fun buildTable(): JPanel {
         val borderLayout = BorderLayout()
         val pack = JPanel(borderLayout)
         table = JBTable(tableModel)
@@ -113,19 +127,24 @@ class IntellijConfigurationPanel: Configurable {
                 tableModel.selectedRow = table.selectedRow
             }
         }
+        tableModel.addTableModelListener {e ->
+                if (e.type == TableModelEvent.INSERT || e.type == TableModelEvent.DELETE || e.type == TableModelEvent.UPDATE) {
+                    isModified = true
+                }
+            }
         return pack
     }
 
+
     override fun isModified(): Boolean {
-        return fakerTextField.text != IntellijPluginService.getInstance().getFakerClassName() ||
-        methodPrefixTextField.text != IntellijPluginService.getInstance().getPrefixes()
-                || tableModel.dataEqualsTo(IntellijPluginService.getInstance().getMappings())
+        return isModified
     }
 
     @Suppress("UNCHECKED_CAST")
     override fun apply() {
         tableModel.cleanVoids()
         IntellijPluginService.getInstance().loadState(PluginState(fakerTextField.text, methodPrefixTextField.text, tableModel.dataVector as Vector<Vector<String>>))
+        isModified = false
     }
 
     override fun cancel() {
@@ -137,11 +156,17 @@ class IntellijConfigurationPanel: Configurable {
         tableModel.fireTableDataChanged()
         fakerTextField.text = IntellijPluginService.getInstance().getFakerClassName()
         methodPrefixTextField.text = IntellijPluginService.getInstance().getPrefixes()
+        isModified = false
         super.reset()
     }
 
     override fun getDisplayName(): String {
         return "Object Mother Creator"
+    }
+
+    override fun getPreferredFocusedComponent(): JComponent {
+        isModified = true
+        return table
     }
 }
 

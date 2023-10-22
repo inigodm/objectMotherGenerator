@@ -14,8 +14,15 @@ class PluginState() {
                 mappings: Vector<Vector<String>>) : this() {
         this.fakerClassname = fakerClassname
         this.prefixes = prefixes
-        this.mappings = mappings
+        val vector = Vector<Vector<String>> ()
+        mappings.forEach {
+            val aux = Vector<String>()
+            aux.addAll(it)
+            vector.add(aux)
+        }
+        this.mappings = vector
     }
+
     fun getMappingForType(type: String): List<Vector<String>> {
         return mappings.filter { it[0] == type }
     }
