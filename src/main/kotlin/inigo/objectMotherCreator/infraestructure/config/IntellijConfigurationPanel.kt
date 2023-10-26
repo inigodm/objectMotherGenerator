@@ -116,11 +116,7 @@ class IntellijConfigurationPanel: Configurable {
         table.columnModel.getColumn(1).setPreferredWidth(100)
         table.columnModel.getColumn(2).setPreferredWidth(100)
         table.fillsViewportHeight = true
-        table.toolTipText = "Only has to be added the name of the class, without package, that " +
-                "is wanted to be mapped to a generator text in the objectmother and the text which should be write to generate" +
-                " an object of that class (generator text). \n\nIf you want to have random generators for the same class" +
-                " you can put them all comma-separated and one will be chosen randomly. Additionally you should" +
-                " add the needed imports for the generator and for the class, add them comma-separated"
+        table.toolTipText = "At this moment you can not add maps for classes on your own project: An objectMother will be generated"
         pack.add(JBScrollPane(table), BorderLayout.CENTER)
         table.selectionModel.addListSelectionListener { e ->
             if (!e.valueIsAdjusting) {
