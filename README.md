@@ -1,4 +1,13 @@
 # objectMotherCreator
+
+##At last the feature that none was asking for!!!
+
+Moreover: it does not work quite well: I have problems with the event of exiting edition and pushing 'ok' or 'cancel'.
+
+¯\_(ツ)_/¯
+
+Seriously, if it is too annoying to you feel free to make a PR :P
+
 Plugin for Intellij to generate ObjectMother for java classes
 
 You can find it here:

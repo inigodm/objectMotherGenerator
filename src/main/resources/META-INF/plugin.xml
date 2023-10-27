@@ -7,18 +7,18 @@
     <depends>org.intellij.groovy</depends>
     <depends>org.jetbrains.kotlin</depends>
     <description><![CDATA[
-      <b>At last the feature that none was asking for!!!</b>
-
+      <b>At last the feature that none was asking for!!!</b></br>
+</br>
       Moreover: it does not work quite well: I have problems with the event of exiting edition and pushing 'ok' or 'cancel'.
-
+</br></br>
       ¯\_(ツ)_/¯
-
+</br></br>
       Seriously, if it is too annoying to you feel free to make a PR :P
-
+</br></br>
       Now you wil be able to add your custom mappings, from classname to the code that will generate it.
 
       This way if a Class is not mapped (a.e LocalDate) you can add the mapping straight onto your idea and, after of it, open a PR modifying DefaultMappings adding a new element in the var mappings
-
+</br></br>
       Creates object mothers for selected class on right clicking over it.
       <br><br><b>Supports Kotlin, Java and Groovy classes</b>
       There is some configuration capabilities at configuration page.
