@@ -17,9 +17,10 @@ abstract class FakeValuesGenerator(val neededObjectMotherClasses: MutableList<Cl
     val LIST_PATTERM = "^[\\s\\S]*List[<]{0,1}[\\S]*[>]{0,1}\$".toRegex()
 
     companion object {
+        @OptIn(ExperimentalStdlibApi::class)
         @JvmStatic
         fun build(type: String): FakeValuesGenerator {
-            return if (type.toLowerCase() == "kt") {
+            return if (type.lowercase() == "kt") {
                 KotlinFakeValuesGenerator()
             } else {
                 JavaFakeValuesGenerator()

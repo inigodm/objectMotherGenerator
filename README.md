@@ -100,7 +100,7 @@ Last changes include:
 1.4.2.0 - Identify Boolean and Timestamp, refactor to improve agility adding more types
 1.5.0.0 - Add a config page to customize Faker library
 1.5.0.1 - Add default button to get back to default values and fix an annoying bug
-1.6.0.0 - Add custom mappings in config page
+1.6.0.1 - Add custom mappings in config page
 ```
 
 ## What's next?
