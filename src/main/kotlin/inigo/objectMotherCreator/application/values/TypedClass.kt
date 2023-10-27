@@ -38,6 +38,7 @@ data class TypedClass(var className: String, var types: List<TypedClass> = mutab
             return mutableListOf(TypedClass(type.trim(), types.flatMap { findTypesFrom(it.trim()) }))
         }
 
+        @OptIn(ExperimentalStdlibApi::class)
         private fun indexOfTheFirstClosing(canonicalText: String): Int {
             var opening = 0
             var index = 0
@@ -47,10 +48,10 @@ data class TypedClass(var className: String, var types: List<TypedClass> = mutab
                     return@forEach
                 }
                 // TODO change with '<'.code when it get removed
-                if (it == '<'.toByte().toInt()) {
+                if (it == '<'.code) {
                     opening++
                 } else {
-                    if (it == '>'.toByte().toInt()) {
+                    if (it == '>'.code) {
                         opening--
                         if (opening == 0) {
                             index = i + 1

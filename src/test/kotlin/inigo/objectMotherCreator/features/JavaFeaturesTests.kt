@@ -4,19 +4,18 @@ import inigo.objectMotherCreator.application.JavaFileCreator
 import inigo.objectMotherCreator.application.ObjectMotherCreator
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
-import inigo.objectMotherCreator.application.template.KotlinObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
-import inigo.objectMotherCreator.application.values.KotlinFakeValuesGenerator
+import inigo.objectMotherCreator.application.values.mappings.ConfigMappings
+import inigo.objectMotherCreator.application.values.mappings.Mappings
 import inigo.objectMotherCreator.givenStandartStateOptions
 import inigo.objectMotherCreator.infraestructure.IdeaShits
+import inigo.objectMotherCreator.infraestructure.config.IntellijPluginService
 import inigo.objectMotherCreator.model.infoExtractor.om.*
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
-import io.mockk.mockk
-import io.mockk.verify
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.sql.Timestamp
@@ -40,11 +39,18 @@ class JavaFeaturesTests {
     lateinit var fileCreator: JavaFileCreator
 
     @SpyK
-    var fakeValuesGenerator: FakeValuesGenerator = JavaFakeValuesGenerator()
+    var defaults: Mappings = spyk(ConfigMappings())
 
+    @MockK
+    lateinit var fakeValuesGenerator: FakeValuesGenerator
+
+    @MockK(relaxed = true)
+    lateinit var service: IntellijPluginService
     @BeforeEach
     fun setup() {
         MockKAnnotations.init(this)
+        mockkObject(FakeValuesGenerator.Companion)
+        fakeValuesGenerator = JavaFakeValuesGenerator(defaults)
         every { fileCreator.buildFile(any(), any(), any(), any()) } returns Unit
         every { ideShits.findClass("java.lang.String") } returns null
         every { ideShits.findClass("java.util.List") } returns null
@@ -53,12 +59,17 @@ class JavaFeaturesTests {
         every { ideShits.findClass("java.time.Instant") } returns null
         every { ideShits.findClass("java.sql.Timestamp") } returns null
         every { fileCreator.createdFileName() } returns "createdObjectMother"
-        every { fakeValuesGenerator.randomString() } returns "faker.howIMetYourMother().highFive()"
+        givenStandartStateOptions(service)
+
+    }
+
+    @AfterEach
+    fun shutdown() {
+        unmockkAll()
     }
 
     @Test
     fun `should create a object mother for a class`() {
-        givenStandartStateOptions()
         val omParameterA = createParam("List<String>", java.util.List::class.java.canonicalName)
         val omParameterB = createParam("UUID", UUID::class.java.canonicalName)
         val omParameterC = createParam("Instant", Instant::class.java.canonicalName)
@@ -84,7 +95,6 @@ class JavaFeaturesTests {
 
     @Test
     fun `should create a object mother for a class with parameters`() {
-        givenStandartStateOptions()
         val omParameter1 = createParam("Map<String, Integer>", java.util.Map::class.java.canonicalName)
         val omConstructor = createConstructor("A", omParameter1)
         val omClass = createClass("A", "packagename", true, omConstructor)

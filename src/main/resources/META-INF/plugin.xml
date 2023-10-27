@@ -1,12 +1,25 @@
 <idea-plugin>
     <id>inigo.objectmothercreator</id>
-    <name>Object mother creator</name>
-    <version>1.5.0.1</version>
+    <name>Object Mother Creator</name>
+    <version>1.6.0.0</version>
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
+    <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
     <depends>org.intellij.groovy</depends>
     <depends>org.jetbrains.kotlin</depends>
     <description><![CDATA[
+      <b>At last the feature that none was asking for!!!</b><br>
+<br>
+      Moreover: it does not work quite well: I have problems with the event of exiting edition and pushing 'ok' or 'cancel'.
+<br><br>
+      ¯\_(ツ)_/¯
+<br><br>
+      Seriously, if it is too annoying to you feel free to make a PR :P
+<br><br>
+      Now you wil be able to add your custom mappings in the configuration section of your IDEA, classname, imports need in the objectmother and the code that will generate those classes' objects.
+
+      This way if a Class is not mapped (a.e LocalDate) you can add the mapping straight onto your idea and, after of it, open a PR modifying DefaultMappings adding a new element in the var mappings
+<br><br>
       Creates object mothers for selected class on right clicking over it.
       <br><br><b>Supports Kotlin, Java and Groovy classes</b>
       There is some configuration capabilities at configuration page.
@@ -46,6 +59,7 @@
         1.4.2.0 - Identify Boolean and Timestamp, refactor to improve agility adding more types
         1.5.0.0 - Add a config page to customize Faker library
         1.5.0.1 - Minor fix to calm down APA
+        1.6.0.0 - Add configuration to enable users to add custom mappings
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
@@ -54,8 +68,8 @@
     <extensions defaultExtensionNs="com.intellij">
         <applicationConfigurable
                 parentId="tools"
-                instance="inigo.objectMotherCreator.infraestructure.config.IntellijConfiguration"
-                id="inigo.objectMotherCreator.infraestructure.config.IntellijConfiguration"
+                instance="inigo.objectMotherCreator.infraestructure.config.IntellijConfigurationPanel"
+                id="inigo.objectMotherCreator.infraestructure.config.IntellijConfigurationPanel"
                 displayName="Object Mother Creator"/>
         <applicationService
                 serviceImplementation="inigo.objectMotherCreator.infraestructure.config.IntellijPluginService"/>

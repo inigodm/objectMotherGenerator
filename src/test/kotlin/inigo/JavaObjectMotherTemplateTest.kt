@@ -5,11 +5,12 @@ import fixedMethodInfo
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
-import inigo.objectMotherCreator.application.values.KotlinFakeValuesGenerator
 import inigo.objectMotherCreator.givenStandartStateOptions
+import inigo.objectMotherCreator.infraestructure.config.IntellijPluginService
 import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 import inigo.objectMotherCreator.model.infogenerated.JavaMotherClassGeneratedData
 import io.mockk.MockKAnnotations
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -19,17 +20,18 @@ class JavaObjectMotherTemplateTest {
     @SpyK
     var fakeValuesGenerator: FakeValuesGenerator = JavaFakeValuesGenerator()
     lateinit var motherClassGeneratedData : MotherClassGeneratedData
-
+    @MockK(relaxed = true)
+    lateinit var service: IntellijPluginService
     @BeforeEach
     fun setUp () {
         MockKAnnotations.init(this)
         motherClassGeneratedData = JavaMotherClassGeneratedData()
+        givenStandartStateOptions(service)
     }
 
 
     @Test
     fun `build package line`() {
-        givenStandartStateOptions()
         val sut = JavaObjectMotherTemplate(JavaFakeValuesGenerator())
 
         assertEquals(sut.buildPackage("packagename").trim(), "package packagename")
@@ -37,21 +39,19 @@ class JavaObjectMotherTemplateTest {
 
     @Test
     fun `build import line for faker if other classes ar in diferent package`() {
-        givenStandartStateOptions()
         val sut = JavaObjectMotherTemplate(JavaFakeValuesGenerator())
         val res = sut.buildImports(listOf(fixedMethodInfo()))
 
         assertEquals(
             res, listOf(
-                "import com.github.javafaker.Faker",
-                "import static qualified.clazzNameObjectMother.randomclazzName"
+                "com.github.javafaker.Faker",
+                "static qualified.clazzNameObjectMother.randomclazzName"
             )
         )
     }
 
     @Test
     fun `build class code with default constructor if no constructors`() {
-        givenStandartStateOptions()
         val sut = JavaObjectMotherTemplate()
 
         val res = sut.buildClass("className", listOf(), motherClassGeneratedData)
@@ -65,7 +65,6 @@ class JavaObjectMotherTemplateTest {
 
     @Test
     fun `build class code using existing first constructor if any constructors exist`() {
-        givenStandartStateOptions()
         val sut = JavaObjectMotherTemplate(JavaFakeValuesGenerator())
 
         val res = sut.buildClass("className", listOf(fixedMethodInfo()), motherClassGeneratedData)
@@ -82,7 +81,6 @@ class JavaObjectMotherTemplateTest {
 
     @Test
     fun `build class code using existing first constructor if any constructors exists`() {
-        givenStandartStateOptions()
         assertThatWorksWithType("int", "faker.number().randomDigit()")
         assertThatWorksWithType("Integer", "faker.number().randomDigit()")
         assertThatWorksWithType("long", "faker.number().randomNumber()")
@@ -125,7 +123,7 @@ class JavaObjectMotherTemplateTest {
                 "faker.rickAndMorty().character()",
                 "faker.slackEmoji().activity()",
                 "faker.superhero().name()",
-                "faker.yoda().quote()").contains(KotlinFakeValuesGenerator().strings[0]) }
+                "faker.yoda().quote()").contains(JavaFakeValuesGenerator().defaults.random("String")) }
     }
 
     private fun assertThatWorksWithType(type: String, expectedGenerator: String) {
@@ -145,7 +143,6 @@ class JavaObjectMotherTemplateTest {
 
     @Test
     fun `have to return needed object classes`() {
-        givenStandartStateOptions()
         val sut = JavaObjectMotherTemplate(fakeValuesGenerator)
 
         println(sut.buildClass("className", listOf(fixedMethodInfo()), motherClassGeneratedData))
@@ -155,7 +152,6 @@ class JavaObjectMotherTemplateTest {
 
     @Test
     fun `should build objectmother when asked to`() {
-        givenStandartStateOptions()
         val sut = JavaObjectMotherTemplate(fakeValuesGenerator)
 
         val res = sut.createObjectMotherSourceCode(fixedClassInfo())

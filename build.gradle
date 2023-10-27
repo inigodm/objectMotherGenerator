@@ -2,13 +2,13 @@ plugins {
     id 'java'
     id 'idea'
     id 'groovy'
-    id 'org.jetbrains.intellij' version '1.13.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.8.10'
+    id 'org.jetbrains.intellij' version '1.16.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.0'
     id 'info.solidsoft.pitest' version '1.9.11'
 }
 
-group 'org.example'
-version '1.5.0.0'
+group 'com.inigo'
+version '1.6.0.0'
 
 sourceCompatibility = 1.8
 
@@ -31,13 +31,14 @@ pitest {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.2'
-    testImplementation group: 'io.mockk', name: 'mockk', version: '1.13.4'
-    testImplementation 'com.willowtreeapps.assertk:assertk-jvm:0.25'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
-    testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.9.11'
-    testImplementation group: 'org.mockito.kotlin', name: 'mockito-kotlin', version: '4.1.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.0'
+    implementation group: 'org.json', name: 'json', version: '20231013'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.0'
+    testImplementation group: 'io.mockk', name: 'mockk', version: '1.13.8'
+    testImplementation 'com.willowtreeapps.assertk:assertk-jvm:0.27.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
+    testImplementation group: 'org.mockito.kotlin', name: 'mockito-kotlin', version: '5.1.0'
 }
 
 
@@ -54,9 +55,9 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 patchPluginXml {
-    sinceBuild = '193'
+    sinceBuild = '201'
     untilBuild = '293.*'
     changeNotes = """
-        Added a config page in Settings... -> Tools
+        Now user are able to define their own mappings in the config page -> Tools
     """
 }

@@ -27,11 +27,11 @@ class JavaObjectMotherTemplate(var fakeValuesGenerator: FakeValuesGenerator = Ja
 
     fun buildImports(neededConstructors: List<MethodInfo>): List<String> {
         val result = mutableListOf<String>()
-        result.add("import ${getFakerCanonicalClassname()}")
+        result.add(getFakerCanonicalClassname())
         if (neededConstructors.isNotEmpty()) {
             neededConstructors[0].args.filter { (it.clazzInfo?.clazz?.getName() ?: "") != "" }
                 .forEach {
-                    result.add("import static ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.${getMethodPrefix()}${it.clazzInfo?.clazz?.getName()}") }
+                    result.add("static ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.${getMethodPrefix()}${it.clazzInfo?.clazz?.getName()}") }
         }
         return result
     }

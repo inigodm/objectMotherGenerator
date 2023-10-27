@@ -24,11 +24,11 @@ class KotlinObjectMotherTemplate(var fakeValuesGenerator: FakeValuesGenerator): 
 
     fun buildImports(neededConstructors: List<MethodInfo>): List<String> {
         val result = mutableListOf<String>()
-        result.add("import ${getFakerCanonicalClassname()}")
+        result.add(getFakerCanonicalClassname())
         if (neededConstructors.isNotEmpty()) {
             neededConstructors[0].args.filter { (it.clazzInfo?.clazz?.getName() ?: "") != "" }
                 .forEach {
-                    result.add("import ${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.Companion.${getMethodPrefix()}${it.clazzInfo?.clazz?.getName()}") }
+                    result.add("${it.clazzInfo?.clazz?.getQualifiedName()}ObjectMother.Companion.${getMethodPrefix()}${it.clazzInfo?.clazz?.getName()}") }
         }
         return result
     }

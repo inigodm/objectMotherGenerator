@@ -16,14 +16,14 @@ abstract class ObjectMotherTemplate {
         }
     }
 
-    val ideaState = IntellijPluginService.getInstance().state;
+    val ideaState = IntellijPluginService.getInstance();
     abstract fun createObjectMotherSourceCode(clazz: ClassInfo): String
 
     fun getFakerCanonicalClassname() : String {
-        return ideaState.getFakerClassName()
+        return IntellijPluginService.getInstance().getFakerClassName()
     }
 
-    fun getMethodPrefix() : String = ideaState.getPrefixes()
+    fun getMethodPrefix() : String = IntellijPluginService.getInstance().getPrefixes()
 
-    fun getFakerClassName() : String = ideaState.getFakerClassName().substringAfterLast(".")
+    fun getFakerClassName() : String = IntellijPluginService.getInstance().getFakerClassName().substringAfterLast(".")
 }
