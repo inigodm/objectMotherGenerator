@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>inigo.objectmothercreator</id>
-    <name>Object mother creator</name>
+    <name>Object Mother Creator</name>
     <version>1.6.0.0</version>
     <vendor email="inigo.delgado@gmail.com" url="https://github.com/inigodm/">Inigodm</vendor>
     <depends>com.intellij.java</depends>
