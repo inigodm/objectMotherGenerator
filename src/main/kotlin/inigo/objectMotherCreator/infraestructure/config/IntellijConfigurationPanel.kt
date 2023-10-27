@@ -21,7 +21,7 @@ class IntellijConfigurationPanel: Configurable {
     private val methodPrefixTextField: JTextField = JTextField()
     private lateinit var table: JBTable
     private val columnNames = Vector(listOf("Class", "Comma separated needed imports", "Code to generate random object"))
-    private var tableModel: TableModelSpecial = TableModelSpecial(IntellijPluginService.getInstance().getMappingsCopy(), columnNames)
+    private val tableModel: TableModelSpecial = TableModelSpecial(IntellijPluginService.getInstance().getMappingsCopy(), columnNames)
     private var isModified: Boolean = false
 
     override fun createComponent(): JComponent {
@@ -196,19 +196,6 @@ class TableModelSpecial(data: Vector<Vector<String>>, columnNames: Vector<String
         dataVector.addAll(mappings)
     }
 
-    fun dataEqualsTo(mappings: Vector<Vector<String>>): Boolean {
-        if (mappings.size != dataVector.size) {
-            return false
-        }
-
-        for (i in mappings.indices) {
-            if (!mappings[i].sameContentWith(dataVector[i] as Vector<*>)) {
-                return false
-            }
-        }
-        return true
-    }
-
     fun insertRow(): (e: ActionEvent) -> Unit = {
         run {
             val tableVector = dataVector as Vector<Vector<String>>
@@ -247,5 +234,3 @@ fun <E> MutableList<E>.addFirst(e: E) {
 fun <E> MutableList<E>.getLast(): E {
     return this[this.size - 1]
 }
-infix fun <T> Collection<T>.sameContentWith(collection: Collection<T>?)
-        = collection?.let { this.size == it.size && this.containsAll(it) } ?: false

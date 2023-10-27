@@ -1,5 +1,6 @@
 package inigo.objectMotherCreator.infraestructure.config
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.*
 import inigo.objectMotherCreator.application.values.mappings.DefaultMappings
@@ -24,7 +25,7 @@ class IntellijPluginService: PersistentStateComponent<PluginState> {
         }
 
         fun getInstance(): IntellijPluginService {
-            return ServiceManager.getService(IntellijPluginService::class.java)
+            return ApplicationManager.getApplication().getService(IntellijPluginService::class.java)
         }
     }
 
