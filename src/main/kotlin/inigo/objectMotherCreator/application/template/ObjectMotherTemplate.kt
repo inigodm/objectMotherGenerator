@@ -16,7 +16,6 @@ abstract class ObjectMotherTemplate {
         }
     }
 
-    val ideaState = IntellijPluginService.getInstance();
     abstract fun createObjectMotherSourceCode(clazz: ClassInfo): String
 
     fun getFakerCanonicalClassname() : String {
