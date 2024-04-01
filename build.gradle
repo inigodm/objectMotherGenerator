@@ -10,7 +10,7 @@ plugins {
 group 'com.inigo'
 version '1.6.0.0'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 
 repositories {
     mavenCentral()
@@ -49,10 +49,10 @@ intellij {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "11"
 }
 patchPluginXml {
     sinceBuild = '201'
