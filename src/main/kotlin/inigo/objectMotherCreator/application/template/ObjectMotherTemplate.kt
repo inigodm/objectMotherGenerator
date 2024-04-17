@@ -2,27 +2,29 @@ package inigo.objectMotherCreator.application.template
 
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
+import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
+import inigo.objectMotherCreator.application.values.KotlinFakeValuesGenerator
 import inigo.objectMotherCreator.infraestructure.config.IntellijPluginService
+import inigo.objectMotherCreator.model.infogenerated.JavaMotherClassGeneratedData
+import inigo.objectMotherCreator.model.infogenerated.KotlinMotherClassGeneratedData
+import inigo.objectMotherCreator.model.infogenerated.MotherClassGeneratedData
 
-abstract class ObjectMotherTemplate {
+class ObjectMotherTemplate(val classCode: MotherClassGeneratedData) {
     companion object {
-        fun buildObjectMotherTemplate(extension: String, fakeValuesGenerator: FakeValuesGenerator): ObjectMotherTemplate {
+        fun buildObjectMotherTemplate(extension: String, kotlinData: KotlinMotherClassGeneratedData = KotlinMotherClassGeneratedData(), javaData: JavaMotherClassGeneratedData = JavaMotherClassGeneratedData()): ObjectMotherTemplate {
             return when (extension) {
-                "kt" -> KotlinObjectMotherTemplate(fakeValuesGenerator)
+                "kt" -> ObjectMotherTemplate(kotlinData)
                 else -> { // Note the block
-                    JavaObjectMotherTemplate(fakeValuesGenerator)
+                    ObjectMotherTemplate(javaData)
                 }
             }
         }
     }
 
-    abstract fun createObjectMotherSourceCode(clazz: ClassInfo): String
-
-    fun getFakerCanonicalClassname() : String {
-        return IntellijPluginService.getInstance().getFakerClassName()
+    fun createObjectMotherSourceCode(clazz: ClassInfo) : String {
+        classCode.buildPackage(clazz.packageStr)
+        classCode.buildImports(clazz.constructors)
+        classCode.buildClass(clazz.clazz!!.getName().toString(), clazz.constructors, classCode)
+        return classCode.toSource()
     }
-
-    fun getMethodPrefix() : String = IntellijPluginService.getInstance().getPrefixes()
-
-    fun getFakerClassName() : String = IntellijPluginService.getInstance().getFakerClassName().substringAfterLast(".")
 }

@@ -27,7 +27,7 @@ abstract class OMCreationAction : AnAction() {
             ideaShits = ideaShits
         )
         val fakerValuesGenerator = FakeValuesGenerator.build(extension)
-        val objectMotherTemplate = ObjectMotherTemplate.buildObjectMotherTemplate(extension, fakerValuesGenerator)
+        val objectMotherTemplate = ObjectMotherTemplate.buildObjectMotherTemplate(extension)
         val creator = ObjectMotherCreator(IdeaJavaFileCreator(ideaShits, CommandProcessor.getInstance()),
             objectMotherTemplate)
         creator.createObjectMotherFor(classInfo, dir, extension, fakerValuesGenerator)

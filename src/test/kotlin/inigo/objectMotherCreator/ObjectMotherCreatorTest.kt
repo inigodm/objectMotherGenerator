@@ -3,11 +3,12 @@ package inigo.objectMotherCreator
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import inigo.objectMotherCreator.application.infoholders.ClassInfo
-import inigo.objectMotherCreator.application.template.JavaObjectMotherTemplate
+
 import inigo.objectMotherCreator.model.infoExtractor.om.OMClass
 import inigo.objectMotherCreator.model.infoExtractor.om.OMDirectory
 import inigo.objectMotherCreator.infraestructure.IdeaJavaFileCreator
 import inigo.objectMotherCreator.application.ObjectMotherCreator
+import inigo.objectMotherCreator.application.template.ObjectMotherTemplate
 import inigo.objectMotherCreator.application.values.FakeValuesGenerator
 import inigo.objectMotherCreator.application.values.JavaFakeValuesGenerator
 import io.mockk.MockKAnnotations
@@ -25,7 +26,7 @@ class ObjectMotherCreatorTest {
     @MockK
     lateinit var fileCreator : IdeaJavaFileCreator
     @MockK
-    lateinit var javaObjectMotherTemplate: JavaObjectMotherTemplate
+    lateinit var javaObjectMotherTemplate: ObjectMotherTemplate
     @MockK
     lateinit var infoExtractor : ClassInfo
     @MockK
